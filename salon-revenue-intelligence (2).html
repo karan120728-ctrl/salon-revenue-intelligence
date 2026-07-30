@@ -1,0 +1,2438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Marlowe & Rose — Salon Revenue Intelligence</title>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,560;0,9..144,650;1,9..144,450&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12141F;
+    --ink-soft:#22273A;
+    --porcelain:#FBFAF7;
+    --paper:#F3F1EC;
+    --rosewood:#C4485A;
+    --rosewood-deep:#9E3548;
+    --sage:#4F8871;
+    --sage-soft:#DCEAE3;
+    --gold:#C99A45;
+    --slate:#5A5F72;
+    --line:#E7E4DC;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--porcelain);font-family:'Inter',sans-serif;color:var(--ink);-webkit-font-smoothing:antialiased;}
+  .font-display{font-family:'Fraunces',serif;}
+  .font-mono{font-family:'IBM Plex Mono',monospace;}
+  ::selection{background:var(--rosewood);color:white;}
+  ::-webkit-scrollbar{width:8px;height:8px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:#D8D4C8;border-radius:8px;}
+  @media (prefers-reduced-motion: reduce){ *{animation:none !important; transition:none !important;} }
+
+  .grain{position:fixed;inset:0;pointer-events:none;opacity:.035;z-index:60;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+  .card{background:#fff;border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px rgba(18,20,31,0.04);}
+  .card-hover{transition:transform .25s ease, box-shadow .25s ease;}
+  .card-hover:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(18,20,31,0.08);}
+
+  .btn-primary{background:var(--ink);color:#fff;border-radius:999px;padding:.85rem 1.6rem;font-weight:600;transition:all .2s ease;display:inline-flex;align-items:center;gap:.5rem;}
+  .btn-primary:hover{background:var(--rosewood-deep);transform:translateY(-1px);}
+  .btn-secondary{background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:999px;padding:.8rem 1.55rem;font-weight:600;transition:all .2s ease;}
+  .btn-secondary:hover{background:var(--ink);color:#fff;}
+
+  .drip{position:absolute;bottom:-6px;width:2px;background:linear-gradient(var(--rosewood), transparent);border-radius:2px;animation:drip 2.6s cubic-bezier(.55,0,.9,.4) infinite;}
+  @keyframes drip{0%{height:0;opacity:0;transform:translateY(0);} 15%{opacity:1;} 70%{height:26px;opacity:.9;} 100%{height:26px;opacity:0;transform:translateY(18px);}}
+
+  .fade-up{animation:fadeUp .7s cubic-bezier(.2,.7,.2,1) both;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(16px);} to{opacity:1;transform:translateY(0);}}
+  .pulse-dot{animation:pulseDot 2s ease-in-out infinite;}
+  @keyframes pulseDot{0%,100%{opacity:1;} 50%{opacity:.35;}}
+
+  .skeleton{background:linear-gradient(90deg,#EFEDE6 25%,#F7F5F0 37%,#EFEDE6 63%);background-size:400% 100%;animation:shimmer 1.4s ease infinite;border-radius:8px;}
+  @keyframes shimmer{0%{background-position:100% 50%;} 100%{background-position:0 50%;}}
+
+  .nav-item{transition:background .18s ease, color .18s ease;}
+  .nav-item:hover{background:rgba(255,255,255,0.06);}
+  .nav-item.active{background:rgba(255,255,255,0.1);}
+
+  input:focus, button:focus-visible, a:focus-visible{outline:2px solid var(--rosewood); outline-offset:2px;}
+
+  .stitch{background-image:repeating-linear-gradient(90deg, var(--line) 0 6px, transparent 0 12px);height:1px;}
+  .risk-high{background:#FBE7E9;color:#9E3548;}
+  .risk-med{background:#FCF1E1;color:#96712A;}
+  .risk-low{background:#E4F0EA;color:#316B52;}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div id="root"></div>
+
+<script>
+const {
+  useState,
+  useEffect,
+  useRef,
+  useMemo
+} = React;
+
+/* ---------------- ICONS ---------------- */
+const Icon = ({
+  name,
+  size = 18,
+  strokeWidth = 1.8,
+  className = ""
+}) => {
+  const p = {
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth,
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  };
+  const paths = {
+    home: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M3 10.5 12 3l9 7.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M5 9.5V21h14V9.5",
+      ...p
+    })),
+    users: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
+      cx: "9",
+      cy: "8",
+      r: "3.2",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M2.5 20c.6-3.6 3.2-5.6 6.5-5.6s5.9 2 6.5 5.6",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M15.5 5.2a3.2 3.2 0 0 1 0 6.2",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M16.5 14.6c2.7.4 4.6 2.2 5.1 5.4",
+      ...p
+    })),
+    calendar: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {
+      x: "3.5",
+      y: "5",
+      width: "17",
+      height: "15.5",
+      rx: "2.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M3.5 9.5h17",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M8 3v4M16 3v4",
+      ...p
+    })),
+    alert: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M12 3.5 21.5 20h-19L12 3.5Z",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M12 10v4.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("circle", {
+      cx: "12",
+      cy: "17.3",
+      r: ".4",
+      fill: "currentColor",
+      stroke: "none"
+    })),
+    box: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M3.5 7.5 12 3l8.5 4.5-8.5 4.5-8.5-4.5Z",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M3.5 7.5v9L12 21l8.5-4.5v-9",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M12 12v9",
+      ...p
+    })),
+    chat: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M4 5.5h16v11H9.5L5 20v-3.5H4Z",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M8 10h8M8 13h5",
+      ...p
+    })),
+    bell: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M6 10a6 6 0 0 1 12 0c0 4.5 1.5 6 1.5 6h-15S6 14.5 6 10Z",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M9.5 19a2.5 2.5 0 0 0 5 0",
+      ...p
+    })),
+    chart: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M4 20V10M11 20V4M18 20v-7",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M2.5 20.5h19",
+      ...p
+    })),
+    trenddown: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M3 6.5 10 14l4-4 7 7.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M14.5 17.7H21V11",
+      ...p
+    })),
+    trendup: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M3 17.5 10 10l4 4 7-7.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M14.5 6.3H21V13",
+      ...p
+    })),
+    search: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
+      cx: "10.5",
+      cy: "10.5",
+      r: "6.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "m20 20-4.4-4.4",
+      ...p
+    })),
+    chevron: /*#__PURE__*/React.createElement("path", {
+      d: "m9 6 6 6-6 6",
+      ...p
+    }),
+    sparkle: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M12 3v4M12 17v4M3 12h4M17 12h4",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M12 8.5 14 12l-2 3.5L10 12Z",
+      ...p
+    })),
+    arrowup: /*#__PURE__*/React.createElement("path", {
+      d: "M7 17 17 7M9 7h8v8",
+      ...p
+    }),
+    arrowdown: /*#__PURE__*/React.createElement("path", {
+      d: "M7 7 17 17M17 9V17H9",
+      ...p
+    }),
+    star: /*#__PURE__*/React.createElement("path", {
+      d: "m12 3 2.7 5.9 6.3.7-4.7 4.4 1.3 6.3L12 17.2 6.4 20.3l1.3-6.3-4.7-4.4 6.3-.7Z",
+      ...p
+    }),
+    logout: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M9 21H5.5A1.5 1.5 0 0 1 4 19.5v-15A1.5 1.5 0 0 1 5.5 3H9",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M16 17l5-5-5-5M21 12H9",
+      ...p
+    })),
+    check: /*#__PURE__*/React.createElement("path", {
+      d: "M4 12.5 9.5 18 20 6",
+      ...p
+    }),
+    clock: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
+      cx: "12",
+      cy: "12",
+      r: "8.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M12 7.5V12l3 2",
+      ...p
+    })),
+    droplet: /*#__PURE__*/React.createElement("path", {
+      d: "M12 3S5.5 11 5.5 15.5a6.5 6.5 0 0 0 13 0C18.5 11 12 3 12 3Z",
+      ...p
+    }),
+    package: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M3.5 7.5 12 3l8.5 4.5-8.5 4.5-8.5-4.5Z",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M3.5 7.5v9L12 21l8.5-4.5v-9M12 12v9",
+      ...p
+    })),
+    send: /*#__PURE__*/React.createElement("path", {
+      d: "M21 3 3 10.5l7 3 3 7L21 3Z",
+      ...p
+    }),
+    x: /*#__PURE__*/React.createElement("path", {
+      d: "m6 6 12 12M18 6 6 18",
+      ...p
+    }),
+    plus: /*#__PURE__*/React.createElement("path", {
+      d: "M12 5v14M5 12h14",
+      ...p
+    }),
+    lock: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {
+      x: "5",
+      y: "10.5",
+      width: "14",
+      height: "9.5",
+      rx: "2",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M8 10.5V7.5a4 4 0 0 1 8 0v3",
+      ...p
+    })),
+    mail: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {
+      x: "3",
+      y: "5.5",
+      width: "18",
+      height: "13",
+      rx: "2",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "m4 7 8 6 8-6",
+      ...p
+    })),
+    grid: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("rect", {
+      x: "3.5",
+      y: "3.5",
+      width: "7.5",
+      height: "7.5",
+      rx: "1.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("rect", {
+      x: "13",
+      y: "3.5",
+      width: "7.5",
+      height: "7.5",
+      rx: "1.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("rect", {
+      x: "3.5",
+      y: "13",
+      width: "7.5",
+      height: "7.5",
+      rx: "1.5",
+      ...p
+    }), /*#__PURE__*/React.createElement("rect", {
+      x: "13",
+      y: "13",
+      width: "7.5",
+      height: "7.5",
+      rx: "1.5",
+      ...p
+    })),
+    scissors: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("circle", {
+      cx: "6.5",
+      cy: "6.5",
+      r: "2.3",
+      ...p
+    }), /*#__PURE__*/React.createElement("circle", {
+      cx: "6.5",
+      cy: "17.5",
+      r: "2.3",
+      ...p
+    }), /*#__PURE__*/React.createElement("path", {
+      d: "M20 5 8.3 15.5M8.3 8.5 20 19",
+      ...p
+    })),
+    menu: /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("path", {
+      d: "M4 7h16M4 12h16M4 17h16",
+      ...p
+    })),
+    play: /*#__PURE__*/React.createElement("path", {
+      d: "M8 5.5v13l11-6.5-11-6.5Z",
+      ...p
+    })
+  };
+  return /*#__PURE__*/React.createElement("svg", {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    className: className
+  }, paths[name]);
+};
+
+/* ---------------- MOCK DATA ---------------- */
+const stylists = [{
+  name: "Chloe Bennett",
+  role: "Senior Colourist",
+  revenue: 5420,
+  appts: 38,
+  retail: 640,
+  rating: 4.9,
+  rebook: 81,
+  img: "CB",
+  suggestion: "Booking 96% full through Friday — open a late slot Thursday."
+}, {
+  name: "Priya Anand",
+  role: "Creative Director",
+  revenue: 6110,
+  appts: 33,
+  retail: 820,
+  rating: 5.0,
+  rebook: 88,
+  img: "PA",
+  suggestion: "Highest rebooking rate on the floor — feature her in this week's promo."
+}, {
+  name: "Jack Sullivan",
+  role: "Barber & Stylist",
+  revenue: 3260,
+  appts: 41,
+  retail: 210,
+  rating: 4.6,
+  rebook: 58,
+  img: "JS",
+  suggestion: "Retail attach rate is 3x below team average — prompt product add-ons at checkout."
+}, {
+  name: "Olivia Hart",
+  role: "Stylist",
+  revenue: 2980,
+  appts: 29,
+  retail: 410,
+  rating: 4.7,
+  rebook: 66,
+  img: "OH",
+  suggestion: "Wednesdays run 40% empty — worth a loyalty offer to fill the chair."
+}, {
+  name: "Marcus Reid",
+  role: "Junior Stylist",
+  revenue: 1840,
+  appts: 25,
+  retail: 180,
+  rating: 4.4,
+  rebook: 47,
+  img: "MR",
+  suggestion: "Rebooking is trailing the team — pair with Priya for a shadow shift."
+}];
+const customers = [{
+  name: "Grace Holloway",
+  last: "11 weeks ago",
+  expected: "Overdue by 5 wks",
+  risk: 92,
+  ltv: 1840,
+  action: "Call — VIP colour client going cold"
+}, {
+  name: "Emma Whitmore",
+  last: "9 weeks ago",
+  expected: "Overdue by 3 wks",
+  risk: 81,
+  ltv: 1120,
+  action: "Send win-back offer"
+}, {
+  name: "Aisha Patel",
+  last: "7 weeks ago",
+  expected: "Due this week",
+  risk: 64,
+  ltv: 960,
+  action: "Text reminder — usual 6wk cycle"
+}, {
+  name: "Ben Turner",
+  last: "14 weeks ago",
+  expected: "Overdue by 8 wks",
+  risk: 95,
+  ltv: 2210,
+  action: "Personal call from Priya"
+}, {
+  name: "Lily Foster",
+  last: "6 weeks ago",
+  expected: "Due in 2 days",
+  risk: 38,
+  ltv: 540,
+  action: "Auto rebook SMS"
+}, {
+  name: "Noah Carter",
+  last: "10 weeks ago",
+  expected: "Overdue by 4 wks",
+  risk: 77,
+  ltv: 1360,
+  action: "Send win-back offer"
+}, {
+  name: "Isla Wright",
+  last: "5 weeks ago",
+  expected: "Due in 5 days",
+  risk: 29,
+  ltv: 480,
+  action: "No action needed"
+}];
+const noshows = [{
+  id: "#A-2841",
+  customer: "Emma Whitmore",
+  time: "11:00 AM",
+  risk: 87,
+  reason: "2 previous no-shows, booked via last-minute link",
+  action: "Call to confirm before 10 AM"
+}, {
+  id: "#A-2846",
+  customer: "Daniel Osei",
+  time: "1:30 PM",
+  risk: 74,
+  reason: "First-time client, no deposit on file",
+  action: "Request card guarantee"
+}, {
+  id: "#A-2852",
+  customer: "Grace Holloway",
+  time: "3:00 PM",
+  risk: 69,
+  reason: "Rescheduled twice this month",
+  action: "Send SMS reminder + parking info"
+}, {
+  id: "#A-2860",
+  customer: "Freya Adams",
+  time: "4:15 PM",
+  risk: 41,
+  reason: "Weather forecast: heavy rain at appt time",
+  action: "Courtesy reminder"
+}, {
+  id: "#A-2863",
+  customer: "Tom Reilly",
+  time: "5:45 PM",
+  risk: 22,
+  reason: "Reliable regular, 14 visits, 0 no-shows",
+  action: "No action needed"
+}];
+const products = [{
+  name: "Blonde Toner — Wella",
+  stock: 4,
+  days: 2,
+  supplier: "Wella Professionals",
+  reorder: "Order 6 units today",
+  ai: "Chloe's colour bookings will exhaust stock by Thursday."
+}, {
+  name: "Olaplex No.3 Repair",
+  stock: 9,
+  days: 6,
+  supplier: "Olaplex UK",
+  reorder: "Order 10 units this week",
+  ai: "Retail demand up 22% this month."
+}, {
+  name: "Bond Repair Mask",
+  stock: 14,
+  days: 11,
+  supplier: "K18",
+  reorder: "Monitor",
+  ai: "Healthy — no action needed."
+}, {
+  name: "Purple Shampoo 250ml",
+  stock: 3,
+  days: 3,
+  supplier: "Fanola",
+  reorder: "Order 12 units today",
+  ai: "Best-selling retail SKU — stockout risk this weekend."
+}, {
+  name: "Argan Shine Serum",
+  stock: 18,
+  days: 19,
+  supplier: "Moroccanoil",
+  reorder: "Monitor",
+  ai: "Healthy — no action needed."
+}, {
+  name: "Matte Finish Hairspray",
+  stock: 6,
+  days: 5,
+  supplier: "L'Oréal Pro",
+  reorder: "Order 8 units this week",
+  ai: "Low, but non-urgent — bundle with next Wella order."
+}];
+const notifications = [{
+  icon: "alert",
+  tone: "high",
+  title: "Emma Whitmore may cancel today",
+  time: "8 min ago",
+  body: "87% no-show risk for her 11:00 AM colour appointment."
+}, {
+  icon: "droplet",
+  tone: "med",
+  title: "Blonde Toner running low",
+  time: "41 min ago",
+  body: "4 units left — Chloe's bookings will exhaust stock by Thursday."
+}, {
+  icon: "users",
+  tone: "med",
+  title: "Grace Holloway hasn't visited in 11 weeks",
+  time: "2 hr ago",
+  body: "Highest-value client currently going cold. Suggested: personal call."
+}, {
+  icon: "trenddown",
+  tone: "low",
+  title: "Retail sales dropped 18% this week",
+  time: "3 hr ago",
+  body: "Mainly driven by lower add-on sales during Jack's appointments."
+}, {
+  icon: "check",
+  tone: "good",
+  title: "Thursday promotion sent",
+  time: "Yesterday",
+  body: "128 clients reached, 19 rebookings so far."
+}];
+const revenueLeakData = [{
+  label: "No-shows",
+  value: 32,
+  amt: 1120,
+  color: "#C4485A"
+}, {
+  label: "Late arrivals",
+  value: 18,
+  amt: 630,
+  color: "#D98094"
+}, {
+  label: "Low retail attach",
+  value: 22,
+  amt: 770,
+  color: "#C99A45"
+}, {
+  label: "Empty chairs",
+  value: 16,
+  amt: 560,
+  color: "#8C93A6"
+}, {
+  label: "Inactive customers",
+  value: 12,
+  amt: 420,
+  color: "#3E4257"
+}];
+const weeklyRevenue = [{
+  d: "Mon",
+  actual: 2760,
+  expected: 3100
+}, {
+  d: "Tue",
+  actual: 2410,
+  expected: 2950
+}, {
+  d: "Wed",
+  actual: 2980,
+  expected: 3200
+}, {
+  d: "Thu",
+  actual: 3340,
+  expected: 3400
+}, {
+  d: "Fri",
+  actual: 3890,
+  expected: 3950
+}, {
+  d: "Sat",
+  actual: 4620,
+  expected: 4700
+}, {
+  d: "Sun",
+  actual: 1980,
+  expected: 2400
+}];
+
+/* ---------------- SMALL HELPERS ---------------- */
+const money = n => "£" + n.toLocaleString("en-GB");
+const AnimatedNumber = ({
+  value,
+  prefix = "",
+  suffix = "",
+  duration = 900
+}) => {
+  const [n, setN] = useState(0);
+  const ref = useRef(null);
+  useEffect(() => {
+    let start = null;
+    const step = t => {
+      if (!start) start = t;
+      const p = Math.min((t - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setN(Math.round(value * eased));
+      if (p < 1) ref.current = requestAnimationFrame(step);
+    };
+    ref.current = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(ref.current);
+  }, [value]);
+  return /*#__PURE__*/React.createElement("span", null, prefix, n.toLocaleString("en-GB"), suffix);
+};
+const Tooltip = ({
+  label,
+  children
+}) => /*#__PURE__*/React.createElement("span", {
+  className: "relative group inline-flex"
+}, children, /*#__PURE__*/React.createElement("span", {
+  className: "pointer-events-none absolute -top-9 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-[var(--ink)] text-white text-xs px-2.5 py-1.5 opacity-0 group-hover:opacity-100 transition-opacity font-medium z-30"
+}, label));
+const RiskPill = ({
+  risk
+}) => {
+  const tone = risk >= 70 ? "risk-high" : risk >= 40 ? "risk-med" : "risk-low";
+  return /*#__PURE__*/React.createElement("span", {
+    className: `px-2.5 py-1 rounded-full text-xs font-semibold font-mono ${tone}`
+  }, risk, "%");
+};
+
+/* ---------------- KPI CARD ---------------- */
+const KpiCard = ({
+  label,
+  value,
+  prefix = "",
+  suffix = "",
+  delta,
+  deltaGood,
+  icon,
+  i
+}) => /*#__PURE__*/React.createElement("div", {
+  className: "card card-hover p-5 fade-up",
+  style: {
+    animationDelay: `${i * 70}ms`
+  }
+}, /*#__PURE__*/React.createElement("div", {
+  className: "flex items-start justify-between"
+}, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+  className: "text-xs font-semibold tracking-wide uppercase text-[var(--slate)]"
+}, label), /*#__PURE__*/React.createElement("p", {
+  className: "font-display text-3xl mt-2 tracking-tight"
+}, /*#__PURE__*/React.createElement(AnimatedNumber, {
+  value: value,
+  prefix: prefix,
+  suffix: suffix
+}))), /*#__PURE__*/React.createElement("div", {
+  className: "w-9 h-9 rounded-full bg-[var(--paper)] flex items-center justify-center text-[var(--ink)]"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: icon,
+  size: 16
+}))), delta && /*#__PURE__*/React.createElement("div", {
+  className: `mt-3 inline-flex items-center gap-1 text-xs font-semibold ${deltaGood ? "text-[var(--sage)]" : "text-[var(--rosewood)]"}`
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: deltaGood ? "trendup" : "trenddown",
+  size: 13
+}), delta));
+
+/* ---------------- LANDING PAGE ---------------- */
+const Landing = ({
+  go
+}) => {
+  const [open, setOpen] = useState(false);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "bg-[var(--porcelain)]"
+  }, /*#__PURE__*/React.createElement("nav", {
+    className: "max-w-7xl mx-auto flex items-center justify-between px-6 py-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2.5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-8 h-8 rounded-full bg-[var(--ink)] flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "scissors",
+    size: 14,
+    className: "text-white"
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "font-display text-lg tracking-tight"
+  }, "Marlowe & Rose ", /*#__PURE__*/React.createElement("span", {
+    className: "text-[var(--slate)] font-sans text-xs align-middle font-medium ml-1"
+  }, "Revenue Intelligence"))), /*#__PURE__*/React.createElement("div", {
+    className: "hidden md:flex items-center gap-8 text-sm font-medium text-[var(--slate)]"
+  }, /*#__PURE__*/React.createElement("a", {
+    href: "#how",
+    className: "hover:text-[var(--ink)]"
+  }, "How it works"), /*#__PURE__*/React.createElement("a", {
+    href: "#features",
+    className: "hover:text-[var(--ink)]"
+  }, "Features"), /*#__PURE__*/React.createElement("a", {
+    href: "#pricing",
+    className: "hover:text-[var(--ink)]"
+  }, "Pricing"), /*#__PURE__*/React.createElement("a", {
+    href: "#faq",
+    className: "hover:text-[var(--ink)]"
+  }, "FAQ")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => go("login"),
+    className: "text-sm font-semibold hidden sm:block"
+  }, "Sign in"), /*#__PURE__*/React.createElement("button", {
+    onClick: () => go("login"),
+    className: "btn-primary text-sm !py-2.5 !px-5"
+  }, "Book demo"))), /*#__PURE__*/React.createElement("header", {
+    className: "max-w-7xl mx-auto px-6 pt-10 pb-24 grid lg:grid-cols-2 gap-14 items-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "fade-up"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--rosewood-deep)] bg-[#FBE7E9] px-3 py-1.5 rounded-full mb-6"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkle",
+    size: 13
+  }), " AI Operations, not another dashboard"), /*#__PURE__*/React.createElement("h1", {
+    className: "font-display text-[2.6rem] sm:text-6xl leading-[1.05] tracking-tight"
+  }, "Stop losing revenue. Let AI run your salon operations."), /*#__PURE__*/React.createElement("p", {
+    className: "text-lg text-[var(--slate)] mt-6 leading-relaxed max-w-lg"
+  }, "Discover hidden revenue leaks, predict no-shows, bring customers back, optimise staff schedules and grow profits — before your first client sits down."), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-wrap items-center gap-4 mt-9"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => go("login"),
+    className: "btn-primary"
+  }, "Book demo ", /*#__PURE__*/React.createElement(Icon, {
+    name: "chevron",
+    size: 15
+  })), /*#__PURE__*/React.createElement("button", {
+    onClick: () => go("dashboard"),
+    className: "btn-secondary flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "play",
+    size: 14
+  }), " View interactive demo")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-6 mt-10 text-xs text-[var(--slate)] font-medium"
+  }, /*#__PURE__*/React.createElement("span", null, "Trusted by independent salons across"), /*#__PURE__*/React.createElement("span", {
+    className: "font-display text-sm text-[var(--ink)]"
+  }, "London"), /*#__PURE__*/React.createElement("span", {
+    className: "font-display text-sm text-[var(--ink)]"
+  }, "Manchester"), /*#__PURE__*/React.createElement("span", {
+    className: "font-display text-sm text-[var(--ink)]"
+  }, "Austin"))), /*#__PURE__*/React.createElement("div", {
+    className: "relative fade-up",
+    style: {
+      animationDelay: "150ms"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "absolute -inset-6 bg-gradient-to-br from-[#F1DEE1] via-transparent to-[#DCEAE3] rounded-[2rem] blur-2xl opacity-70"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "relative card p-6 rounded-[1.75rem] shadow-xl"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-5"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--slate)]"
+  }, "AI Daily Briefing"), /*#__PURE__*/React.createElement("p", {
+    className: "font-display text-xl mt-1"
+  }, "Good morning, Sarah.")), /*#__PURE__*/React.createElement("div", {
+    className: "w-9 h-9 rounded-full bg-[var(--ink)] flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkle",
+    size: 15,
+    className: "text-white"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-3 mb-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-[var(--paper)] rounded-xl p-3.5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] uppercase text-[var(--slate)] font-semibold"
+  }, "Forecast revenue"), /*#__PURE__*/React.createElement("p", {
+    className: "font-mono text-2xl mt-1"
+  }, "£2,840")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-[var(--paper)] rounded-xl p-3.5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] uppercase text-[var(--slate)] font-semibold"
+  }, "Appointments"), /*#__PURE__*/React.createElement("p", {
+    className: "font-mono text-2xl mt-1"
+  }, "46")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#FBE7E9] rounded-xl p-3.5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] uppercase text-[var(--rosewood-deep)] font-semibold"
+  }, "High-risk cancellations"), /*#__PURE__*/React.createElement("p", {
+    className: "font-mono text-2xl mt-1 text-[var(--rosewood-deep)]"
+  }, "4")), /*#__PURE__*/React.createElement("div", {
+    className: "bg-[#FCF1E1] rounded-xl p-3.5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[11px] uppercase text-[#96712A] font-semibold"
+  }, "Low stock"), /*#__PURE__*/React.createElement("p", {
+    className: "font-mono text-2xl mt-1 text-[#96712A]"
+  }, "3"))), /*#__PURE__*/React.createElement("div", {
+    className: "stitch mb-4"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase text-[var(--slate)] mb-2"
+  }, "Recommended today"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-2 text-sm"
+  }, ["Contact Emma before 11 AM", "Offer Thursday promotion", "Reorder Blonde Toner"].map((t, i) => /*#__PURE__*/React.createElement("li", {
+    key: i,
+    className: "flex items-center gap-2.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-5 h-5 rounded-full bg-[var(--sage-soft)] flex items-center justify-center flex-shrink-0"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "check",
+    size: 11,
+    className: "text-[var(--sage)]"
+  })), t)))))), /*#__PURE__*/React.createElement("section", {
+    id: "how",
+    className: "max-w-7xl mx-auto px-6 py-20 border-t border-[var(--line)]"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--rosewood-deep)] mb-3"
+  }, "How it works"), /*#__PURE__*/React.createElement("h2", {
+    className: "font-display text-4xl max-w-xl mb-14"
+  }, "Your business, read by AI every morning."), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-3 gap-8"
+  }, [{
+    t: "Connect your booking data",
+    d: "Marlowe & Rose links to your existing calendar, POS and retail sales — no new booking system to learn.",
+    i: "grid"
+  }, {
+    t: "AI finds the leaks",
+    d: "Every appointment, customer and product is scored continuously for revenue risk, not just reported after the fact.",
+    i: "droplet"
+  }, {
+    t: "You get today's actions",
+    d: "A short, specific list each morning — who to call, what to restock, which chair to fill.",
+    i: "sparkle"
+  }].map((s, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "fade-up",
+    style: {
+      animationDelay: `${i * 100}ms`
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-11 h-11 rounded-full bg-[var(--ink)] flex items-center justify-center mb-5"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: s.i,
+    size: 19,
+    className: "text-white"
+  })), /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl mb-2"
+  }, s.t), /*#__PURE__*/React.createElement("p", {
+    className: "text-[var(--slate)] text-sm leading-relaxed"
+  }, s.d))))), /*#__PURE__*/React.createElement("section", {
+    id: "features",
+    className: "bg-[var(--ink)] text-white py-24"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-7xl mx-auto px-6"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[#D98094] mb-3"
+  }, "Features"), /*#__PURE__*/React.createElement("h2", {
+    className: "font-display text-4xl max-w-xl mb-14"
+  }, "Built to find money, not just show numbers."), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-2 lg:grid-cols-4 gap-5"
+  }, [{
+    t: "Revenue leak analysis",
+    d: "See exactly where margin disappears — no-shows, empty chairs, weak retail attach.",
+    i: "trenddown"
+  }, {
+    t: "No-show prediction",
+    d: "Every booking scored for cancellation risk, with a specific recommended action.",
+    i: "alert"
+  }, {
+    t: "Customer retention",
+    d: "Know who's going cold before they've decided to leave, with a message ready to send.",
+    i: "users"
+  }, {
+    t: "Staff performance",
+    d: "Rebooking, retail and utilisation per stylist, with coaching suggestions attached.",
+    i: "star"
+  }, {
+    t: "Inventory intelligence",
+    d: "Stock levels tied to actual booking demand, not guesswork reorder points.",
+    i: "box"
+  }, {
+    t: "AI business advisor",
+    d: "Ask it anything about your salon in plain English and get a grounded answer.",
+    i: "chat"
+  }, {
+    t: "Live notifications",
+    d: "The moments that matter, surfaced the instant they happen — nothing buried in a report.",
+    i: "bell"
+  }, {
+    t: "Executive analytics",
+    d: "Weekly and monthly trend lines built for a five-second read before opening the doors.",
+    i: "chart"
+  }].map((f, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "card-hover border border-white/10 rounded-2xl p-6 fade-up",
+    style: {
+      animationDelay: `${i * 60}ms`
+    }
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: f.i,
+    size: 20,
+    className: "text-[#D98094] mb-4"
+  }), /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-lg mb-2"
+  }, f.t), /*#__PURE__*/React.createElement("p", {
+    className: "text-white/60 text-sm leading-relaxed"
+  }, f.d)))))), /*#__PURE__*/React.createElement("section", {
+    className: "max-w-7xl mx-auto px-6 py-24"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid lg:grid-cols-2 gap-14 items-center"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--rosewood-deep)] mb-3"
+  }, "AI insights"), /*#__PURE__*/React.createElement("h2", {
+    className: "font-display text-4xl mb-6"
+  }, "Every leak has a drip. We show you where they land."), /*#__PURE__*/React.createElement("p", {
+    className: "text-[var(--slate)] leading-relaxed mb-8"
+  }, "Revenue doesn't disappear all at once — it drips away, appointment by appointment. Marlowe & Rose traces every drip back to a cause and a fix, so nothing gets written off as \"a slow week.\""), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-4"
+  }, revenueLeakData.slice(0, 3).map((r, i) => /*#__PURE__*/React.createElement("div", {
+    key: i
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between text-sm mb-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "font-medium"
+  }, r.label), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono text-[var(--slate)]"
+  }, money(r.amt), "/wk")), /*#__PURE__*/React.createElement("div", {
+    className: "h-2 rounded-full bg-[var(--paper)] overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "h-full rounded-full",
+    style: {
+      width: `${r.value * 2.2}%`,
+      background: r.color
+    }
+  })))))), /*#__PURE__*/React.createElement("div", {
+    className: "relative h-80 flex items-end justify-center gap-8"
+  }, [0, 1, 2, 3].map(i => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "relative w-1.5 h-40 bg-[var(--paper)] rounded-full overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "drip",
+    style: {
+      left: 0,
+      animationDelay: `${i * 0.6}s`
+    }
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "absolute bottom-0 w-full h-3 bg-[var(--paper)] rounded-full"
+  })))), /*#__PURE__*/React.createElement("section", {
+    className: "bg-[var(--paper)] py-24"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-7xl mx-auto px-6"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--rosewood-deep)] mb-3 text-center"
+  }, "Testimonials"), /*#__PURE__*/React.createElement("h2", {
+    className: "font-display text-4xl mb-14 text-center"
+  }, "Salon owners, not analysts."), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-3 gap-6"
+  }, [{
+    q: "We found £900 a week we didn't know we were losing to empty Wednesday chairs. That's a stylist's wage, back.",
+    n: "Harriet Lowe",
+    s: "Owner, The Foxglove Rooms, Bristol"
+  }, {
+    q: "The morning briefing replaced a Monday spreadsheet I used to dread. Now I open the app with my coffee.",
+    n: "Daniel Osei",
+    s: "Owner, Osei & Co, Manchester"
+  }, {
+    q: "It told me a client of nine years was going cold before I'd noticed. That call alone paid for the year.",
+    n: "Priya Shah",
+    s: "Owner, Shah Hair Studio, Leeds"
+  }].map((t, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "card p-7 fade-up",
+    style: {
+      animationDelay: `${i * 80}ms`
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-0.5 mb-4 text-[var(--gold)]"
+  }, [...Array(5)].map((_, j) => /*#__PURE__*/React.createElement(Icon, {
+    key: j,
+    name: "star",
+    size: 14
+  }))), /*#__PURE__*/React.createElement("p", {
+    className: "font-display text-lg leading-snug mb-6"
+  }, "\"", t.q, "\""), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-semibold"
+  }, t.n), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-[var(--slate)]"
+  }, t.s)))))), /*#__PURE__*/React.createElement("section", {
+    id: "pricing",
+    className: "max-w-7xl mx-auto px-6 py-24"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--rosewood-deep)] mb-3 text-center"
+  }, "Pricing"), /*#__PURE__*/React.createElement("h2", {
+    className: "font-display text-4xl mb-14 text-center"
+  }, "Priced per chair, not per headache."), /*#__PURE__*/React.createElement("div", {
+    className: "grid md:grid-cols-3 gap-6 max-w-5xl mx-auto"
+  }, [{
+    n: "Studio",
+    p: "£89",
+    d: "Up to 4 chairs",
+    f: ["Daily AI briefing", "Revenue leak analysis", "No-show prediction"],
+    pop: false
+  }, {
+    n: "Salon",
+    p: "£179",
+    d: "Up to 10 chairs",
+    f: ["Everything in Studio", "Customer retention engine", "Staff performance suite", "AI business advisor"],
+    pop: true
+  }, {
+    n: "Group",
+    p: "Let's talk",
+    d: "Multi-location",
+    f: ["Everything in Salon", "Cross-site benchmarking", "Dedicated success manager"],
+    pop: false
+  }].map((t, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: `rounded-2xl p-7 fade-up ${t.pop ? "bg-[var(--ink)] text-white shadow-xl scale-[1.03]" : "card"}`,
+    style: {
+      animationDelay: `${i * 80}ms`
+    }
+  }, t.pop && /*#__PURE__*/React.createElement("span", {
+    className: "text-[10px] font-bold uppercase tracking-wide bg-[var(--rosewood)] px-2.5 py-1 rounded-full"
+  }, "Most popular"), /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-2xl mt-4"
+  }, t.n), /*#__PURE__*/React.createElement("p", {
+    className: `text-xs mt-1 ${t.pop ? "text-white/60" : "text-[var(--slate)]"}`
+  }, t.d), /*#__PURE__*/React.createElement("p", {
+    className: "font-display text-4xl mt-5"
+  }, t.p, /*#__PURE__*/React.createElement("span", {
+    className: "text-base font-sans font-normal"
+  }, t.p !== "Let's talk" ? "/mo" : "")), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-2.5 mt-6 mb-8 text-sm"
+  }, t.f.map((f, j) => /*#__PURE__*/React.createElement("li", {
+    key: j,
+    className: "flex items-center gap-2.5"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "check",
+    size: 14,
+    className: t.pop ? "text-[#D98094]" : "text-[var(--sage)]"
+  }), f))), /*#__PURE__*/React.createElement("button", {
+    onClick: () => go("login"),
+    className: `w-full text-center rounded-full py-3 font-semibold text-sm ${t.pop ? "bg-white text-[var(--ink)]" : "btn-secondary block"}`
+  }, "Get started"))))), /*#__PURE__*/React.createElement("section", {
+    id: "faq",
+    className: "max-w-3xl mx-auto px-6 py-24"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--rosewood-deep)] mb-3 text-center"
+  }, "FAQ"), /*#__PURE__*/React.createElement("h2", {
+    className: "font-display text-4xl mb-12 text-center"
+  }, "Questions, answered plainly."), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-3"
+  }, [{
+    q: "Does this replace my booking system?",
+    a: "No. Marlowe & Rose sits on top of the booking, POS and retail data you already have — it's an operations layer, not a new system to migrate into."
+  }, {
+    q: "How does the AI make recommendations?",
+    a: "It scores every appointment, customer and product against your salon's own historical patterns, then ranks the actions most likely to recover lost revenue."
+  }, {
+    q: "Can each stylist see their own numbers?",
+    a: "Yes — staff performance can be shared individually or kept owner-only, your choice."
+  }, {
+    q: "Is my client data secure?",
+    a: "All data is encrypted in transit and at rest, and nothing is shared outside your salon's account."
+  }].map((f, i) => /*#__PURE__*/React.createElement(FaqItem, {
+    key: i,
+    f: f
+  })))), /*#__PURE__*/React.createElement("footer", {
+    className: "bg-[var(--ink)] text-white/70 py-14"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between gap-10"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2.5 mb-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "scissors",
+    size: 14,
+    className: "text-white"
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "font-display text-lg text-white"
+  }, "Marlowe & Rose")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs max-w-xs"
+  }, "AI operations for independent salons across the UK, US and Europe.")), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-3 gap-10 text-sm"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-white font-semibold mb-3 text-xs uppercase tracking-wide"
+  }, "Product"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-2"
+  }, /*#__PURE__*/React.createElement("li", null, "Features"), /*#__PURE__*/React.createElement("li", null, "Pricing"), /*#__PURE__*/React.createElement("li", null, "Demo"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-white font-semibold mb-3 text-xs uppercase tracking-wide"
+  }, "Company"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-2"
+  }, /*#__PURE__*/React.createElement("li", null, "About"), /*#__PURE__*/React.createElement("li", null, "Careers"), /*#__PURE__*/React.createElement("li", null, "Contact"))), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-white font-semibold mb-3 text-xs uppercase tracking-wide"
+  }, "Legal"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-2"
+  }, /*#__PURE__*/React.createElement("li", null, "Privacy"), /*#__PURE__*/React.createElement("li", null, "Terms"))))), /*#__PURE__*/React.createElement("div", {
+    className: "max-w-7xl mx-auto px-6 mt-10 pt-6 border-t border-white/10 text-xs"
+  }, "© 2026 Marlowe & Rose Revenue Intelligence. Prototype for demonstration.")));
+};
+const FaqItem = ({
+  f
+}) => {
+  const [open, setOpen] = useState(false);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "card overflow-hidden"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setOpen(!open),
+    className: "w-full flex items-center justify-between px-5 py-4 text-left font-medium"
+  }, f.q, /*#__PURE__*/React.createElement("span", {
+    className: `transition-transform duration-300 ${open ? "rotate-90" : ""}`
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "chevron",
+    size: 16
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "grid transition-all duration-300",
+    style: {
+      gridTemplateRows: open ? "1fr" : "0fr"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "overflow-hidden"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "px-5 pb-4 text-sm text-[var(--slate)] leading-relaxed"
+  }, f.a))));
+};
+
+/* ---------------- LOGIN PAGE ---------------- */
+const Login = ({
+  go
+}) => {
+  const [loading, setLoading] = useState(false);
+  const submit = e => {
+    e.preventDefault();
+    setLoading(true);
+    setTimeout(() => go("dashboard"), 900);
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "min-h-screen grid lg:grid-cols-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "hidden lg:flex flex-col justify-between bg-[var(--ink)] text-white p-12 relative overflow-hidden"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "absolute -right-24 -top-24 w-96 h-96 rounded-full bg-[var(--rosewood)] opacity-20 blur-3xl"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2.5 relative z-10"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "scissors",
+    size: 14
+  })), /*#__PURE__*/React.createElement("span", {
+    className: "font-display text-lg"
+  }, "Marlowe & Rose")), /*#__PURE__*/React.createElement("div", {
+    className: "relative z-10"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-display text-3xl leading-snug max-w-md"
+  }, "\"It told me a client of nine years was going cold before I'd noticed.\""), /*#__PURE__*/React.createElement("p", {
+    className: "text-white/60 text-sm mt-4"
+  }, "Priya Shah — Owner, Shah Hair Studio")), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-white/40 relative z-10"
+  }, "© 2026 Marlowe & Rose Revenue Intelligence")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center p-8"
+  }, /*#__PURE__*/React.createElement("form", {
+    onSubmit: submit,
+    className: "w-full max-w-sm fade-up"
+  }, /*#__PURE__*/React.createElement("h1", {
+    className: "font-display text-3xl mb-2"
+  }, "Welcome back"), /*#__PURE__*/React.createElement("p", {
+    className: "text-[var(--slate)] text-sm mb-8"
+  }, "Sign in to your operations dashboard."), /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--slate)]"
+  }, "Email"), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 border border-[var(--line)] rounded-xl px-3.5 py-3 mt-1.5 mb-4 focus-within:border-[var(--ink)]"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "mail",
+    size: 16,
+    className: "text-[var(--slate)]"
+  }), /*#__PURE__*/React.createElement("input", {
+    required: true,
+    type: "email",
+    defaultValue: "sarah@marloweandrose.co.uk",
+    className: "w-full outline-none text-sm bg-transparent"
+  })), /*#__PURE__*/React.createElement("label", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--slate)]"
+  }, "Password"), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 border border-[var(--line)] rounded-xl px-3.5 py-3 mt-1.5 mb-4 focus-within:border-[var(--ink)]"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "lock",
+    size: 16,
+    className: "text-[var(--slate)]"
+  }), /*#__PURE__*/React.createElement("input", {
+    required: true,
+    type: "password",
+    defaultValue: "••••••••••",
+    className: "w-full outline-none text-sm bg-transparent"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-7 text-sm"
+  }, /*#__PURE__*/React.createElement("label", {
+    className: "flex items-center gap-2 text-[var(--slate)]"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "checkbox",
+    defaultChecked: true,
+    className: "accent-[var(--ink)]"
+  }), " Remember me"), /*#__PURE__*/React.createElement("a", {
+    href: "#",
+    className: "font-semibold"
+  }, "Forgot password?")), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "btn-primary w-full justify-center"
+  }, loading ? "Signing in…" : "Sign in", " ", !loading && /*#__PURE__*/React.createElement(Icon, {
+    name: "chevron",
+    size: 15
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-center text-[var(--slate)] mt-6"
+  }, "This is a demo — any credentials will sign you in."))));
+};
+
+/* ---------------- APP SHELL ---------------- */
+const NAV = [{
+  id: "dashboard",
+  label: "Dashboard",
+  icon: "home"
+}, {
+  id: "retention",
+  label: "Customer Retention",
+  icon: "users"
+}, {
+  id: "noshow",
+  label: "No-show Prediction",
+  icon: "alert"
+}, {
+  id: "leak",
+  label: "Revenue Leak",
+  icon: "trenddown"
+}, {
+  id: "staff",
+  label: "Staff Performance",
+  icon: "star"
+}, {
+  id: "inventory",
+  label: "Inventory",
+  icon: "box"
+}, {
+  id: "advisor",
+  label: "AI Advisor",
+  icon: "chat"
+}, {
+  id: "analytics",
+  label: "Analytics",
+  icon: "chart"
+}];
+const Sidebar = ({
+  page,
+  setPage,
+  mobileOpen,
+  setMobileOpen,
+  go
+}) => /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+  className: `fixed inset-0 bg-black/40 z-40 lg:hidden transition-opacity ${mobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`,
+  onClick: () => setMobileOpen(false)
+}), /*#__PURE__*/React.createElement("aside", {
+  className: `fixed lg:sticky top-0 h-screen w-64 bg-[var(--ink)] text-white flex flex-col z-50 transition-transform duration-300 ${mobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`
+}, /*#__PURE__*/React.createElement("div", {
+  className: "flex items-center gap-2.5 px-6 py-6"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "w-8 h-8 rounded-full bg-white/10 flex items-center justify-center"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "scissors",
+  size: 14
+})), /*#__PURE__*/React.createElement("span", {
+  className: "font-display text-lg"
+}, "Marlowe & Rose")), /*#__PURE__*/React.createElement("nav", {
+  className: "flex-1 px-3 space-y-1 mt-2"
+}, NAV.map(n => /*#__PURE__*/React.createElement("button", {
+  key: n.id,
+  onClick: () => {
+    setPage(n.id);
+    setMobileOpen(false);
+  },
+  className: `nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium ${page === n.id ? "active text-white" : "text-white/60"}`
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: n.icon,
+  size: 17
+}), n.label))), /*#__PURE__*/React.createElement("div", {
+  className: "p-3 border-t border-white/10"
+}, /*#__PURE__*/React.createElement("button", {
+  onClick: () => go("landing"),
+  className: "nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-white/60"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "logout",
+  size: 17
+}), "Sign out"))));
+const Topbar = ({
+  title,
+  setMobileOpen,
+  notifOpen,
+  setNotifOpen
+}) => /*#__PURE__*/React.createElement("div", {
+  className: "sticky top-0 z-30 bg-[var(--porcelain)]/85 backdrop-blur-md border-b border-[var(--line)] px-5 lg:px-8 py-4 flex items-center justify-between"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "flex items-center gap-3"
+}, /*#__PURE__*/React.createElement("button", {
+  className: "lg:hidden",
+  onClick: () => setMobileOpen(true)
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "menu",
+  size: 20
+})), /*#__PURE__*/React.createElement("h1", {
+  className: "font-display text-xl"
+}, title)), /*#__PURE__*/React.createElement("div", {
+  className: "flex items-center gap-3"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "hidden md:flex items-center gap-2 bg-white border border-[var(--line)] rounded-full px-3.5 py-2 w-64"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "search",
+  size: 15,
+  className: "text-[var(--slate)]"
+}), /*#__PURE__*/React.createElement("input", {
+  placeholder: "Search clients, staff, products…",
+  className: "outline-none text-sm bg-transparent w-full"
+})), /*#__PURE__*/React.createElement("button", {
+  onClick: () => setNotifOpen(!notifOpen),
+  className: "relative w-10 h-10 rounded-full bg-white border border-[var(--line)] flex items-center justify-center"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "bell",
+  size: 17
+}), /*#__PURE__*/React.createElement("span", {
+  className: "absolute top-2 right-2.5 w-1.5 h-1.5 rounded-full bg-[var(--rosewood)] pulse-dot"
+})), /*#__PURE__*/React.createElement("div", {
+  className: "w-9 h-9 rounded-full bg-[var(--gold)] flex items-center justify-center text-white text-xs font-bold font-mono"
+}, "SW")));
+const NotifPanel = ({
+  open,
+  onClose
+}) => /*#__PURE__*/React.createElement("div", {
+  className: `fixed top-0 right-0 h-screen w-full sm:w-96 bg-white z-50 shadow-2xl transition-transform duration-300 ${open ? "translate-x-0" : "translate-x-full"}`
+}, /*#__PURE__*/React.createElement("div", {
+  className: "flex items-center justify-between px-5 py-5 border-b border-[var(--line)]"
+}, /*#__PURE__*/React.createElement("h2", {
+  className: "font-display text-xl"
+}, "Notifications"), /*#__PURE__*/React.createElement("button", {
+  onClick: onClose
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "x",
+  size: 18
+}))), /*#__PURE__*/React.createElement("div", {
+  className: "overflow-y-auto h-[calc(100vh-72px)]"
+}, notifications.map((n, i) => /*#__PURE__*/React.createElement("div", {
+  key: i,
+  className: "flex gap-3 px-5 py-4 border-b border-[var(--line)] hover:bg-[var(--paper)]"
+}, /*#__PURE__*/React.createElement("div", {
+  className: `w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 ${n.tone === "high" ? "risk-high" : n.tone === "med" ? "risk-med" : n.tone === "good" ? "risk-low" : "bg-[var(--paper)] text-[var(--slate)]"}`
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: n.icon,
+  size: 16
+})), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+  className: "text-sm font-semibold"
+}, n.title), /*#__PURE__*/React.createElement("p", {
+  className: "text-xs text-[var(--slate)] mt-0.5"
+}, n.body), /*#__PURE__*/React.createElement("p", {
+  className: "text-[11px] text-[var(--slate)] mt-1.5 font-mono"
+}, n.time))))));
+
+/* ---------------- DASHBOARD ---------------- */
+const Dashboard = () => {
+  const chartRef = useRef(null);
+  useEffect(() => {
+    const ctx = chartRef.current.getContext("2d");
+    const c = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: weeklyRevenue.map(d => d.d),
+        datasets: [{
+          label: "Actual",
+          data: weeklyRevenue.map(d => d.actual),
+          borderColor: "#12141F",
+          backgroundColor: "rgba(18,20,31,0.06)",
+          fill: true,
+          tension: .4,
+          pointRadius: 3,
+          pointBackgroundColor: "#12141F"
+        }, {
+          label: "Expected",
+          data: weeklyRevenue.map(d => d.expected),
+          borderColor: "#C4485A",
+          borderDash: [5, 5],
+          tension: .4,
+          pointRadius: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            grid: {
+              color: "#EDEAE2"
+            },
+            ticks: {
+              callback: v => "£" + v
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    });
+    return () => c.destroy();
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-5 lg:p-8 space-y-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 lg:grid-cols-4 gap-4"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    i: 0,
+    label: "Today's revenue",
+    value: 2840,
+    prefix: "£",
+    delta: "12% vs last Tue",
+    deltaGood: true,
+    icon: "chart"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 1,
+    label: "Expected revenue",
+    value: 3620,
+    prefix: "£",
+    icon: "trendup"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 2,
+    label: "Revenue lost",
+    value: 780,
+    prefix: "£",
+    delta: "Above target",
+    icon: "droplet"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 3,
+    label: "Appointments today",
+    value: 46,
+    icon: "calendar"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 4,
+    label: "Staff utilisation",
+    value: 78,
+    suffix: "%",
+    delta: "3% vs last week",
+    deltaGood: true,
+    icon: "users"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 5,
+    label: "Customer return rate",
+    value: 64,
+    suffix: "%",
+    delta: "2% vs last month",
+    icon: "trenddown"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 6,
+    label: "No-show risk today",
+    value: 4,
+    suffix: " high",
+    icon: "alert"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 7,
+    label: "Inventory health",
+    value: 82,
+    suffix: "%",
+    icon: "box"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "grid lg:grid-cols-3 gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card p-6 lg:col-span-2 fade-up"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-4"
+  }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--slate)]"
+  }, "This week"), /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl"
+  }, "Actual vs expected revenue")), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-4 text-xs font-medium"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full bg-[var(--ink)]"
+  }), "Actual"), /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full bg-[var(--rosewood)]"
+  }), "Expected"))), /*#__PURE__*/React.createElement("div", {
+    className: "h-64"
+  }, /*#__PURE__*/React.createElement("canvas", {
+    ref: chartRef
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "card p-6 fade-up",
+    style: {
+      animationDelay: "80ms"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2 mb-1"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkle",
+    size: 16
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase tracking-wide text-[var(--slate)]"
+  }, "AI Daily Briefing")), /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl mb-4"
+  }, "Good morning, Sarah."), /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2.5 text-sm mb-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[var(--slate)]"
+  }, "Forecast revenue"), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono font-semibold"
+  }, "£2,840")), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[var(--slate)]"
+  }, "Appointments"), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono font-semibold"
+  }, "46")), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[var(--slate)]"
+  }, "High-risk cancellations"), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono font-semibold text-[var(--rosewood)]"
+  }, "4")), /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-between"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-[var(--slate)]"
+  }, "Low stock products"), /*#__PURE__*/React.createElement("span", {
+    className: "font-mono font-semibold text-[#96712A]"
+  }, "3"))), /*#__PURE__*/React.createElement("div", {
+    className: "stitch mb-4"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs font-semibold uppercase text-[var(--slate)] mb-2"
+  }, "Recommended today"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-2.5 text-sm"
+  }, ["Contact Emma before 11 AM", "Offer Thursday promotion", "Reorder Blonde Toner"].map((t, i) => /*#__PURE__*/React.createElement("li", {
+    key: i,
+    className: "flex items-start gap-2.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-5 h-5 mt-0.5 rounded-full bg-[var(--sage-soft)] flex items-center justify-center flex-shrink-0"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "check",
+    size: 11,
+    className: "text-[var(--sage)]"
+  })), t))))), /*#__PURE__*/React.createElement("div", {
+    className: "card p-6 fade-up"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-4"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl"
+  }, "Today's schedule risk"), /*#__PURE__*/React.createElement("span", {
+    className: "text-xs font-semibold text-[var(--slate)]"
+  }, "46 appointments")), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-sm"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "text-left text-xs uppercase tracking-wide text-[var(--slate)] border-b border-[var(--line)]"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "Appointment"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "Customer"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "Time"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "Risk"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2"
+  }, "Action"))), /*#__PURE__*/React.createElement("tbody", null, noshows.slice(0, 3).map((n, i) => /*#__PURE__*/React.createElement("tr", {
+    key: i,
+    className: "border-b border-[var(--line)] last:border-0"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4 font-mono text-xs text-[var(--slate)]"
+  }, n.id), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4 font-medium"
+  }, n.customer), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4 font-mono text-xs"
+  }, n.time), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4"
+  }, /*#__PURE__*/React.createElement(RiskPill, {
+    risk: n.risk
+  })), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 text-[var(--slate)]"
+  }, n.action))))))));
+};
+
+/* ---------------- RETENTION ---------------- */
+const MessagePanel = ({
+  customer,
+  onClose
+}) => {
+  const [msg, setMsg] = useState(null);
+  useEffect(() => {
+    const t = setTimeout(() => setMsg(`Hi ${customer.name.split(" ")[0]}, it's Marlowe & Rose — we've missed you! It's been a while since your last visit and we'd love to get you back in the chair. As a thank-you, here's 15% off your next colour or cut this month. Reply to book, or call us on 020 7946 0958.`), 1100);
+    return () => clearTimeout(t);
+  }, [customer]);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4",
+    onClick: onClose
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card w-full max-w-lg p-6",
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-between mb-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkle",
+    size: 16
+  }), /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl"
+  }, "Message for ", customer.name)), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "x",
+    size: 18
+  }))), !msg ? /*#__PURE__*/React.createElement("div", {
+    className: "space-y-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "skeleton h-4 w-full"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "skeleton h-4 w-5/6"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "skeleton h-4 w-4/6"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-[var(--slate)] mt-3"
+  }, "Generating a personalised message…")) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "bg-[var(--paper)] rounded-xl p-4 text-sm leading-relaxed"
+  }, msg), /*#__PURE__*/React.createElement("div", {
+    className: "flex gap-3 mt-5"
+  }, /*#__PURE__*/React.createElement("button", {
+    className: "btn-primary flex-1 justify-center text-sm !py-2.5"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "send",
+    size: 14
+  }), "Send message"), /*#__PURE__*/React.createElement("button", {
+    onClick: onClose,
+    className: "btn-secondary flex-1 text-sm !py-2.5"
+  }, "Cancel")))));
+};
+const Retention = () => {
+  const [sel, setSel] = useState(null);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-5 lg:p-8 space-y-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid sm:grid-cols-3 gap-4"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    i: 0,
+    label: "At risk of churn",
+    value: customers.length,
+    icon: "users"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 1,
+    label: "Avg. lifetime value",
+    value: Math.round(customers.reduce((a, c) => a + c.ltv, 0) / customers.length),
+    prefix: "£",
+    icon: "chart"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 2,
+    label: "Win-backs sent this month",
+    value: 31,
+    icon: "send"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "card p-6"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl mb-1"
+  }, "Customers likely to never return"), /*#__PURE__*/React.createElement("p", {
+    className: "text-sm text-[var(--slate)] mb-5"
+  }, "Ranked by churn risk, based on booking cadence and history."), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-x-auto"
+  }, /*#__PURE__*/React.createElement("table", {
+    className: "w-full text-sm"
+  }, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+    className: "text-left text-xs uppercase tracking-wide text-[var(--slate)] border-b border-[var(--line)]"
+  }, /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "Customer"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "Last visit"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "Expected return"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "Risk"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "LTV"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2 pr-4"
+  }, "Suggested action"), /*#__PURE__*/React.createElement("th", {
+    className: "py-2"
+  }))), /*#__PURE__*/React.createElement("tbody", null, customers.map((c, i) => /*#__PURE__*/React.createElement("tr", {
+    key: i,
+    className: "border-b border-[var(--line)] last:border-0 hover:bg-[var(--paper)]"
+  }, /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4 font-medium"
+  }, c.name), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4 text-[var(--slate)]"
+  }, c.last), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4 text-[var(--slate)]"
+  }, c.expected), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4"
+  }, /*#__PURE__*/React.createElement(RiskPill, {
+    risk: c.risk
+  })), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4 font-mono"
+  }, money(c.ltv)), /*#__PURE__*/React.createElement("td", {
+    className: "py-3 pr-4 text-[var(--slate)]"
+  }, c.action), /*#__PURE__*/React.createElement("td", {
+    className: "py-3"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => setSel(c),
+    className: "text-xs font-semibold border border-[var(--line)] rounded-full px-3 py-1.5 hover:bg-[var(--ink)] hover:text-white transition-colors whitespace-nowrap"
+  }, "Generate message")))))))), sel && /*#__PURE__*/React.createElement(MessagePanel, {
+    customer: sel,
+    onClose: () => setSel(null)
+  }));
+};
+
+/* ---------------- NO-SHOW ---------------- */
+const NoShow = () => /*#__PURE__*/React.createElement("div", {
+  className: "p-5 lg:p-8 space-y-6"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "grid sm:grid-cols-3 gap-4"
+}, /*#__PURE__*/React.createElement(KpiCard, {
+  i: 0,
+  label: "High-risk appointments",
+  value: noshows.filter(n => n.risk >= 70).length,
+  icon: "alert"
+}), /*#__PURE__*/React.createElement(KpiCard, {
+  i: 1,
+  label: "Avg. risk score",
+  value: Math.round(noshows.reduce((a, n) => a + n.risk, 0) / noshows.length),
+  suffix: "%",
+  icon: "chart"
+}), /*#__PURE__*/React.createElement(KpiCard, {
+  i: 2,
+  label: "Revenue at risk today",
+  value: 640,
+  prefix: "£",
+  icon: "droplet"
+})), /*#__PURE__*/React.createElement("div", {
+  className: "card p-6"
+}, /*#__PURE__*/React.createElement("h3", {
+  className: "font-display text-xl mb-1"
+}, "No-show prediction"), /*#__PURE__*/React.createElement("p", {
+  className: "text-sm text-[var(--slate)] mb-5"
+}, "Every booking today, scored and explained."), /*#__PURE__*/React.createElement("div", {
+  className: "overflow-x-auto"
+}, /*#__PURE__*/React.createElement("table", {
+  className: "w-full text-sm"
+}, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+  className: "text-left text-xs uppercase tracking-wide text-[var(--slate)] border-b border-[var(--line)]"
+}, /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Appointment"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Customer"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Time"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Risk"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Reason"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2"
+}, "Recommended action"))), /*#__PURE__*/React.createElement("tbody", null, noshows.map((n, i) => /*#__PURE__*/React.createElement("tr", {
+  key: i,
+  className: "border-b border-[var(--line)] last:border-0 hover:bg-[var(--paper)]"
+}, /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4 font-mono text-xs text-[var(--slate)]"
+}, n.id), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4 font-medium"
+}, n.customer), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4 font-mono text-xs"
+}, n.time), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4"
+}, /*#__PURE__*/React.createElement(RiskPill, {
+  risk: n.risk
+})), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4 text-[var(--slate)] max-w-xs"
+}, n.reason), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 font-medium"
+}, n.action))))))));
+
+/* ---------------- REVENUE LEAK ---------------- */
+const RevenueLeak = () => {
+  const ref = useRef(null);
+  useEffect(() => {
+    const ctx = ref.current.getContext("2d");
+    const c = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: revenueLeakData.map(d => d.label),
+        datasets: [{
+          data: revenueLeakData.map(d => d.value),
+          backgroundColor: revenueLeakData.map(d => d.color),
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "68%",
+        plugins: {
+          legend: {
+            display: false
+          }
+        }
+      }
+    });
+    return () => c.destroy();
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-5 lg:p-8 space-y-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid sm:grid-cols-3 gap-4"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    i: 0,
+    label: "Total revenue lost / wk",
+    value: revenueLeakData.reduce((a, d) => a + d.amt, 0),
+    prefix: "£",
+    icon: "droplet"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 1,
+    label: "Largest cause",
+    value: 32,
+    suffix: "%",
+    icon: "alert"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 2,
+    label: "Recoverable this month",
+    value: 2100,
+    prefix: "£",
+    delta: "AI estimate",
+    deltaGood: true,
+    icon: "trendup"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "grid lg:grid-cols-2 gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card p-6"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl mb-5"
+  }, "Where revenue is leaking"), /*#__PURE__*/React.createElement("div", {
+    className: "h-64 relative"
+  }, /*#__PURE__*/React.createElement("canvas", {
+    ref: ref
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 flex flex-col items-center justify-center pointer-events-none"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "font-display text-2xl"
+  }, money(revenueLeakData.reduce((a, d) => a + d.amt, 0))), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-[var(--slate)]"
+  }, "lost per week"))), /*#__PURE__*/React.createElement("div", {
+    className: "grid grid-cols-2 gap-3 mt-6"
+  }, revenueLeakData.map((r, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "flex items-center gap-2 text-xs"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "w-2.5 h-2.5 rounded-full flex-shrink-0",
+    style: {
+      background: r.color
+    }
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "font-medium"
+  }, r.label), /*#__PURE__*/React.createElement("span", {
+    className: "ml-auto font-mono text-[var(--slate)]"
+  }, r.value, "%"))))), /*#__PURE__*/React.createElement("div", {
+    className: "card p-6"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl mb-5"
+  }, "AI recommendations"), /*#__PURE__*/React.createElement("ul", {
+    className: "space-y-4"
+  }, [{
+    t: "Tighten no-show policy",
+    d: "Require card guarantees for first-time bookings — could recover ~£1,120/wk.",
+    tag: "No-shows"
+  }, {
+    t: "Add checkout prompts for stylists",
+    d: "Jack and Marcus have the lowest retail attach — a simple prompt script could lift sales 15%.",
+    tag: "Retail"
+  }, {
+    t: "Fill Wednesday afternoons",
+    d: "Consistently 40% empty — a loyalty flash offer could convert 6–8 extra bookings a week.",
+    tag: "Empty chairs"
+  }, {
+    t: "Automate late-arrival buffers",
+    d: "Adding a 10-minute buffer to peak slots reduces knock-on delays without cutting capacity.",
+    tag: "Late arrivals"
+  }].map((r, i) => /*#__PURE__*/React.createElement("li", {
+    key: i,
+    className: "flex gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-8 h-8 rounded-full bg-[var(--paper)] flex items-center justify-center flex-shrink-0 mt-0.5"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkle",
+    size: 14
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "text-sm font-semibold"
+  }, r.t, " ", /*#__PURE__*/React.createElement("span", {
+    className: "ml-1 text-[10px] font-semibold uppercase text-[var(--rosewood-deep)] bg-[#FBE7E9] px-2 py-0.5 rounded-full align-middle"
+  }, r.tag)), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-[var(--slate)] mt-1 leading-relaxed"
+  }, r.d))))))));
+};
+
+/* ---------------- STAFF ---------------- */
+const Staff = () => /*#__PURE__*/React.createElement("div", {
+  className: "p-5 lg:p-8 space-y-6"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "grid sm:grid-cols-3 gap-4"
+}, /*#__PURE__*/React.createElement(KpiCard, {
+  i: 0,
+  label: "Team revenue this week",
+  value: stylists.reduce((a, s) => a + s.revenue, 0),
+  prefix: "£",
+  icon: "chart"
+}), /*#__PURE__*/React.createElement(KpiCard, {
+  i: 1,
+  label: "Avg. rebooking rate",
+  value: Math.round(stylists.reduce((a, s) => a + s.rebook, 0) / stylists.length),
+  suffix: "%",
+  icon: "users"
+}), /*#__PURE__*/React.createElement(KpiCard, {
+  i: 2,
+  label: "Avg. rating",
+  value: 4.7,
+  icon: "star"
+})), /*#__PURE__*/React.createElement("div", {
+  className: "grid md:grid-cols-2 gap-5"
+}, stylists.map((s, i) => /*#__PURE__*/React.createElement("div", {
+  key: i,
+  className: "card p-6 card-hover fade-up",
+  style: {
+    animationDelay: `${i * 60}ms`
+  }
+}, /*#__PURE__*/React.createElement("div", {
+  className: "flex items-center gap-3.5 mb-5"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "w-12 h-12 rounded-full bg-[var(--ink)] text-white flex items-center justify-center font-mono font-semibold"
+}, s.img), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+  className: "font-display text-lg"
+}, s.name), /*#__PURE__*/React.createElement("p", {
+  className: "text-xs text-[var(--slate)]"
+}, s.role)), /*#__PURE__*/React.createElement("div", {
+  className: "ml-auto flex items-center gap-1 text-sm font-semibold"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "star",
+  size: 14,
+  className: "text-[var(--gold)]"
+}), s.rating)), /*#__PURE__*/React.createElement("div", {
+  className: "grid grid-cols-4 gap-2 text-center mb-5"
+}, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+  className: "font-mono text-lg"
+}, money(s.revenue)), /*#__PURE__*/React.createElement("p", {
+  className: "text-[10px] uppercase text-[var(--slate)]"
+}, "Revenue")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+  className: "font-mono text-lg"
+}, s.appts), /*#__PURE__*/React.createElement("p", {
+  className: "text-[10px] uppercase text-[var(--slate)]"
+}, "Appts")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+  className: "font-mono text-lg"
+}, money(s.retail)), /*#__PURE__*/React.createElement("p", {
+  className: "text-[10px] uppercase text-[var(--slate)]"
+}, "Retail")), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+  className: "font-mono text-lg"
+}, s.rebook, "%"), /*#__PURE__*/React.createElement("p", {
+  className: "text-[10px] uppercase text-[var(--slate)]"
+}, "Rebook"))), /*#__PURE__*/React.createElement("div", {
+  className: "bg-[var(--paper)] rounded-xl p-3.5 flex gap-2.5"
+}, /*#__PURE__*/React.createElement(Icon, {
+  name: "sparkle",
+  size: 14,
+  className: "flex-shrink-0 mt-0.5"
+}), /*#__PURE__*/React.createElement("p", {
+  className: "text-xs text-[var(--slate)] leading-relaxed"
+}, s.suggestion))))));
+
+/* ---------------- INVENTORY ---------------- */
+const Inventory = () => /*#__PURE__*/React.createElement("div", {
+  className: "p-5 lg:p-8 space-y-6"
+}, /*#__PURE__*/React.createElement("div", {
+  className: "grid sm:grid-cols-3 gap-4"
+}, /*#__PURE__*/React.createElement(KpiCard, {
+  i: 0,
+  label: "Products tracked",
+  value: products.length + 18,
+  icon: "box"
+}), /*#__PURE__*/React.createElement(KpiCard, {
+  i: 1,
+  label: "Low stock alerts",
+  value: products.filter(p => p.days <= 5).length,
+  icon: "alert"
+}), /*#__PURE__*/React.createElement(KpiCard, {
+  i: 2,
+  label: "Inventory health",
+  value: 82,
+  suffix: "%",
+  icon: "check"
+})), /*#__PURE__*/React.createElement("div", {
+  className: "card p-6"
+}, /*#__PURE__*/React.createElement("h3", {
+  className: "font-display text-xl mb-1"
+}, "Inventory"), /*#__PURE__*/React.createElement("p", {
+  className: "text-sm text-[var(--slate)] mb-5"
+}, "Stock levels tied to actual booking demand."), /*#__PURE__*/React.createElement("div", {
+  className: "overflow-x-auto"
+}, /*#__PURE__*/React.createElement("table", {
+  className: "w-full text-sm"
+}, /*#__PURE__*/React.createElement("thead", null, /*#__PURE__*/React.createElement("tr", {
+  className: "text-left text-xs uppercase tracking-wide text-[var(--slate)] border-b border-[var(--line)]"
+}, /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Product"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Stock"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Days remaining"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Supplier"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2 pr-4"
+}, "Reorder"), /*#__PURE__*/React.createElement("th", {
+  className: "py-2"
+}, "AI recommendation"))), /*#__PURE__*/React.createElement("tbody", null, products.map((p, i) => /*#__PURE__*/React.createElement("tr", {
+  key: i,
+  className: "border-b border-[var(--line)] last:border-0 hover:bg-[var(--paper)]"
+}, /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4 font-medium"
+}, p.name), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4 font-mono"
+}, p.stock), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4"
+}, /*#__PURE__*/React.createElement("span", {
+  className: `px-2.5 py-1 rounded-full text-xs font-semibold font-mono ${p.days <= 3 ? "risk-high" : p.days <= 7 ? "risk-med" : "risk-low"}`
+}, p.days, "d")), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4 text-[var(--slate)]"
+}, p.supplier), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 pr-4 font-medium"
+}, p.reorder), /*#__PURE__*/React.createElement("td", {
+  className: "py-3 text-[var(--slate)] max-w-xs"
+}, p.ai))))))));
+
+/* ---------------- ADVISOR ---------------- */
+const advisorResponses = {
+  "why is revenue lower this month?": "Revenue is down 6% vs last month, mainly from two sources: a 22% drop in retail attach rate (concentrated in Jack and Marcus's appointments) and 3 additional no-shows per week compared to your monthly average. Colour and cut revenue itself is flat — this is a checkout and attendance issue, not a demand issue.",
+  "who should i contact today?": "Three people: Emma Whitmore (87% no-show risk for her 11:00 AM), Grace Holloway (your highest-LTV client, now 11 weeks overdue), and Ben Turner (14 weeks overdue, £2,210 lifetime value). I'd start with Grace — a short personal call tends to outperform an SMS at this risk level.",
+  "which customers may never return?": "7 customers are currently flagged, led by Ben Turner and Grace Holloway. Combined, they represent roughly £8,510 in lifetime value. I can generate personalised win-back messages for any of them from the Customer Retention page.",
+  "how can i increase profits?": "The fastest lever right now is retail attach — lifting Jack and Marcus to the team average would add roughly £380/week with no extra bookings needed. After that, filling Wednesday afternoons and tightening the no-show policy for first-time bookings are your next two highest-impact actions."
+};
+const Advisor = () => {
+  const [messages, setMessages] = useState([{
+    role: "ai",
+    text: "Good morning, Sarah. Ask me anything about your salon — revenue, staff, customers or stock — and I'll answer from your live data."
+  }]);
+  const [input, setInput] = useState("");
+  const [typing, setTyping] = useState(false);
+  const endRef = useRef(null);
+  useEffect(() => {
+    endRef.current?.scrollIntoView({
+      behavior: "smooth"
+    });
+  }, [messages, typing]);
+  const send = text => {
+    const q = (text ?? input).trim();
+    if (!q) return;
+    setMessages(m => [...m, {
+      role: "user",
+      text: q
+    }]);
+    setInput("");
+    setTyping(true);
+    setTimeout(() => {
+      const key = q.toLowerCase().trim();
+      const found = advisorResponses[key] || advisorResponses[Object.keys(advisorResponses).find(k => key.includes(k.split(" ")[0]))] || "Based on today's data: revenue is tracking to £2,840 against an expected £3,620, with the gap mostly from no-shows and low retail attach. Ask me about a specific stylist, customer or product and I'll go deeper.";
+      setMessages(m => [...m, {
+        role: "ai",
+        text: found
+      }]);
+      setTyping(false);
+    }, 1200);
+  };
+  const suggestions = ["Why is revenue lower this month?", "Who should I contact today?", "Which customers may never return?", "How can I increase profits?"];
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-5 lg:p-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card flex flex-col h-[calc(100vh-140px)] max-h-[720px]"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-2.5 px-6 py-5 border-b border-[var(--line)]"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-9 h-9 rounded-full bg-[var(--ink)] flex items-center justify-center"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "sparkle",
+    size: 16,
+    className: "text-white"
+  })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("p", {
+    className: "font-display text-lg leading-tight"
+  }, "AI Business Advisor"), /*#__PURE__*/React.createElement("p", {
+    className: "text-xs text-[var(--slate)]"
+  }, "Grounded in your live salon data"))), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 overflow-y-auto px-6 py-5 space-y-4"
+  }, messages.map((m, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: `flex ${m.role === "user" ? "justify-end" : "justify-start"}`
+  }, /*#__PURE__*/React.createElement("div", {
+    className: `max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${m.role === "user" ? "bg-[var(--ink)] text-white rounded-br-sm" : "bg-[var(--paper)] rounded-bl-sm"}`
+  }, m.text))), typing && /*#__PURE__*/React.createElement("div", {
+    className: "flex justify-start"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "bg-[var(--paper)] rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1.5"
+  }, [0, 1, 2].map(i => /*#__PURE__*/React.createElement("span", {
+    key: i,
+    className: "w-1.5 h-1.5 rounded-full bg-[var(--slate)] pulse-dot",
+    style: {
+      animationDelay: `${i * 0.2}s`
+    }
+  })))), /*#__PURE__*/React.createElement("div", {
+    ref: endRef
+  })), messages.length < 2 && /*#__PURE__*/React.createElement("div", {
+    className: "px-6 pb-3 flex flex-wrap gap-2"
+  }, suggestions.map((s, i) => /*#__PURE__*/React.createElement("button", {
+    key: i,
+    onClick: () => send(s),
+    className: "text-xs font-medium border border-[var(--line)] rounded-full px-3 py-1.5 hover:bg-[var(--paper)]"
+  }, s))), /*#__PURE__*/React.createElement("form", {
+    onSubmit: e => {
+      e.preventDefault();
+      send();
+    },
+    className: "flex items-center gap-2 px-5 py-4 border-t border-[var(--line)]"
+  }, /*#__PURE__*/React.createElement("input", {
+    value: input,
+    onChange: e => setInput(e.target.value),
+    placeholder: "Ask about revenue, staff, customers or stock…",
+    className: "flex-1 outline-none text-sm bg-[var(--paper)] rounded-full px-4 py-3"
+  }), /*#__PURE__*/React.createElement("button", {
+    type: "submit",
+    className: "w-11 h-11 rounded-full bg-[var(--ink)] text-white flex items-center justify-center flex-shrink-0"
+  }, /*#__PURE__*/React.createElement(Icon, {
+    name: "send",
+    size: 15
+  })))));
+};
+
+/* ---------------- ANALYTICS ---------------- */
+const Analytics = () => {
+  const revRef = useRef(null),
+    custRef = useRef(null),
+    retRef = useRef(null),
+    catRef = useRef(null);
+  useEffect(() => {
+    const charts = [];
+    charts.push(new Chart(revRef.current, {
+      type: "bar",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        datasets: [{
+          data: [11200, 11800, 12100, 13400, 12900, 14200, 13100],
+          backgroundColor: "#12141F",
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            grid: {
+              color: "#EDEAE2"
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    }));
+    charts.push(new Chart(custRef.current, {
+      type: "line",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+        datasets: [{
+          data: [420, 438, 451, 469, 478, 492, 510],
+          borderColor: "#4F8871",
+          backgroundColor: "rgba(79,136,113,.1)",
+          fill: true,
+          tension: .4,
+          pointRadius: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            grid: {
+              color: "#EDEAE2"
+            }
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    }));
+    charts.push(new Chart(retRef.current, {
+      type: "bar",
+      data: {
+        labels: weeklyRevenue.map(d => d.d),
+        datasets: [{
+          data: [68, 64, 61, 66, 70, 73, 59],
+          backgroundColor: "#C99A45",
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            grid: {
+              color: "#EDEAE2"
+            },
+            max: 100
+          },
+          x: {
+            grid: {
+              display: false
+            }
+          }
+        }
+      }
+    }));
+    charts.push(new Chart(catRef.current, {
+      type: "doughnut",
+      data: {
+        labels: ["Colour", "Cut & style", "Retail", "Treatments"],
+        datasets: [{
+          data: [42, 28, 18, 12],
+          backgroundColor: ["#12141F", "#C4485A", "#C99A45", "#4F8871"],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: "65%",
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              boxWidth: 10,
+              font: {
+                size: 11
+              }
+            }
+          }
+        }
+      }
+    }));
+    return () => charts.forEach(c => c.destroy());
+  }, []);
+  return /*#__PURE__*/React.createElement("div", {
+    className: "p-5 lg:p-8 space-y-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "grid sm:grid-cols-4 gap-4"
+  }, /*#__PURE__*/React.createElement(KpiCard, {
+    i: 0,
+    label: "Bookings this month",
+    value: 612,
+    icon: "calendar"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 1,
+    label: "No-show rate",
+    value: 7.4,
+    suffix: "%",
+    delta: "1.1% vs last month",
+    icon: "alert"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 2,
+    label: "New customers",
+    value: 38,
+    delta: "18% vs last month",
+    deltaGood: true,
+    icon: "users"
+  }), /*#__PURE__*/React.createElement(KpiCard, {
+    i: 3,
+    label: "Retail sales",
+    value: 4210,
+    prefix: "£",
+    delta: "18% down",
+    icon: "box"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "grid lg:grid-cols-2 gap-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "card p-6"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl mb-5"
+  }, "Monthly revenue"), /*#__PURE__*/React.createElement("div", {
+    className: "h-56"
+  }, /*#__PURE__*/React.createElement("canvas", {
+    ref: revRef
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "card p-6"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl mb-5"
+  }, "Customer growth"), /*#__PURE__*/React.createElement("div", {
+    className: "h-56"
+  }, /*#__PURE__*/React.createElement("canvas", {
+    ref: custRef
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "card p-6"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl mb-5"
+  }, "Weekly retention rate"), /*#__PURE__*/React.createElement("div", {
+    className: "h-56"
+  }, /*#__PURE__*/React.createElement("canvas", {
+    ref: retRef
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "card p-6"
+  }, /*#__PURE__*/React.createElement("h3", {
+    className: "font-display text-xl mb-5"
+  }, "Revenue by category"), /*#__PURE__*/React.createElement("div", {
+    className: "h-56"
+  }, /*#__PURE__*/React.createElement("canvas", {
+    ref: catRef
+  })))));
+};
+
+/* ---------------- APP ---------------- */
+const TITLES = {
+  dashboard: "Executive Dashboard",
+  retention: "Customer Retention",
+  noshow: "No-show Prediction",
+  leak: "Revenue Leak Analysis",
+  staff: "Staff Performance",
+  inventory: "Inventory",
+  advisor: "AI Business Advisor",
+  analytics: "Analytics"
+};
+const App = () => {
+  const [view, setView] = useState("landing"); // landing | login | app
+  const [page, setPage] = useState("dashboard");
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const go = v => {
+    setView(v);
+    window.scrollTo(0, 0);
+  };
+  if (view === "landing") return /*#__PURE__*/React.createElement(Landing, {
+    go: go
+  });
+  if (view === "login") return /*#__PURE__*/React.createElement(Login, {
+    go: v => {
+      setView("dashboard");
+      setPage("dashboard");
+    }
+  });
+  const pages = {
+    dashboard: /*#__PURE__*/React.createElement(Dashboard, null),
+    retention: /*#__PURE__*/React.createElement(Retention, null),
+    noshow: /*#__PURE__*/React.createElement(NoShow, null),
+    leak: /*#__PURE__*/React.createElement(RevenueLeak, null),
+    staff: /*#__PURE__*/React.createElement(Staff, null),
+    inventory: /*#__PURE__*/React.createElement(Inventory, null),
+    advisor: /*#__PURE__*/React.createElement(Advisor, null),
+    analytics: /*#__PURE__*/React.createElement(Analytics, null)
+  };
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex"
+  }, /*#__PURE__*/React.createElement(Sidebar, {
+    page: page,
+    setPage: setPage,
+    mobileOpen: mobileOpen,
+    setMobileOpen: setMobileOpen,
+    go: go
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "flex-1 min-w-0"
+  }, /*#__PURE__*/React.createElement(Topbar, {
+    title: TITLES[page],
+    setMobileOpen: setMobileOpen,
+    notifOpen: notifOpen,
+    setNotifOpen: setNotifOpen
+  }), pages[page]), /*#__PURE__*/React.createElement(NotifPanel, {
+    open: notifOpen,
+    onClose: () => setNotifOpen(false)
+  }));
+};
+ReactDOM.createRoot(document.getElementById("root")).render(/*#__PURE__*/React.createElement(App, null));
+</script>
+</body>
+</html>
