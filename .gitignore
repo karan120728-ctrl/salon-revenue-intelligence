@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+dist/
+build/
+out/
+
+# Environment Variables — NEVER commit these
+.env
+.env.local
+.env.development
+.env.production
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# Prisma
+prisma/migrations/
+
+# Turbopack
+.turbo/
+
+# Private business files
+salon_list.pdf
+*.pdf
+
+# Agent/AI tool config
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
