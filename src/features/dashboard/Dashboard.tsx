@@ -16,36 +16,40 @@ export default function Dashboard() {
   const [aiBriefing, setAiBriefing] = useState<{ greeting: string, recommendations: string[] } | null>(null);
 
   useEffect(() => {
-    fetchApi('/api/analytics/overview')
-      .then((res: any) => {
-        // Map analytics engine shape to what component expects
-        const overview = res.data;
-        setData({
-          todayRevenue: overview.revenue,
-          appointmentCount: overview.appointments.total,
-          highRiskCount: overview.appointments.noShows,
-          lowStockCount: 0, // Inventory phase
-          utilisation: overview.appointments.total > 0
-            ? Math.round((overview.appointments.completed / overview.appointments.total) * 100)
-            : 0,
-          returnRate: Math.round(100 - overview.noShowRate),
-          weeklyRevenue: [
-            { d: 'Mon', actual: Math.round(overview.revenue * 0.14), expected: Math.round(overview.revenue * 0.155) },
-            { d: 'Tue', actual: Math.round(overview.revenue * 0.12), expected: Math.round(overview.revenue * 0.14) },
-            { d: 'Wed', actual: Math.round(overview.revenue * 0.15), expected: Math.round(overview.revenue * 0.16) },
-            { d: 'Thu', actual: Math.round(overview.revenue * 0.17), expected: Math.round(overview.revenue * 0.17) },
-            { d: 'Fri', actual: Math.round(overview.revenue * 0.2), expected: Math.round(overview.revenue * 0.195) },
-            { d: 'Sat', actual: Math.round(overview.revenue * 0.22), expected: Math.round(overview.revenue * 0.225) },
-          ],
-        });
-      })
-      .catch(console.error)
+    // Fire all non-AI calls in parallel — KPIs show immediately
+    Promise.all([
+      fetchApi('/api/analytics/overview'),
+      fetchApi('/api/inventory').catch(() => ({ data: { lowStockCount: 0 } })),
+    ]).then(([overviewRes, inventoryRes]) => {
+      const overview = overviewRes.data;
+      setData({
+        todayRevenue: overview.revenue,
+        appointmentCount: overview.appointments.total,
+        highRiskCount: overview.appointments.noShows,
+        lowStockCount: inventoryRes.data?.lowStockCount || 0,
+        utilisation: overview.appointments.total > 0
+          ? Math.round((overview.appointments.completed / overview.appointments.total) * 100)
+          : 0,
+        returnRate: Math.round(100 - overview.noShowRate),
+        weeklyRevenue: [
+          { d: 'Mon', actual: Math.round(overview.revenue * 0.14), expected: Math.round(overview.revenue * 0.155) },
+          { d: 'Tue', actual: Math.round(overview.revenue * 0.12), expected: Math.round(overview.revenue * 0.14) },
+          { d: 'Wed', actual: Math.round(overview.revenue * 0.15), expected: Math.round(overview.revenue * 0.16) },
+          { d: 'Thu', actual: Math.round(overview.revenue * 0.17), expected: Math.round(overview.revenue * 0.17) },
+          { d: 'Fri', actual: Math.round(overview.revenue * 0.2), expected: Math.round(overview.revenue * 0.195) },
+          { d: 'Sat', actual: Math.round(overview.revenue * 0.22), expected: Math.round(overview.revenue * 0.225) },
+        ],
+      });
+    }).catch(console.error)
       .finally(() => setLoading(false));
 
-    fetchApi('/api/inventory').then(res => setData((d: any) => ({ ...d, lowStockCount: res.data?.lowStockCount || 0 }))).catch(() => {});
-    fetchApi('/api/analytics/briefing').then(res => setAiBriefing(res.data)).catch(console.error);
+    // AI briefing loads independently — doesn't block the KPI cards from showing
+    fetchApi('/api/analytics/briefing')
+      .then(res => setAiBriefing(res.data))
+      .catch(console.error);
 
   }, []);
+
 
   useEffect(() => {
     if (!chartRef.current || !data) return;

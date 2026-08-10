@@ -76,27 +76,13 @@ export const AIService = {
       };
     }
 
-    // 4. Call Groq (Llama 3.1 70B) - Generous Free Tier & Highly Intelligent
+    // 4. Call Groq — use 8B Instant for fast briefings (~0.5s vs 3s for 70B)
     try {
-      const prompt = `You are a high-end, ruthless, and incredibly sharp Salon Business Consultant. 
-      You are giving a brutally honest, 3-bullet daily briefing to a salon owner named ${ownerName}.
-      
-      You do not talk like a typical AI. You talk like an elite industry veteran who cares about making money and retaining clients. Do not mention "graphs" or "numbers" directly like a robot. Speak strategically.
-      
-      Today's Reality:
-      - We made £${contextFacts.revenue}.
-      - We have ${contextFacts.appointmentsToday} appointments today.
-      - ${contextFacts.highRiskCancellations} clients are high-risk for no-showing today.
-      - ${contextFacts.lowStockItemsCount} retail products are running out (${contextFacts.lowStockItemNames}).
-      
-      Return a JSON object with strictly this format:
-      {
-        "greeting": "A sharp, confident morning greeting (e.g., 'Morning Sarah. Time to protect today's revenue.')",
-        "recommendations": ["Actionable, consultant-level tip 1", "Actionable, consultant-level tip 2", "Actionable, consultant-level tip 3"]
-      }`;
+      const prompt = `You are a sharp salon business advisor giving a morning briefing to ${ownerName}.
+Today: Revenue £${contextFacts.revenue} | Appointments: ${contextFacts.appointmentsToday} | High-risk no-shows: ${contextFacts.highRiskCancellations} | Low stock: ${contextFacts.lowStockItemNames || 'none'}.
+Return ONLY this JSON: {"greeting": "one sharp sentence", "recommendations": ["tip1","tip2","tip3"]}
+Tips must be specific, actionable, and grounded in today's data only.`;
 
-      console.log('[AI] Calling Groq with model: llama-3.3-70b-versatile');
-      
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
         headers: {
@@ -104,14 +90,14 @@ export const AIService = {
           'Authorization': `Bearer ${apiKey.trim()}`
         },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
+          model: 'llama-3.1-8b-instant',
           messages: [
             { role: 'system', content: prompt },
-            { role: 'user', content: 'Generate the JSON briefing now.' }
+            { role: 'user', content: 'Generate now.' }
           ],
           response_format: { type: 'json_object' },
-          temperature: 0.7,
-          max_tokens: 512
+          temperature: 0.4,
+          max_tokens: 200
         })
       });
 
@@ -155,43 +141,65 @@ export const AIService = {
     const contextParts: Record<string, any> = {};
 
     // 2. Fetch ONLY the relevant data — Backend is the source of truth
-    await Promise.all([
-      categories.includes('revenue') && AnalyticsService.getOverview(salonId).then(d => {
-        contextParts.revenue = { total: d.revenue, noShowRate: d.noShowRate };
-        contextParts.appointments = { total: d.appointments.total, completed: d.appointments.completed, noShows: d.appointments.noShows };
-      }),
+    const fetches: Promise<void>[] = [];
 
-      categories.includes('staff') && AnalyticsService.getStaffPerformance(salonId).then(d => {
-        contextParts.staff = d.map(s => ({
-          name: s.name, role: s.role, rating: s.rating,
-          rebookRate: `${s.rebookRate}%`, revenueGenerated: `£${s.generatedRevenue}`
-        }));
-      }),
+    if (categories.includes('revenue')) {
+      fetches.push(
+        AnalyticsService.getOverview(salonId).then(d => {
+          contextParts.revenue = { total: d.revenue, noShowRate: d.noShowRate };
+          contextParts.appointments = { total: d.appointments.total, completed: d.appointments.completed, noShows: d.appointments.noShows };
+        })
+      );
+    }
 
-      categories.includes('customers') && AnalyticsService.getChurnRisk(salonId).then(d => {
-        contextParts.churnRisk = {
-          highRiskCount: d.length,
-          topAtRisk: d.slice(0, 5).map(c => ({
-            name: c.name, ltv: `£${c.ltv}`, daysOverdue: c.daysOverdue, riskScore: `${c.risk}%`
-          }))
-        };
-      }),
+    if (categories.includes('staff')) {
+      fetches.push(
+        AnalyticsService.getStaffPerformance(salonId).then(d => {
+          contextParts.staff = d.map(s => ({
+            name: s.name, role: s.role, rating: s.rating,
+            rebookRate: `${s.rebookRate}%`, revenueGenerated: `£${s.generatedRevenue}`
+          }));
+        })
+      );
+    }
 
-      categories.includes('inventory') && prisma.inventory.findMany({
-        where: { salonId },
-        include: { product: true },
-        orderBy: { daysLeft: 'asc' }
-      }).then(inv => {
-        contextParts.inventory = inv.map(i => ({
-          product: i.product.name, stock: i.stock, daysLeft: i.daysLeft, alert: i.reorderAlert
-        }));
-      }),
+    if (categories.includes('customers')) {
+      fetches.push(
+        AnalyticsService.getChurnRisk(salonId).then(d => {
+          contextParts.churnRisk = {
+            highRiskCount: d.length,
+            topAtRisk: d.slice(0, 5).map(c => ({
+              name: c.name, ltv: `£${c.ltv}`, daysOverdue: c.daysOverdue, riskScore: `${c.risk}%`
+            }))
+          };
+        })
+      );
+    }
 
-      // Fetch appointments context explicitly if asked
-      categories.includes('appointments') && !contextParts.appointments && AnalyticsService.getOverview(salonId).then(d => {
-        contextParts.appointments = { total: d.appointments.total, completed: d.appointments.completed, noShows: d.appointments.noShows };
-      }),
-    ].filter(Boolean));
+    if (categories.includes('inventory')) {
+      fetches.push(
+        prisma.inventory.findMany({
+          where: { salonId },
+          include: { product: true },
+          orderBy: { daysLeft: 'asc' }
+        }).then(inv => {
+          contextParts.inventory = inv.map(i => ({
+            product: i.product.name, stock: i.stock, daysLeft: i.daysLeft, alert: i.reorderAlert
+          }));
+        })
+      );
+    }
+
+    // Fetch appointments context if asked and not already populated by revenue fetch
+    if (categories.includes('appointments') && !categories.includes('revenue')) {
+      fetches.push(
+        AnalyticsService.getOverview(salonId).then(d => {
+          contextParts.appointments = { total: d.appointments.total, completed: d.appointments.completed, noShows: d.appointments.noShows };
+        })
+      );
+    }
+
+    await Promise.all(fetches);
 
     // 3. Build structured context string for the prompt
     const contextStr = JSON.stringify(contextParts, null, 2);
@@ -215,13 +223,13 @@ ${contextStr}
           'Authorization': `Bearer ${apiKey.trim()}`
         },
         body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
+          model: 'llama-3.1-8b-instant',
           messages: [
             { role: 'system', content: systemPrompt },
             { role: 'user', content: query }
           ],
-          temperature: 0.4,   // Lower = more factual, less creative
-          max_tokens: 400
+          temperature: 0.3,
+          max_tokens: 300
         }),
         signal: controller.signal
       });
