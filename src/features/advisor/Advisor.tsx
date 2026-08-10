@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/Icon';
-import { advisorResponses } from '@/data/mock';
+import { fetchApi } from '@/lib/api';
 import type { Message } from '@/types';
 
 const suggestions = [
@@ -12,37 +12,55 @@ const suggestions = [
   'How can I increase profits?',
 ];
 
-const DEFAULT_RESPONSE =
-  "Based on today's data: revenue is tracking to £2,840 against an expected £3,620, with the gap mostly from no-shows and low retail attach. Ask me about a specific stylist, customer or product and I'll go deeper.";
-
 export default function Advisor() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'ai',
-      text: 'Good morning, Sarah. Ask me anything about your salon — revenue, staff, customers or stock — and I\'ll answer from your live data.',
+      text: "Good morning. Ask me anything about your salon — revenue, staff, customers or stock — and I'll answer from your live data.",
     },
   ]);
   const [input, setInput] = useState('');
-  const [typing, setTyping] = useState(false);
+  const [loading, setLoading] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, typing]);
+  }, [messages, loading]);
 
-  const send = (text?: string) => {
-    const q = (text ?? input).trim();
-    if (!q) return;
-    setMessages((m) => [...m, { role: 'user', text: q }]);
+  const send = async (text?: string) => {
+    const query = (text ?? input).trim();
+    if (!query || loading) return;
+
+    // Validation — mirror backend constraints on the client for instant feedback
+    if (query.length > 500) {
+      setMessages(m => [...m, { role: 'user', text: query }, { role: 'ai', text: 'Your question is too long. Please keep it under 500 characters.' }]);
+      setInput('');
+      return;
+    }
+
+    setMessages(m => [...m, { role: 'user', text: query }]);
     setInput('');
-    setTyping(true);
-    setTimeout(() => {
-      const key = q.toLowerCase().trim();
-      const matchedKey = Object.keys(advisorResponses).find((k) => key.includes(k.split(' ')[0]));
-      const found = advisorResponses[key] || (matchedKey ? advisorResponses[matchedKey] : DEFAULT_RESPONSE);
-      setMessages((m) => [...m, { role: 'ai', text: found }]);
-      setTyping(false);
-    }, 1200);
+    setLoading(true);
+
+    try {
+      // POST to /api/ai/advisor — salonId is resolved server-side from JWT
+      const data = await fetchApi('/api/ai/advisor', {
+        method: 'POST',
+        body: JSON.stringify({ query }),
+      });
+
+      // Backend always returns { success, answer }
+      setMessages(m => [...m, { role: 'ai', text: data.answer }]);
+    } catch (err: any) {
+      // Show a graceful error in the chat rather than crashing
+      const friendlyError = err?.message?.includes('API request failed')
+        ? "I couldn't connect to the advisor right now. Please check your connection and try again."
+        : err?.message || "Something went wrong. Please try again.";
+
+      setMessages(m => [...m, { role: 'ai', text: friendlyError }]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -74,9 +92,11 @@ export default function Advisor() {
               </div>
             </div>
           ))}
-          {typing && (
+
+          {/* Typing / loading indicator */}
+          {loading && (
             <div className="flex justify-start">
-              <div className="bg-[var(--paper)] rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1.5">
+              <div className="bg-[var(--paper)] rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1.5 items-center">
                 {[0, 1, 2].map((i) => (
                   <span
                     key={i}
@@ -90,14 +110,15 @@ export default function Advisor() {
           <div ref={endRef} />
         </div>
 
-        {/* Suggestions */}
+        {/* Suggestions — shown only at the start */}
         {messages.length < 2 && (
           <div className="px-6 pb-3 flex flex-wrap gap-2">
             {suggestions.map((s, i) => (
               <button
                 key={i}
                 onClick={() => send(s)}
-                className="text-xs font-medium border border-[var(--line)] rounded-full px-3 py-1.5 hover:bg-[var(--paper)]"
+                disabled={loading}
+                className="text-xs font-medium border border-[var(--line)] rounded-full px-3 py-1.5 hover:bg-[var(--paper)] disabled:opacity-50"
               >
                 {s}
               </button>
@@ -111,14 +132,19 @@ export default function Advisor() {
           className="flex items-center gap-2 px-5 py-4 border-t border-[var(--line)]"
         >
           <input
+            id="advisor-input"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about revenue, staff, customers or stock…"
             className="flex-1 outline-none text-sm bg-[var(--paper)] rounded-full px-4 py-3"
+            disabled={loading}
+            maxLength={500}
           />
           <button
+            id="advisor-send"
             type="submit"
-            className="w-11 h-11 rounded-full bg-[var(--ink)] text-white flex items-center justify-center flex-shrink-0"
+            disabled={loading || !input.trim()}
+            className="w-11 h-11 rounded-full bg-[var(--ink)] text-white flex items-center justify-center flex-shrink-0 disabled:opacity-40"
           >
             <Icon name="send" size={15} />
           </button>

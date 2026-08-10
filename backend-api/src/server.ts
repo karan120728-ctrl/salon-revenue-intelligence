@@ -37,6 +37,9 @@ server.register(async (api) => {
 // ── Routes (Analytics Engine) ───────────────────────────────────────────────
 server.register(require('./routes/analytics').default, { prefix: '/api/analytics' });
 
+// ── Routes (AI Advisor) — separate from analytics, own capability namespace ──
+server.register(require('./routes/ai').default, { prefix: '/api/ai' });
+
 // Health check (public)
 server.get('/health', async () => ({ status: 'ok', message: 'Salon API is running 🚀' }));
 
