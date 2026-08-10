@@ -116,8 +116,8 @@ Tips must be specific, actionable, and grounded in today's data only.`;
       console.log('[AI] Parsed briefing:', JSON.stringify(parsed));
       return parsed;
       
-    } catch (error: any) {
-      console.error('[AI] Groq call failed:', error?.message || error);
+    } catch (error: unknown) {
+      console.error('[AI] Groq call failed:', (error as Error)?.message || error);
       return {
         greeting: `Good morning, ${ownerName}. (Offline Mode)`,
         recommendations: [
@@ -138,7 +138,7 @@ Tips must be specific, actionable, and grounded in today's data only.`;
 
     // 1. Determine which context categories are needed for this query
     const categories = determineContext(query);
-    const contextParts: Record<string, any> = {};
+    const contextParts: Record<string, unknown> = {};
 
     // 2. Fetch ONLY the relevant data — Backend is the source of truth
     const fetches: Promise<void>[] = [];
@@ -251,11 +251,11 @@ ${contextStr}
 
       return answer;
 
-    } catch (err: any) {
-      if (err?.name === 'AbortError') {
+    } catch (err: unknown) {
+      if ((err as Error)?.name === 'AbortError') {
         return "The AI advisor timed out processing your request. Please try a shorter or more specific question.";
       }
-      console.error('[AI Advisor] Unexpected error:', err?.message || err);
+      console.error('[AI Advisor] Unexpected error:', (err as Error)?.message || err);
       return "Something went wrong with the AI advisor. Please try again shortly.";
     }
   }
