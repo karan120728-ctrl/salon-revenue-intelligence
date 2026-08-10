@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Icon from '@/components/ui/Icon';
 import { fetchApi } from '@/lib/api';
@@ -11,6 +11,14 @@ export default function Login() {
   const [error, setError] = useState('');
   const [email, setEmail] = useState('admin@marlowe.com');
   const [password, setPassword] = useState('admin123');
+  const [warming, setWarming] = useState(true); // true while backend cold-start resolves
+
+  // 🔥 Wake up the Render backend the moment the login page loads.
+  useEffect(() => {
+    fetchApi('/health')
+      .catch(() => {})
+      .finally(() => setWarming(false)); // Once /health responds, backend is warm
+  }, []);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,6 +70,12 @@ export default function Login() {
           <p className="text-[var(--slate)] text-sm mb-8">Sign in to your operations dashboard.</p>
           
           {error && <p className="text-red-500 text-sm mb-4 bg-red-50 p-3 rounded-lg">{error}</p>}
+          {warming && (
+            <p className="text-xs text-[var(--slate)] mb-4 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse inline-block" />
+              Connecting to server…
+            </p>
+          )}
 
           <label className="text-xs font-semibold uppercase tracking-wide text-[var(--slate)]">Email</label>
           <div className="flex items-center gap-2 border border-[var(--line)] rounded-xl px-3.5 py-3 mt-1.5 mb-4 focus-within:border-[var(--ink)]">
