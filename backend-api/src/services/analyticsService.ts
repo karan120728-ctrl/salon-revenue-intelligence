@@ -1,33 +1,34 @@
 import { prisma } from '../prisma';
 
 export const AnalyticsService = {
-  // 1. Get Core Overview Metrics
+  // 1. Get Core Overview Metrics (Optimized with Database Aggregations & Concurrent Execution)
   async getOverview(salonId: string, startDate?: Date, endDate?: Date) {
     const now = new Date();
     const start = startDate || new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000); // Default: last 90 days
     const end = endDate || now;
 
-    // Calculate Real Revenue (Sum of completed payments)
-    const payments = await prisma.payment.findMany({
-      where: {
-        salonId,
-        status: 'COMPLETED',
-        paymentDate: { gte: start, lte: end }
-      }
-    });
-    const totalRevenue = payments.reduce((sum, p) => sum + p.amount, 0);
+    // Run revenue aggregation and appointment counts in parallel
+    const [revenueAggregate, totalApps, noShows, completedApps] = await Promise.all([
+      prisma.payment.aggregate({
+        _sum: { amount: true },
+        where: {
+          salonId,
+          status: 'COMPLETED',
+          paymentDate: { gte: start, lte: end }
+        }
+      }),
+      prisma.appointment.count({
+        where: { salonId, date: { gte: start, lte: end } }
+      }),
+      prisma.appointment.count({
+        where: { salonId, status: 'NO_SHOW', date: { gte: start, lte: end } }
+      }),
+      prisma.appointment.count({
+        where: { salonId, status: 'COMPLETED', date: { gte: start, lte: end } }
+      })
+    ]);
 
-    // Calculate Appointment Stats & No-Show Rate
-    const apps = await prisma.appointment.findMany({
-      where: {
-        salonId,
-        date: { gte: start, lte: end }
-      }
-    });
-
-    const totalApps = apps.length;
-    const noShows = apps.filter(a => a.status === 'NO_SHOW').length;
-    const completedApps = apps.filter(a => a.status === 'COMPLETED').length;
+    const totalRevenue = revenueAggregate._sum.amount || 0;
     const noShowRate = totalApps > 0 ? (noShows / totalApps) * 100 : 0;
 
     return {
