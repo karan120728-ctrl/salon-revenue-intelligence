@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "node dist/server.js",
     "postinstall": "prisma generate",
-    "db:migrate": "prisma migrate deploy",
+    "db:migrate": "npx prisma migrate resolve --applied 20260731054119_init || true && prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts"
   },
   "keywords": [],
