@@ -4,12 +4,6 @@ import cors from '@fastify/cors';
 import fastifyJwt from '@fastify/jwt';
 
 import authRoutes from './routes/auth';
-import dashboardRoutes from './routes/dashboard';
-import retentionRoutes from './routes/retention';
-import noshowRoutes from './routes/noshow';
-import staffRoutes from './routes/staff';
-import leakRoutes from './routes/leak';
-import inventoryRoutes from './routes/inventory';
 
 const server = fastify({ logger: true });
 
