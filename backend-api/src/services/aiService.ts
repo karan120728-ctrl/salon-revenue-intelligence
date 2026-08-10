@@ -4,6 +4,40 @@ import { prisma } from '../prisma';
 // ── Context categories — determines which data we fetch per query ─────────────
 type ContextCategory = 'revenue' | 'staff' | 'customers' | 'inventory' | 'appointments';
 
+// ── Strict type for context data passed to Groq ───────────────────────────────
+interface SalonContextData {
+  revenue?: { total: number; noShowRate: number };
+  appointments?: { total: number; completed: number; noShows: number };
+  staff?: Array<{
+    name: string;
+    role: string;
+    rating: number;
+    rebookRate: string;
+    revenueGenerated: string;
+  }>;
+  churnRisk?: {
+    highRiskCount: number;
+    topAtRisk: Array<{
+      name: string;
+      ltv: string;
+      daysOverdue: number;
+      riskScore: string;
+    }>;
+  };
+  inventory?: Array<{
+    product: string;
+    stock: number;
+    daysLeft: number;
+    alert: string | null;
+  }>;
+}
+
+// ── Type for daily briefing response ─────────────────────────────────────────
+interface DailyBriefing {
+  greeting: string;
+  recommendations: string[];
+}
+
 function determineContext(query: string): ContextCategory[] {
   const q = query.toLowerCase();
   const categories: ContextCategory[] = [];
@@ -41,16 +75,18 @@ RESPONSE FORMAT:
 - Max 4 sentences for simple questions. Max 8 sentences for complex analysis.`;
 
 export const AIService = {
-  async generateDailyBriefing(salonId: string, ownerName: string) {
+
+  // ── Daily AI Briefing ─────────────────────────────────────────────────────
+  async generateDailyBriefing(salonId: string, ownerName: string): Promise<DailyBriefing> {
     // 1. Gather all strictly deterministic data first
     const overview = await AnalyticsService.getOverview(salonId);
-    
+
     // Quick inventory check for context
-    const inventory = await prisma.inventory.findMany({ 
+    const inventory = await prisma.inventory.findMany({
       where: { salonId, daysLeft: { lte: 7 } },
       include: { product: true }
     });
-    
+
     const highRiskAppts = overview.appointments.noShows;
 
     // 2. Build the strict context payload (facts only)
@@ -69,8 +105,12 @@ export const AIService = {
       return {
         greeting: `Good morning, ${ownerName}.`,
         recommendations: [
-          contextFacts.highRiskCancellations > 0 ? `Confirm your ${contextFacts.highRiskCancellations} risky appointments.` : 'No risky appointments today.',
-          contextFacts.lowStockItemsCount > 0 ? `Restock ${contextFacts.lowStockItemsCount} items (including ${contextFacts.lowStockItemNames.split(',')[0]}).` : 'Inventory is healthy.',
+          contextFacts.highRiskCancellations > 0
+            ? `Confirm your ${contextFacts.highRiskCancellations} risky appointments.`
+            : 'No risky appointments today.',
+          contextFacts.lowStockItemsCount > 0
+            ? `Restock ${contextFacts.lowStockItemsCount} items (including ${contextFacts.lowStockItemNames.split(',')[0]}).`
+            : 'Inventory is healthy.',
           'Focus on driving retail sales to boost revenue.'
         ]
       };
@@ -108,16 +148,16 @@ Tips must be specific, actionable, and grounded in today's data only.`;
         throw new Error(`Groq API Error: ${response.status} - ${errText}`);
       }
 
-      const result = await response.json();
+      const result = await response.json() as { choices: Array<{ message: { content: string } }> };
       const contentText = result.choices[0].message.content;
       console.log('[AI] Groq raw content:', contentText);
-      
-      const parsed = JSON.parse(contentText);
+
+      const parsed = JSON.parse(contentText) as DailyBriefing;
       console.log('[AI] Parsed briefing:', JSON.stringify(parsed));
       return parsed;
-      
+
     } catch (error: unknown) {
-      console.error('[AI] Groq call failed:', (error as Error)?.message || error);
+      console.error('[AI] Groq call failed:', (error as Error)?.message ?? String(error));
       return {
         greeting: `Good morning, ${ownerName}. (Offline Mode)`,
         recommendations: [
@@ -129,16 +169,16 @@ Tips must be specific, actionable, and grounded in today's data only.`;
     }
   },
 
-  // ── Dynamic AI Advisor ────────────────────────────────────────────────────────
+  // ── Dynamic AI Advisor ────────────────────────────────────────────────────
   async askAdvisor(salonId: string, ownerName: string, query: string): Promise<string> {
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-      return "The AI advisor is currently offline — GROQ_API_KEY is not configured. Please contact your administrator.";
+      return 'The AI advisor is currently offline — GROQ_API_KEY is not configured. Please contact your administrator.';
     }
 
     // 1. Determine which context categories are needed for this query
     const categories = determineContext(query);
-    const contextParts: Record<string, unknown> = {};
+    const contextParts: SalonContextData = {};
 
     // 2. Fetch ONLY the relevant data — Backend is the source of truth
     const fetches: Promise<void>[] = [];
@@ -147,7 +187,11 @@ Tips must be specific, actionable, and grounded in today's data only.`;
       fetches.push(
         AnalyticsService.getOverview(salonId).then(d => {
           contextParts.revenue = { total: d.revenue, noShowRate: d.noShowRate };
-          contextParts.appointments = { total: d.appointments.total, completed: d.appointments.completed, noShows: d.appointments.noShows };
+          contextParts.appointments = {
+            total: d.appointments.total,
+            completed: d.appointments.completed,
+            noShows: d.appointments.noShows
+          };
         })
       );
     }
@@ -156,8 +200,11 @@ Tips must be specific, actionable, and grounded in today's data only.`;
       fetches.push(
         AnalyticsService.getStaffPerformance(salonId).then(d => {
           contextParts.staff = d.map(s => ({
-            name: s.name, role: s.role, rating: s.rating,
-            rebookRate: `${s.rebookRate}%`, revenueGenerated: `£${s.generatedRevenue}`
+            name: s.name,
+            role: s.role,
+            rating: s.rating,
+            rebookRate: `${s.rebookRate}%`,
+            revenueGenerated: `£${s.generatedRevenue}`
           }));
         })
       );
@@ -169,7 +216,10 @@ Tips must be specific, actionable, and grounded in today's data only.`;
           contextParts.churnRisk = {
             highRiskCount: d.length,
             topAtRisk: d.slice(0, 5).map(c => ({
-              name: c.name, ltv: `£${c.ltv}`, daysOverdue: c.daysOverdue, riskScore: `${c.risk}%`
+              name: c.name,
+              ltv: `£${c.ltv}`,
+              daysOverdue: c.daysOverdue,
+              riskScore: `${c.risk}%`
             }))
           };
         })
@@ -184,7 +234,10 @@ Tips must be specific, actionable, and grounded in today's data only.`;
           orderBy: { daysLeft: 'asc' }
         }).then(inv => {
           contextParts.inventory = inv.map(i => ({
-            product: i.product.name, stock: i.stock, daysLeft: i.daysLeft, alert: i.reorderAlert
+            product: i.product.name,
+            stock: i.stock,
+            daysLeft: i.daysLeft,
+            alert: i.reorderAlert
           }));
         })
       );
@@ -194,7 +247,11 @@ Tips must be specific, actionable, and grounded in today's data only.`;
     if (categories.includes('appointments') && !categories.includes('revenue')) {
       fetches.push(
         AnalyticsService.getOverview(salonId).then(d => {
-          contextParts.appointments = { total: d.appointments.total, completed: d.appointments.completed, noShows: d.appointments.noShows };
+          contextParts.appointments = {
+            total: d.appointments.total,
+            completed: d.appointments.completed,
+            noShows: d.appointments.noShows
+          };
         })
       );
     }
@@ -242,21 +299,21 @@ ${contextStr}
         return "I'm having trouble reaching the AI service right now. Please try again in a moment.";
       }
 
-      const result = await response.json();
+      const result = await response.json() as { choices: Array<{ message: { content: string } }> };
       const answer = result.choices?.[0]?.message?.content?.trim();
 
       if (!answer) {
-        return "I received an empty response from the AI service. Please try rephrasing your question.";
+        return 'I received an empty response from the AI service. Please try rephrasing your question.';
       }
 
       return answer;
 
     } catch (err: unknown) {
       if ((err as Error)?.name === 'AbortError') {
-        return "The AI advisor timed out processing your request. Please try a shorter or more specific question.";
+        return 'The AI advisor timed out processing your request. Please try a shorter or more specific question.';
       }
-      console.error('[AI Advisor] Unexpected error:', (err as Error)?.message || err);
-      return "Something went wrong with the AI advisor. Please try again shortly.";
+      console.error('[AI Advisor] Unexpected error:', (err as Error)?.message ?? String(err));
+      return 'Something went wrong with the AI advisor. Please try again shortly.';
     }
   }
 };
