@@ -1,36 +1,33 @@
-import { FastifyInstance, FastifyPluginAsync } from 'fastify';
+import { FastifyInstance, FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 import { prisma } from '../prisma';
 
-const paymentsRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
-  server.addHook('preValidation', (server as any).authenticate);
-
-  server.get('/', async (request: any, reply) => {
-    const salonId = request.user.salonId;
+const paymentRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
+  server.get('/', { preValidation: [(server as unknown as { authenticate: (req: FastifyRequest, rep: FastifyReply) => Promise<void> }).authenticate] }, async (request) => {
+    const user = request.user as { salonId: string };
     const payments = await prisma.payment.findMany({
-      where: { salonId },
-      include: {
-        customer: { select: { name: true } },
-      },
+      where: { salonId: user.salonId },
+      include: { customer: true },
       orderBy: { paymentDate: 'desc' }
     });
     return { success: true, data: payments };
   });
 
-  server.post('/', async (request: any, reply) => {
-    const salonId = request.user.salonId;
-    const { amount, method, appointmentId, customerId } = request.body as any;
-
-    if (!amount || !customerId) {
-      return reply.code(400).send({ success: false, message: 'Amount and customerId are required' });
-    }
+  server.post('/', { preValidation: [(server as unknown as { authenticate: (req: FastifyRequest, rep: FastifyReply) => Promise<void> }).authenticate] }, async (request) => {
+    const user = request.user as { salonId: string };
+    const body = request.body as {
+      amount: number;
+      customerId: string;
+      appointmentId?: string;
+      method?: string;
+    };
 
     const payment = await prisma.payment.create({
       data: {
-        amount: parseFloat(amount),
-        method: method || 'CARD',
-        appointmentId,
-        customerId,
-        salonId
+        amount: body.amount,
+        customerId: body.customerId,
+        appointmentId: body.appointmentId,
+        method: body.method || 'CARD',
+        salonId: user.salonId
       }
     });
 
@@ -38,4 +35,4 @@ const paymentsRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
   });
 };
 
-export default paymentsRoutes;
+export default paymentRoutes;

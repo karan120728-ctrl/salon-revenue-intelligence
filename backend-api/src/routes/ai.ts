@@ -1,15 +1,16 @@
-import { FastifyInstance, FastifyPluginAsync } from 'fastify';
+import { FastifyInstance, FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
+import { AIService } from '../services/aiService';
 
 const aiRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
   // All AI routes require authentication — salonId comes from the JWT, never from the request body
-  server.addHook('preValidation', (server as any).authenticate);
+  server.addHook('preValidation', (server as unknown as { authenticate: (req: FastifyRequest, rep: FastifyReply) => Promise<void> }).authenticate);
 
   // POST /api/ai/advisor
   // Body: { query: string }
   // Returns: { success: true, answer: string }
-  server.post('/advisor', async (request: any, reply) => {
+  server.post('/advisor', async (request, reply) => {
     // ── Input validation ──────────────────────────────────────────────────────
-    const { query } = request.body as { query?: unknown };
+    const { query } = (request.body || {}) as { query?: unknown };
 
     if (!query || typeof query !== 'string') {
       return reply.status(400).send({
@@ -35,21 +36,20 @@ const aiRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
     }
 
     // ── Security: always use server-side salonId from the verified JWT ────────
-    // Any salonId passed in the body is completely ignored here.
-    const salonId = request.user.salonId as string;
-    const ownerName = (request.user.name as string) || 'Owner';
+    const user = request.user as { salonId: string; name?: string };
+    const salonId = user.salonId;
+    const ownerName = user.name || 'Owner';
 
     // ── Delegate to AI service ─────────────────────────────────────────────────
     try {
-      const { AIService } = require('../services/aiService');
       const answer: string = await AIService.askAdvisor(salonId, ownerName, trimmed);
 
       return reply.send({
         success: true,
         answer
       });
-    } catch (err: any) {
-      server.log.error('[AI Route] Unexpected error:', err?.message || err);
+    } catch (err: unknown) {
+      server.log.error(`[AI Route] Unexpected error: ${(err as Error)?.message || String(err)}`);
       return reply.status(500).send({
         success: false,
         error: 'An unexpected error occurred. Please try again.'

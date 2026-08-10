@@ -2,6 +2,14 @@ import { FastifyInstance, FastifyPluginAsync } from 'fastify';
 import bcrypt from 'bcryptjs';
 import { prisma } from '../prisma';
 
+interface UserPayload {
+  id: string;
+  email: string;
+  name: string;
+  role: string;
+  salonId: string;
+}
+
 const authRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
   // Schema for Register
   const registerSchema = {
@@ -20,7 +28,12 @@ const authRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
   };
 
   server.post('/register', registerSchema, async (request, reply) => {
-    const { email, password, name, salonName } = request.body as any;
+    const { email, password, name, salonName } = request.body as {
+      email: string;
+      password: string;
+      name: string;
+      salonName: string;
+    };
 
     const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
@@ -66,7 +79,7 @@ const authRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
   };
 
   server.post('/login', loginSchema, async (request, reply) => {
-    const { email, password } = request.body as any;
+    const { email, password } = request.body as { email: string; password: string };
 
     const user = await prisma.user.findUnique({ where: { email } });
     if (!user) {
@@ -83,9 +96,10 @@ const authRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
     return reply.send({ success: true, token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
   });
 
-  // Example protected route for testing
-  server.get('/me', { preValidation: [(server as any).authenticate] }, async (request, reply) => {
-    return { success: true, user: request.user };
+  // Protected route for testing
+  server.get('/me', { preValidation: [(server as unknown as { authenticate: (req: unknown, rep: unknown) => Promise<void> }).authenticate] }, async (request) => {
+    const user = request.user as UserPayload;
+    return { success: true, user };
   });
 };
 

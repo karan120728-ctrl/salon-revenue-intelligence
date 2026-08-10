@@ -1,32 +1,24 @@
-import { FastifyInstance, FastifyPluginAsync } from 'fastify';
+import { FastifyInstance, FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 import { prisma } from '../prisma';
 
-const servicesRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
-  server.addHook('preValidation', (server as any).authenticate);
-
-  server.get('/', async (request: any, reply) => {
-    const salonId = request.user.salonId;
+const serviceRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
+  server.get('/', { preValidation: [(server as unknown as { authenticate: (req: FastifyRequest, rep: FastifyReply) => Promise<void> }).authenticate] }, async (request) => {
+    const user = request.user as { salonId: string };
     const services = await prisma.service.findMany({
-      where: { salonId },
+      where: { salonId: user.salonId },
       orderBy: { name: 'asc' }
     });
     return { success: true, data: services };
   });
 
-  server.post('/', async (request: any, reply) => {
-    const salonId = request.user.salonId;
-    const { name, price, durationMap } = request.body as any;
-
-    if (!name || price === undefined) {
-      return reply.code(400).send({ success: false, message: 'Name and price are required' });
-    }
+  server.post('/', { preValidation: [(server as unknown as { authenticate: (req: FastifyRequest, rep: FastifyReply) => Promise<void> }).authenticate] }, async (request) => {
+    const user = request.user as { salonId: string };
+    const body = request.body as { name: string; price: number; duration?: number; description?: string };
 
     const service = await prisma.service.create({
-      data: { 
-        name, 
-        price: parseFloat(price), 
-        duration: durationMap || 60,
-        salonId 
+      data: {
+        ...body,
+        salonId: user.salonId
       }
     });
 
@@ -34,4 +26,4 @@ const servicesRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
   });
 };
 
-export default servicesRoutes;
+export default serviceRoutes;

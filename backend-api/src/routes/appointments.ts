@@ -1,60 +1,42 @@
-import { FastifyInstance, FastifyPluginAsync } from 'fastify';
+import { FastifyInstance, FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 import { prisma } from '../prisma';
 
-const appointmentsRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
-  server.addHook('preValidation', (server as any).authenticate);
-
-  server.get('/', async (request: any, reply) => {
-    const salonId = request.user.salonId;
+const appointmentRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
+  server.get('/', { preValidation: [(server as unknown as { authenticate: (req: FastifyRequest, rep: FastifyReply) => Promise<void> }).authenticate] }, async (request) => {
+    const user = request.user as { salonId: string };
     const appointments = await prisma.appointment.findMany({
-      where: { salonId },
+      where: { salonId: user.salonId },
       include: {
-        customer: { select: { name: true, phone: true } },
-        staff: { select: { name: true } },
-        services: {
-          include: {
-            service: { select: { name: true, duration: true } }
-          }
-        },
-        payments: true
+        customer: true,
+        staff: true,
+        services: { include: { service: true } }
       },
-      orderBy: { date: 'asc' }
+      orderBy: { date: 'desc' }
     });
     return { success: true, data: appointments };
   });
 
-  server.post('/', async (request: any, reply) => {
-    const salonId = request.user.salonId;
-    const { date, customerId, staffId, serviceIds } = request.body as any;
-
-    if (!date || !customerId || !staffId || !serviceIds || !serviceIds.length) {
-      return reply.code(400).send({ success: false, message: 'Missing required appointment fields' });
-    }
-
-    // Retrieve services to freeze price
-    const services = await prisma.service.findMany({
-      where: { id: { in: serviceIds }, salonId }
-    });
-
-    if (services.length !== serviceIds.length) {
-      return reply.code(400).send({ success: false, message: 'One or more services not found' });
-    }
+  server.post('/', { preValidation: [(server as unknown as { authenticate: (req: FastifyRequest, rep: FastifyReply) => Promise<void> }).authenticate] }, async (request) => {
+    const user = request.user as { salonId: string };
+    const body = request.body as {
+      customerId: string;
+      staffId: string;
+      date: string;
+      serviceIds: string[];
+    };
 
     const appointment = await prisma.appointment.create({
       data: {
-        date: new Date(date),
-        customerId,
-        staffId,
-        salonId,
+        salonId: user.salonId,
+        customerId: body.customerId,
+        staffId: body.staffId,
+        date: new Date(body.date),
         services: {
-          create: services.map(s => ({
-            serviceId: s.id,
-            priceAtBooking: s.price
+          create: body.serviceIds.map(serviceId => ({
+            service: { connect: { id: serviceId } },
+            priceAtBooking: 0
           }))
         }
-      },
-      include: {
-        services: true
       }
     });
 
@@ -62,4 +44,4 @@ const appointmentsRoutes: FastifyPluginAsync = async (server: FastifyInstance) =
   });
 };
 
-export default appointmentsRoutes;
+export default appointmentRoutes;

@@ -1,32 +1,29 @@
-import { FastifyInstance, FastifyPluginAsync } from 'fastify';
+import { FastifyInstance, FastifyPluginAsync, FastifyRequest, FastifyReply } from 'fastify';
 import { prisma } from '../prisma';
 
-const customersRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
-  server.addHook('preValidation', (server as any).authenticate);
-
-  server.get('/', async (request: any, reply) => {
-    const salonId = request.user.salonId;
+const customerRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
+  server.get('/', { preValidation: [(server as unknown as { authenticate: (req: FastifyRequest, rep: FastifyReply) => Promise<void> }).authenticate] }, async (request) => {
+    const user = request.user as { salonId: string };
     const customers = await prisma.customer.findMany({
-      where: { salonId },
-      orderBy: { createdAt: 'desc' }
+      where: { salonId: user.salonId },
+      orderBy: { ltv: 'desc' }
     });
     return { success: true, data: customers };
   });
 
-  server.post('/', async (request: any, reply) => {
-    const salonId = request.user.salonId;
-    const { name, email, phone } = request.body as any;
-
-    if (!name) {
-      return reply.code(400).send({ success: false, message: 'Name is required' });
-    }
+  server.post('/', { preValidation: [(server as unknown as { authenticate: (req: FastifyRequest, rep: FastifyReply) => Promise<void> }).authenticate] }, async (request) => {
+    const user = request.user as { salonId: string };
+    const body = request.body as { name: string; email?: string; phone?: string };
 
     const customer = await prisma.customer.create({
-      data: { name, email, phone, salonId }
+      data: {
+        ...body,
+        salonId: user.salonId
+      }
     });
 
     return { success: true, data: customer };
   });
 };
 
-export default customersRoutes;
+export default customerRoutes;

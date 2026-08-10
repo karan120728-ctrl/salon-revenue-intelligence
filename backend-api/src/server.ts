@@ -1,9 +1,17 @@
 import 'dotenv/config';
-import fastify from 'fastify';
+import fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
 import fastifyJwt from '@fastify/jwt';
 
 import authRoutes from './routes/auth';
+import customerRoutes from './routes/customers';
+import staffRoutes from './routes/staff';
+import serviceRoutes from './routes/services';
+import appointmentRoutes from './routes/appointments';
+import paymentRoutes from './routes/payments';
+import inventoryRoutes from './routes/inventory';
+import analyticsRoutes from './routes/analytics';
+import aiRoutes from './routes/ai';
 
 const server = fastify({ logger: true });
 
@@ -15,7 +23,7 @@ server.register(fastifyJwt, {
 });
 
 // Decorate with authenticate hook — every protected route calls this
-server.decorate('authenticate', async function (request: any, reply: any) {
+server.decorate('authenticate', async function (request: FastifyRequest, reply: FastifyReply) {
   try {
     await request.jwtVerify();
   } catch (err) {
@@ -24,21 +32,22 @@ server.decorate('authenticate', async function (request: any, reply: any) {
 });
 
 // ── Routes (Operational) ────────────────────────────────────────────────────────
-server.register(authRoutes,      { prefix: '/auth' });
+server.register(authRoutes, { prefix: '/auth' });
+
 server.register(async (api) => {
-  api.register(require('./routes/customers').default, { prefix: '/customers' });
-  api.register(require('./routes/staff').default, { prefix: '/staff' });
-  api.register(require('./routes/services').default, { prefix: '/services' });
-  api.register(require('./routes/appointments').default, { prefix: '/appointments' });
-  api.register(require('./routes/payments').default, { prefix: '/payments' });
-  api.register(require('./routes/inventory').default, { prefix: '/inventory' });
+  api.register(customerRoutes, { prefix: '/customers' });
+  api.register(staffRoutes, { prefix: '/staff' });
+  api.register(serviceRoutes, { prefix: '/services' });
+  api.register(appointmentRoutes, { prefix: '/appointments' });
+  api.register(paymentRoutes, { prefix: '/payments' });
+  api.register(inventoryRoutes, { prefix: '/inventory' });
 }, { prefix: '/api' });
 
 // ── Routes (Analytics Engine) ───────────────────────────────────────────────
-server.register(require('./routes/analytics').default, { prefix: '/api/analytics' });
+server.register(analyticsRoutes, { prefix: '/api/analytics' });
 
 // ── Routes (AI Advisor) — separate from analytics, own capability namespace ──
-server.register(require('./routes/ai').default, { prefix: '/api/ai' });
+server.register(aiRoutes, { prefix: '/api/ai' });
 
 // Health check (public)
 server.get('/health', async () => ({ status: 'ok', message: 'Salon API is running 🚀' }));
@@ -46,7 +55,7 @@ server.get('/health', async () => ({ status: 'ok', message: 'Salon API is runnin
 // ── Start ─────────────────────────────────────────────────────────────────────
 const start = async () => {
   try {
-    const port = parseInt(process.env.PORT || '3001');
+    const port = parseInt(process.env.PORT || '3001', 10);
     await server.listen({ port, host: '0.0.0.0' });
     console.log(`✅ Server started on http://localhost:${port}`);
   } catch (err) {
