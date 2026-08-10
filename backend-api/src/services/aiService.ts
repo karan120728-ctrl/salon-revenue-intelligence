@@ -169,106 +169,86 @@ Tips must be specific, actionable, and grounded in today's data only.`;
     }
   },
 
-  // ── Dynamic AI Advisor ────────────────────────────────────────────────────
-  async askAdvisor(salonId: string, ownerName: string, query: string): Promise<string> {
+  // ── Dynamic AI Advisor with Conversation History & Complete Salon Context ──
+  async askAdvisor(
+    salonId: string,
+    ownerName: string,
+    query: string,
+    history: Array<{ role: 'user' | 'ai'; text: string }> = []
+  ): Promise<string> {
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
       return 'The AI advisor is currently offline — GROQ_API_KEY is not configured. Please contact your administrator.';
     }
 
-    // 1. Determine which context categories are needed for this query
-    const categories = determineContext(query);
-    const contextParts: SalonContextData = {};
+    // Fetch complete live salon data to guarantee zero missing context (Customer Churn, Revenue, Staff, Inventory)
+    const [overview, staffPerf, churnRisk, inventoryData] = await Promise.all([
+      AnalyticsService.getOverview(salonId),
+      AnalyticsService.getStaffPerformance(salonId),
+      AnalyticsService.getChurnRisk(salonId),
+      prisma.inventory.findMany({
+        where: { salonId },
+        include: { product: true },
+        orderBy: { daysLeft: 'asc' }
+      })
+    ]);
 
-    // 2. Fetch ONLY the relevant data — Backend is the source of truth
-    const fetches: Promise<void>[] = [];
+    const contextParts = {
+      financials: {
+        totalRevenue: `£${overview.revenue}`,
+        noShowRate: `${overview.noShowRate}%`,
+        appointmentsTotal: overview.appointments.total,
+        appointmentsCompleted: overview.appointments.completed,
+        appointmentsNoShows: overview.appointments.noShows
+      },
+      atRiskCustomers: churnRisk.map(c => ({
+        name: c.name,
+        email: c.email || 'N/A',
+        phone: c.phone || 'N/A',
+        lifetimeValue: `£${c.ltv}`,
+        daysOverdue: c.daysOverdue,
+        riskScore: `${c.risk}%`,
+        lastVisit: c.lastVisit ? new Date(c.lastVisit).toLocaleDateString('en-GB') : 'Unknown'
+      })),
+      staffPerformance: staffPerf.map(s => ({
+        name: s.name,
+        role: s.role,
+        rating: s.rating,
+        rebookRate: `${s.rebookRate}%`,
+        generatedRevenue: `£${s.generatedRevenue}`
+      })),
+      lowStockInventory: inventoryData.map(i => ({
+        product: i.product.name,
+        currentStock: i.stock,
+        estimatedDaysLeft: i.daysLeft,
+        alertStatus: i.reorderAlert || 'Healthy'
+      }))
+    };
 
-    if (categories.includes('revenue')) {
-      fetches.push(
-        AnalyticsService.getOverview(salonId).then(d => {
-          contextParts.revenue = { total: d.revenue, noShowRate: d.noShowRate };
-          contextParts.appointments = {
-            total: d.appointments.total,
-            completed: d.appointments.completed,
-            noShows: d.appointments.noShows
-          };
-        })
-      );
-    }
-
-    if (categories.includes('staff')) {
-      fetches.push(
-        AnalyticsService.getStaffPerformance(salonId).then(d => {
-          contextParts.staff = d.map(s => ({
-            name: s.name,
-            role: s.role,
-            rating: s.rating,
-            rebookRate: `${s.rebookRate}%`,
-            revenueGenerated: `£${s.generatedRevenue}`
-          }));
-        })
-      );
-    }
-
-    if (categories.includes('customers')) {
-      fetches.push(
-        AnalyticsService.getChurnRisk(salonId).then(d => {
-          contextParts.churnRisk = {
-            highRiskCount: d.length,
-            topAtRisk: d.slice(0, 5).map(c => ({
-              name: c.name,
-              ltv: `£${c.ltv}`,
-              daysOverdue: c.daysOverdue,
-              riskScore: `${c.risk}%`
-            }))
-          };
-        })
-      );
-    }
-
-    if (categories.includes('inventory')) {
-      fetches.push(
-        prisma.inventory.findMany({
-          where: { salonId },
-          include: { product: true },
-          orderBy: { daysLeft: 'asc' }
-        }).then(inv => {
-          contextParts.inventory = inv.map(i => ({
-            product: i.product.name,
-            stock: i.stock,
-            daysLeft: i.daysLeft,
-            alert: i.reorderAlert
-          }));
-        })
-      );
-    }
-
-    // Fetch appointments context if asked and not already populated by revenue fetch
-    if (categories.includes('appointments') && !categories.includes('revenue')) {
-      fetches.push(
-        AnalyticsService.getOverview(salonId).then(d => {
-          contextParts.appointments = {
-            total: d.appointments.total,
-            completed: d.appointments.completed,
-            noShows: d.appointments.noShows
-          };
-        })
-      );
-    }
-
-    await Promise.all(fetches);
-
-    // 3. Build structured context string for the prompt
     const contextStr = JSON.stringify(contextParts, null, 2);
 
-    const systemPrompt = `${SYSTEM_PROMPT_BASE}
+    const systemPrompt = `You are a top-tier executive Salon Business Consultant and Advisor for ${ownerName}'s independent hair & beauty salon.
 
---- SALON BUSINESS CONTEXT (verified from live database) ---
-Salon owner name: ${ownerName}
+CORE OBJECTIVE:
+Provide direct, highly strategic, revenue-maximizing advice like a seasoned salon owner/operations director.
+
+RULES:
+1. Ground ALL facts directly in the supplied live database context below. Never invent metrics.
+2. If asked about a client (e.g. Ben, Sarah), check the atRiskCustomers list. State their exact overdue status, risk score, LTV, and immediately give a concrete, high-converting action (e.g. "Send SMS with a 15% discount on their usual treatment").
+3. Always suggest practical, revenue-saving steps (re-engagement scripts, cancellation deposit policies, staff commission incentives, inventory reorder reminders).
+4. Maintain context across follow-up questions (e.g., if the user says "what should we do for him?", recognize they are referring to the client discussed previously).
+5. Speak concisely, professionally, and decisively. Max 4 to 6 clear sentences per response.
+
+--- LIVE SALON DATABASE CONTEXT ---
 ${contextStr}
---- END OF CONTEXT ---`;
+--- END CONTEXT ---`;
 
-    // 4. Call Groq — timeout after 15s
+    // Map chat history into OpenAI/Groq messages format
+    const conversationMessages = history.slice(-6).map(h => ({
+      role: h.role === 'user' ? ('user' as const) : ('assistant' as const),
+      content: h.text
+    }));
+
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 15000);
@@ -283,10 +263,11 @@ ${contextStr}
           model: 'llama-3.1-8b-instant',
           messages: [
             { role: 'system', content: systemPrompt },
+            ...conversationMessages,
             { role: 'user', content: query }
           ],
           temperature: 0.3,
-          max_tokens: 300
+          max_tokens: 400
         }),
         signal: controller.signal
       });

@@ -10,7 +10,10 @@ const aiRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
   // Returns: { success: true, answer: string }
   server.post('/advisor', async (request, reply) => {
     // ── Input validation ──────────────────────────────────────────────────────
-    const { query } = (request.body || {}) as { query?: unknown };
+    const { query, history } = (request.body || {}) as {
+      query?: unknown;
+      history?: Array<{ role: 'user' | 'ai'; text: string }>;
+    };
 
     if (!query || typeof query !== 'string') {
       return reply.status(400).send({
@@ -42,7 +45,12 @@ const aiRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
 
     // ── Delegate to AI service ─────────────────────────────────────────────────
     try {
-      const answer: string = await AIService.askAdvisor(salonId, ownerName, trimmed);
+      const answer: string = await AIService.askAdvisor(
+        salonId,
+        ownerName,
+        trimmed,
+        Array.isArray(history) ? history : []
+      );
 
       return reply.send({
         success: true,

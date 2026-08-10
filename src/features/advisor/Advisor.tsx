@@ -43,10 +43,10 @@ export default function Advisor() {
     setLoading(true);
 
     try {
-      // POST to /api/ai/advisor — salonId is resolved server-side from JWT
+      // POST to /api/ai/advisor — pass previous messages for conversation thread context
       const data = await fetchApi('/api/ai/advisor', {
         method: 'POST',
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ query, history: messages }),
       });
 
       // Backend always returns { success, answer }
