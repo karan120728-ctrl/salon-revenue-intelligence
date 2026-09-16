@@ -30,6 +30,13 @@ const DEMO_CONTEXT = {
         { product: 'Purple Shampoo 250ml', currentStock: 3, estimatedDaysLeft: 3, alertStatus: 'Order 12 units today' },
         { product: 'Olaplex No.3 Repair', currentStock: 9, estimatedDaysLeft: 6, alertStatus: 'Order 10 units this week' },
     ],
+    highRiskAppointments: [
+        { customer: 'Emma Whitmore', time: '11:00 AM', risk: 87, reason: '2 previous no-shows, booked via last-minute link', action: 'Call to confirm before 10 AM' },
+        { customer: 'Daniel Osei', time: '1:30 PM', risk: 74, reason: 'First-time client, no deposit on file', action: 'Request card guarantee' },
+        { customer: 'Grace Holloway', time: '3:00 PM', risk: 69, reason: 'Rescheduled twice this month', action: 'Send SMS reminder + parking info' },
+        { customer: 'Freya Adams', time: '4:15 PM', risk: 41, reason: 'Weather forecast: heavy rain at appt time', action: 'Courtesy reminder' },
+        { customer: 'Tom Reilly', time: '5:45 PM', risk: 22, reason: 'Reliable regular, 14 visits, 0 no-shows', action: 'No action needed' },
+    ],
 };
 
 const SYSTEM_PROMPT = `You are a top-tier executive Salon Business Consultant and Advisor for Sarah's independent hair & beauty salon.
