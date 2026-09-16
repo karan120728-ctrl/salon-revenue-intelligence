@@ -84,7 +84,7 @@ export async function POST(req: Request) {
                 Authorization: `Bearer ${apiKey.trim()}`,
             },
             body: JSON.stringify({
-                model: 'llama-3.1-8b-instant',
+                model: 'llama3-8b-8192',
                 messages: [
                     { role: 'system', content: SYSTEM_PROMPT },
                     ...conversationMessages,
@@ -101,8 +101,10 @@ export async function POST(req: Request) {
         if (!response.ok) {
             const errText = await response.text();
             console.error('[AI Advisor] Groq error:', response.status, errText);
+            let safeErr = errText;
+            try { safeErr = JSON.parse(errText).error.message; } catch (e) { }
             return NextResponse.json({
-                answer: "I'm having trouble reaching the AI service right now. Please try again in a moment.",
+                answer: `Groq connection failed (${response.status}): ${safeErr}`,
             });
         }
 
