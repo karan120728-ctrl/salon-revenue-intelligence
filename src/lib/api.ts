@@ -52,6 +52,18 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     return { data: { lowStockCount: 3 } };
   }
 
+  if (endpoint === '/api/ai/advisor') {
+    await delay(1200);
+    const body = options.body ? JSON.parse(options.body as string) : {};
+    const query = (body.query || '').toLowerCase().trim();
+
+    // Match exact demo question, or fall back to generic demo response
+    const answer = advisorResponses[query] ||
+      "As this is an interactive demo environment, I am currently showing static data. In your live salon account, I would instantly analyse your Timely/Fresha revenue history and give you a precise answer!";
+
+    return { answer };
+  }
+
   // ==========================================
   // REAL BACKEND CALL (Runs if it's not a mocked route)
   // ==========================================
