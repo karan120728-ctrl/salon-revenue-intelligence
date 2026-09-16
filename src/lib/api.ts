@@ -87,7 +87,29 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
 
   if (endpoint === '/api/appointments') {
     await delay(350);
-    return { data: noshows };
+    // Transform mock noshows to match the Prisma schema NoShow.tsx expects
+    const now = new Date();
+    return {
+      data: noshows.map((n, i) => {
+        // Parse time like "11:00 AM" into a real date object
+        const [time, modifier] = n.time.split(' ');
+        let [hours, minutes] = time.split(':').map(Number);
+        if (modifier === 'PM' && hours < 12) hours += 12;
+        if (modifier === 'AM' && hours === 12) hours = 0;
+        const aptDate = new Date(now);
+        aptDate.setHours(hours, minutes, 0, 0);
+
+        return {
+          id: `APT-${1000 + i}`,
+          status: 'SCHEDULED',
+          date: aptDate.toISOString(),
+          risk: Object.assign({}, n).risk,
+          riskReason: Object.assign({}, n).reason,
+          customer: { name: (n as any).client || Object.assign({}, n).customer },
+          services: [{ priceAtBooking: (n as any).revenue || 0 }]
+        };
+      })
+    };
   }
 
   if (endpoint === '/api/inventory') {
