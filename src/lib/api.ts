@@ -1,4 +1,4 @@
-import { revenueLeakData, noshows, weeklyRevenue, notifications, advisorResponses } from '@/data/mock';
+import { stylists, customers, products, revenueLeakData, noshows, weeklyRevenue, notifications, advisorResponses } from '@/data/mock';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
@@ -47,9 +47,24 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     };
   }
 
+  if (endpoint === '/api/analytics/staff') {
+    await delay(300);
+    return { data: stylists };
+  }
+
+  if (endpoint === '/api/analytics/churn') {
+    await delay(400);
+    return { data: customers };
+  }
+
+  if (endpoint === '/api/appointments') {
+    await delay(350);
+    return { data: noshows };
+  }
+
   if (endpoint === '/api/inventory') {
     await delay(300);
-    return { data: { lowStockCount: 3 } };
+    return { data: { items: products, lowStockCount: 3 } };
   }
 
   if (endpoint === '/api/ai/advisor') {
@@ -57,9 +72,21 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     const body = options.body ? JSON.parse(options.body as string) : {};
     const query = (body.query || '').toLowerCase().trim();
 
-    // Match exact demo question, or fall back to generic demo response
-    const answer = advisorResponses[query] ||
-      "As this is an interactive demo environment, I am currently showing static data. In your live salon account, I would instantly analyse your Timely/Fresha revenue history and give you a precise answer!";
+    let answer = advisorResponses[query];
+
+    if (!answer) {
+      if (query.includes('profit') || query.includes('make more') || query.includes('increase')) {
+        answer = advisorResponses['how can i increase profits?'];
+      } else if (query.includes('contact') || query.includes('who') || query.includes('call')) {
+        answer = advisorResponses['who should i contact today?'];
+      } else if (query.includes('lower') || query.includes('drop') || query.includes('down') || query.includes('revenue')) {
+        answer = advisorResponses['why is revenue lower this month?'];
+      } else if (query.includes('return') || query.includes('leave') || query.includes('lost') || query.includes('customer')) {
+        answer = advisorResponses['which customers may never return?'];
+      } else {
+        answer = "As this is an interactive demo environment, I am currently showing static data. In your live salon account, I would instantly analyse your Timely/Fresha revenue history and give you a precise answer!";
+      }
+    }
 
     return { answer };
   }
