@@ -83,11 +83,15 @@ export default function Advisor() {
             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
                 className={`whitespace-pre-wrap max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${m.role === 'user'
-                    ? 'bg-[var(--ink)] text-white rounded-br-sm'
-                    : 'bg-[var(--paper)] rounded-bl-sm'
+                  ? 'bg-[var(--ink)] text-white rounded-br-sm'
+                  : 'bg-[var(--paper)] rounded-bl-sm'
                   }`}
               >
-                {m.text}
+                {m.text.split(/(\*\*.*?\*\*)/g).map((part, index) =>
+                  part.startsWith('**') && part.endsWith('**')
+                    ? <strong key={index} className="font-semibold">{part.slice(2, -2)}</strong>
+                    : part
+                )}
               </div>
             </div>
           ))}
