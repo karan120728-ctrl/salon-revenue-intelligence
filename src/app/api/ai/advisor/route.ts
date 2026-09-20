@@ -91,7 +91,7 @@ export async function POST(req: Request) {
                 Authorization: `Bearer ${apiKey.trim()}`,
             },
             body: JSON.stringify({
-                model: 'llama3-8b-8192',
+                model: 'groq/compound-mini',
                 messages: [
                     { role: 'system', content: SYSTEM_PROMPT },
                     ...conversationMessages,
