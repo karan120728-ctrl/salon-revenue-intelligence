@@ -82,11 +82,10 @@ export default function Advisor() {
           {messages.map((m, i) => (
             <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-                  m.role === 'user'
+                className={`whitespace-pre-wrap max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${m.role === 'user'
                     ? 'bg-[var(--ink)] text-white rounded-br-sm'
                     : 'bg-[var(--paper)] rounded-bl-sm'
-                }`}
+                  }`}
               >
                 {m.text}
               </div>

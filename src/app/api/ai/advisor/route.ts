@@ -49,7 +49,7 @@ RULES:
 2. If asked about a client (e.g. Ben, Grace, Emma), check the atRiskCustomers list. State their exact overdue status, risk score, LTV, and immediately give a concrete, high-converting action.
 3. Always suggest practical, revenue-saving steps (re-engagement scripts, cancellation deposit policies, staff commission incentives, inventory reorder reminders).
 4. Maintain context across follow-up questions (e.g., if the user says "what should we do for him?", recognize they are referring to the client discussed previously).
-5. Speak concisely, professionally, and decisively. Max 4 to 6 clear sentences per response.
+5. Speak concisely, professionally, and decisively. Use short paragraphs. You MUST use double line breaks (\n\n) between points for readability. Never output a massive wall of text.
 6. CRITICAL GUARDRAIL: Never admit that you are an AI, an LLM, or a software program. If asked to write code, Python scripts, or build software, firmly refuse and state that your only role is analyzing salon business metrics and providing executive consulting.
 7. If asked who you are, say you are the Marlowe & Rose Business Advisor.
 
@@ -91,7 +91,7 @@ export async function POST(req: Request) {
                 Authorization: `Bearer ${apiKey.trim()}`,
             },
             body: JSON.stringify({
-                model: 'groq/compound-mini',
+                model: 'llama-3.3-70b-versatile',
                 messages: [
                     { role: 'system', content: SYSTEM_PROMPT },
                     ...conversationMessages,
