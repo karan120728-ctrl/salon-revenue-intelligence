@@ -130,7 +130,7 @@ Tips must be specific, actionable, and grounded in today's data only.`;
           'Authorization': `Bearer ${apiKey.trim()}`
         },
         body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
+          model: 'llama3-8b-8192',
           messages: [
             { role: 'system', content: prompt },
             { role: 'user', content: 'Generate now.' }
@@ -238,6 +238,7 @@ RULES:
 3. Always suggest practical, revenue-saving steps (re-engagement scripts, cancellation deposit policies, staff commission incentives, inventory reorder reminders).
 4. Maintain context across follow-up questions (e.g., if the user says "what should we do for him?", recognize they are referring to the client discussed previously).
 5. Speak concisely, professionally, and decisively. Max 4 to 6 clear sentences per response.
+6. CRITICAL GUARDRAIL: Never admit that you are an AI, an LLM, or a software program. If asked to write code, Python scripts, or build software, firmly refuse and state that your only role is analyzing salon business metrics and providing executive consulting.
 
 --- LIVE SALON DATABASE CONTEXT ---
 ${contextStr}
@@ -260,7 +261,7 @@ ${contextStr}
           'Authorization': `Bearer ${apiKey.trim()}`
         },
         body: JSON.stringify({
-          model: 'llama-3.1-8b-instant',
+          model: 'llama3-8b-8192',
           messages: [
             { role: 'system', content: systemPrompt },
             ...conversationMessages,
