@@ -109,15 +109,22 @@ function renderMarkdown(text: string) {
   return <>{output}</>;
 }
 
-// Render inline markdown: **bold**, *italic*
+// Render inline markdown: **bold**, *italic*, and <br> tags
 function renderInline(text: string): React.ReactNode {
-  const parts = text.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
-  return parts.map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**'))
-      return <strong key={i}>{part.slice(2, -2)}</strong>;
-    if (part.startsWith('*') && part.endsWith('*'))
-      return <em key={i}>{part.slice(1, -1)}</em>;
-    return part;
+  // First split on <br> tags to handle line breaks within table cells
+  const lines = text.split(/<br\s*\/?>/gi);
+  return lines.map((line, li) => {
+    const parts = line.split(/(\*\*[^*]+\*\*|\*[^*]+\*)/g);
+    const rendered = parts.map((part, i) => {
+      if (part.startsWith('**') && part.endsWith('**'))
+        return <strong key={i}>{part.slice(2, -2)}</strong>;
+      if (part.startsWith('*') && part.endsWith('*'))
+        return <em key={i}>{part.slice(1, -1)}</em>;
+      return part;
+    });
+    return li < lines.length - 1
+      ? <span key={li}>{rendered}<br /></span>
+      : <span key={li}>{rendered}</span>;
   });
 }
 

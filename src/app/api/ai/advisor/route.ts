@@ -98,7 +98,7 @@ export async function POST(req: Request) {
                     { role: 'user', content: query },
                 ],
                 temperature: 0.3,
-                max_tokens: 400,
+                max_tokens: 800,
             }),
             signal: controller.signal,
         });
