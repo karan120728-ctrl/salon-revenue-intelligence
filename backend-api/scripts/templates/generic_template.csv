@@ -1,0 +1,5 @@
+appointment_id,date,time,customer_name,customer_email,customer_phone,staff_name,service_name,price,status,payment_id,payment_amount,payment_method,payment_status,payment_date
+APPT001,15/01/2025,10:00,Grace Holloway,grace@email.com,+447700000001,Chloe Bennett,Full Head Balayage,185.00,Completed,PAY001,185.00,Card,Completed,15/01/2025
+APPT002,16/01/2025,14:00,Emma Whitmore,emma@email.com,+447700000002,Priya Anand,Cut & Finish,55.00,Completed,PAY002,55.00,Cash,Completed,16/01/2025
+APPT003,17/01/2025,11:30,Ben Turner,ben@email.com,+447700000003,Jack Sullivan,Blow Dry & Style,38.00,No Show,,,,,
+APPT004,20/01/2025,09:00,Aisha Patel,aisha@email.com,+447700000004,Olivia Hart,Brow Tint & Shape,28.00,Cancelled,,,,,

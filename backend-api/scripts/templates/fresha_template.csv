@@ -1,0 +1,4 @@
+Appointment ID,Date,Time,Customer Name,Customer Email,Customer Phone,Staff,Service,Service Price,Appointment Status,Payment ID,Payment Amount,Payment Method,Payment Status,Payment Date
+FKZ-001,15/01/2025,10:00,Grace Holloway,grace@email.com,+447700000001,Chloe Bennett,Full Head Balayage,185.00,Completed,PAY-FKZ-001,185.00,Card,Completed,15/01/2025
+FKZ-002,16/01/2025,14:00,Emma Whitmore,emma@email.com,+447700000002,Priya Anand,Cut & Finish,55.00,Completed,PAY-FKZ-002,55.00,Cash,Completed,16/01/2025
+FKZ-003,17/01/2025,11:30,Ben Turner,ben@email.com,+447700000003,Jack Sullivan,Blow Dry & Style,38.00,No Show,,,,,
