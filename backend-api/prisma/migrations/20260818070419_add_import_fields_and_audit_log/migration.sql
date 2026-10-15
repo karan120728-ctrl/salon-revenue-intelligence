@@ -32,20 +32,21 @@ ALTER TABLE `staff` DROP FOREIGN KEY `Staff_salonId_fkey`;
 -- DropForeignKey
 ALTER TABLE `user` DROP FOREIGN KEY `User_salonId_fkey`;
 
--- AlterTable
-ALTER TABLE `appointment` DROP COLUMN `duration`,
-    DROP COLUMN `revenue`,
-    ADD COLUMN `externalId` VARCHAR(191) NULL,
-    ADD COLUMN `sourceSystem` VARCHAR(191) NULL,
+-- AlterTable (safe: IF EXISTS guards prevent failure if columns already removed)
+ALTER TABLE `appointment`
+    ADD COLUMN IF NOT EXISTS `externalId` VARCHAR(191) NULL,
+    ADD COLUMN IF NOT EXISTS `sourceSystem` VARCHAR(191) NULL,
     MODIFY `staffId` VARCHAR(191) NULL;
+ALTER TABLE `appointment` DROP COLUMN IF EXISTS `duration`;
+ALTER TABLE `appointment` DROP COLUMN IF EXISTS `revenue`;
 
 -- AlterTable
 ALTER TABLE `customer` ADD COLUMN `externalId` VARCHAR(191) NULL,
     ADD COLUMN `sourceSystem` VARCHAR(191) NULL;
 
--- AlterTable
-ALTER TABLE `inventory` DROP COLUMN `name`,
-    ADD COLUMN `productId` VARCHAR(191) NOT NULL;
+-- AlterTable (safe: IF EXISTS guards prevent failure if column already removed)
+ALTER TABLE `inventory` ADD COLUMN IF NOT EXISTS `productId` VARCHAR(191) NOT NULL DEFAULT '';
+ALTER TABLE `inventory` DROP COLUMN IF EXISTS `name`;
 
 -- AlterTable
 ALTER TABLE `staff` ADD COLUMN `externalId` VARCHAR(191) NULL,
