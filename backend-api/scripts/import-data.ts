@@ -777,77 +777,85 @@ async function main() {
             }
         }
 
-        // 7e. Appointments (pre-validated, no error-swallowing try/catch)
-        for (const appt of validAppointments) {
-            const customerId = customerIdMap.get(appt.customerExternalId)!;
-            const staffId = appt.staffExternalId ? staffIdMap.get(appt.staffExternalId) : null;
+        // 7e. Appointments (batched concurrent upserts in chunks of 15 for fast cloud DB execution)
+        const APPT_CHUNK_SIZE = 15;
+        for (let i = 0; i < validAppointments.length; i += APPT_CHUNK_SIZE) {
+            const chunk = validAppointments.slice(i, i + APPT_CHUNK_SIZE);
+            await Promise.all(chunk.map(async (appt) => {
+                const customerId = customerIdMap.get(appt.customerExternalId)!;
+                const staffId = appt.staffExternalId ? staffIdMap.get(appt.staffExternalId) : null;
 
-            const result = await tx.appointment.upsert({
-                where: { salonId_sourceSystem_externalId: { salonId: salon.id, sourceSystem: sourceName, externalId: appt.externalId } },
-                create: {
-                    date: appt.date,
-                    status: appt.status,
-                    salonId: salon.id,
-                    customerId,
-                    staffId: staffId ?? null,
-                    sourceSystem: sourceName,
-                    externalId: appt.externalId,
-                },
-                update: {
-                    date: appt.date,
-                    status: appt.status,
-                    staffId: staffId ?? null,
-                },
-            });
-
-            for (const svcExtId of appt.serviceExternalIds) {
-                const serviceId = serviceIdMap.get(svcExtId);
-                if (!serviceId) continue;
-                const existingLink = await tx.appointmentService.findFirst({
-                    where: { appointmentId: result.id, serviceId },
+                const result = await tx.appointment.upsert({
+                    where: { salonId_sourceSystem_externalId: { salonId: salon.id, sourceSystem: sourceName, externalId: appt.externalId } },
+                    create: {
+                        date: appt.date,
+                        status: appt.status,
+                        salonId: salon.id,
+                        customerId,
+                        staffId: staffId ?? null,
+                        sourceSystem: sourceName,
+                        externalId: appt.externalId,
+                    },
+                    update: {
+                        date: appt.date,
+                        status: appt.status,
+                        staffId: staffId ?? null,
+                    },
                 });
-                if (!existingLink) {
-                    await tx.appointmentService.create({
-                        data: { appointmentId: result.id, serviceId, priceAtBooking: appt.priceAtBooking },
+
+                for (const svcExtId of appt.serviceExternalIds) {
+                    const serviceId = serviceIdMap.get(svcExtId);
+                    if (!serviceId) continue;
+                    const existingLink = await tx.appointmentService.findFirst({
+                        where: { appointmentId: result.id, serviceId },
                     });
+                    if (!existingLink) {
+                        await tx.appointmentService.create({
+                            data: { appointmentId: result.id, serviceId, priceAtBooking: appt.priceAtBooking },
+                        });
+                    }
                 }
-            }
 
-            apptIdMap.set(appt.externalId, result.id);
-            if (result.createdAt.getTime() === result.updatedAt.getTime()) apptImported++;
-            else apptUpdated++;
+                apptIdMap.set(appt.externalId, result.id);
+                if (result.createdAt.getTime() === result.updatedAt.getTime()) apptImported++;
+                else apptUpdated++;
+            }));
         }
 
-        // 7f. Payments (pre-validated, no error-swallowing try/catch)
-        for (const pay of validPayments) {
-            const customerId = customerIdMap.get(pay.customerExternalId)!;
-            const appointmentId = pay.appointmentExternalId
-                ? apptIdMap.get(pay.appointmentExternalId)
-                : undefined;
+        // 7f. Payments (batched concurrent upserts in chunks of 20)
+        const PAY_CHUNK_SIZE = 20;
+        for (let i = 0; i < validPayments.length; i += PAY_CHUNK_SIZE) {
+            const chunk = validPayments.slice(i, i + PAY_CHUNK_SIZE);
+            await Promise.all(chunk.map(async (pay) => {
+                const customerId = customerIdMap.get(pay.customerExternalId)!;
+                const appointmentId = pay.appointmentExternalId
+                    ? apptIdMap.get(pay.appointmentExternalId)
+                    : undefined;
 
-            const result = await tx.payment.upsert({
-                where: { salonId_sourceSystem_externalId: { salonId: salon.id, sourceSystem: sourceName, externalId: pay.externalId } },
-                create: {
-                    amount: pay.amount,
-                    status: pay.status,
-                    method: pay.method,
-                    paymentDate: pay.paymentDate,
-                    salonId: salon.id,
-                    customerId,
-                    appointmentId: appointmentId ?? null,
-                    sourceSystem: sourceName,
-                    externalId: pay.externalId,
-                },
-                update: {
-                    amount: pay.amount,
-                    status: pay.status,
-                    method: pay.method,
-                },
-            });
-            if (result.createdAt.getTime() === result.updatedAt.getTime()) payImported++;
-            else payUpdated++;
+                const result = await tx.payment.upsert({
+                    where: { salonId_sourceSystem_externalId: { salonId: salon.id, sourceSystem: sourceName, externalId: pay.externalId } },
+                    create: {
+                        amount: pay.amount,
+                        status: pay.status,
+                        method: pay.method,
+                        paymentDate: pay.paymentDate,
+                        salonId: salon.id,
+                        customerId,
+                        appointmentId: appointmentId ?? null,
+                        sourceSystem: sourceName,
+                        externalId: pay.externalId,
+                    },
+                    update: {
+                        amount: pay.amount,
+                        status: pay.status,
+                        method: pay.method,
+                    },
+                });
+                if (result.createdAt.getTime() === result.updatedAt.getTime()) payImported++;
+                else payUpdated++;
+            }));
         }
-    }, { timeout: 120_000 });
+    }, { timeout: 600_000, maxWait: 30_000 });
 
     console.log('  ✅ Atomic import transaction committed.');
     if (!salonId && tempPassword) {
