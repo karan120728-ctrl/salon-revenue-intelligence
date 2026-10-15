@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/Icon';
 import { fetchApi } from '@/lib/api';
+import AdvisorMessage from './AdvisorMessage';
 import type { Message } from '@/types';
 
 const suggestions = [
@@ -80,29 +81,23 @@ export default function Advisor() {
         {/* Messages */}
         <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
           {messages.map((m, i) => (
-            <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div
-                className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${m.role === 'user'
-                  ? 'bg-[var(--ink)] text-white rounded-br-sm'
-                  : 'bg-[var(--paper)] rounded-bl-sm'
-                  }`}
-              >
-                {m.text}
-              </div>
-            </div>
+            <AdvisorMessage key={i} role={m.role} text={m.text} />
           ))}
 
           {/* Typing / loading indicator */}
           {loading && (
-            <div className="flex justify-start">
-              <div className="bg-[var(--paper)] rounded-2xl rounded-bl-sm px-4 py-3 flex gap-1.5 items-center">
-                {[0, 1, 2].map((i) => (
-                  <span
-                    key={i}
-                    className="w-1.5 h-1.5 rounded-full bg-[var(--slate)] pulse-dot"
-                    style={{ animationDelay: `${i * 0.2}s` }}
-                  />
-                ))}
+            <div className="flex justify-start w-full">
+              <div className="bg-white border border-[var(--line)] rounded-2xl rounded-bl-sm px-4 py-3 flex gap-2.5 items-center shadow-xs">
+                <span className="text-xs text-[var(--slate)] font-medium">Analyzing salon metrics...</span>
+                <div className="flex gap-1 items-center">
+                  {[0, 1, 2].map((i) => (
+                    <span
+                      key={i}
+                      className="w-1.5 h-1.5 rounded-full bg-[var(--rosewood)] pulse-dot"
+                      style={{ animationDelay: `${i * 0.2}s` }}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           )}
