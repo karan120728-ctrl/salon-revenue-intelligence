@@ -1,0 +1,6 @@
+appointment_id,date,time,customer_name,customer_email,customer_phone,staff_name,service_name,price,status,payment_id,payment_amount,payment_method,payment_status,payment_date
+APT-NEW-101,14/10/2026,09:30,Sophia Loren,sophia@example.com,+447711223344,Eleanor Vance,Balayage & Toner,165.00,Completed,PAY-NEW-101,165.00,Card,Completed,14/10/2026
+APT-NEW-102,14/10/2026,11:00,Marcus Aurelius,marcus@example.com,+447722334455,Liam Thorne,Beard Trim & Precision Cut,45.00,Completed,PAY-NEW-102,45.00,Card,Completed,14/10/2026
+APT-NEW-103,14/10/2026,13:15,Clara Oswald,clara@example.com,+447733445566,Eleanor Vance,Full Highlights & Gloss,195.00,Completed,PAY-NEW-103,195.00,Card,Completed,14/10/2026
+APT-NEW-104,14/10/2026,15:00,David Tennant,david@example.com,+447744556677,Liam Thorne,Styling & Blow Dry,40.00,Completed,PAY-NEW-104,40.00,Cash,Completed,14/10/2026
+APT-NEW-105,14/10/2026,16:30,Rose Tyler,rose@example.com,+447755667788,Eleanor Vance,Consultation & Treatment,60.00,No Show,,,,,

@@ -1,0 +1,307 @@
+Booking Reference,Date,Time,Customer,Customer Email,Venue,Employee,Treatment,Price,Status,Payment Method
+SYN-TW-01,01/05/2026,09:00,"Grace Holloway",graceholloway1@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,No Show,
+SYN-TW-02,01/05/2026,14:15,"Hannah Davies",hannahdavies6@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-03,03/05/2026,09:00,"Grace Holloway",graceholloway1@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-04,03/05/2026,14:15,"Poppy Wood",poppywood22@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-05,03/05/2026,15:30,"Alice Thompson",alicethompson15@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-06,03/05/2026,16:45,"Lucy Wilson",lucywilson8@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-07,04/05/2026,09:00,"Ella Taylor",ellataylor9@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-08,04/05/2026,10:00,"Evelyn Hughes",evelynhughes26@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Half Head Highlights",125.00,Completed,Card
+SYN-TW-09,04/05/2026,10:00,"Ruby Phillips",rubyphillips32@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-10,04/05/2026,10:00,"Amber Nelson",ambernelson38@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Cut & Finish",55.00,Completed,Card
+SYN-TW-11,04/05/2026,10:15,"Emma Whitmore",emmawhitmore2@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-12,04/05/2026,11:30,"Jessica Roberts",jessicaroberts11@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-13,04/05/2026,15:30,"Freya Lewis",freyalewis23@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-14,04/05/2026,16:45,"Katie White",katiewhite16@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-15,05/05/2026,09:00,"Holly Hall",hollyhall17@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-16,05/05/2026,10:15,"Mia Thomas",miathomas10@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-17,05/05/2026,11:00,"Sienna Cooper",siennacooper27@example.co.uk,"Marlowe & Rose Test","Priya Anand","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-18,05/05/2026,11:00,"Rosie Campbell",rosiecampbell33@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-19,05/05/2026,11:00,"Martha Carter",marthacarter39@example.co.uk,"Marlowe & Rose Test","Priya Anand","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-20,05/05/2026,11:30,"Ben Turner",benturner3@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-21,05/05/2026,16:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-22,06/05/2026,09:00,"Lily Edwards",lilyedwards25@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-23,06/05/2026,10:15,"Megan Green",megangreen18@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-24,06/05/2026,11:30,"Jessica Roberts",jessicaroberts11@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-25,06/05/2026,12:00,"Florence Ward",florenceward28@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Cut & Finish",55.00,Completed,Card
+SYN-TW-26,06/05/2026,12:00,"Lydia Parker",lydiaparker34@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-27,06/05/2026,12:00,"Harriet Mitchell",harrietmitchell40@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-28,06/05/2026,12:45,"Aisha Patel",aishapatel4@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-29,07/05/2026,11:30,"Daisy Harris",daisyharris19@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-30,07/05/2026,12:45,"Amelia Walker",ameliawalker12@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-31,07/05/2026,13:00,"Sophie Clarke",sophieclarke5@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-32,07/05/2026,13:00,"Phoebe Turner",phoebeturner29@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-33,07/05/2026,13:00,"Imogen Miller",imogenmiller35@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-34,07/05/2026,13:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-35,08/05/2026,12:45,"Abigail Martin",abigailmartin20@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-36,08/05/2026,13:00,"Chloe Wright",chloewright13@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-37,08/05/2026,14:00,"Harper Morris",harpermorris30@example.co.uk,"Marlowe & Rose Test","Priya Anand","Full Head Balayage",185.00,Completed,Card
+SYN-TW-38,08/05/2026,14:00,"Maya Davis",mayadavis36@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-39,08/05/2026,14:15,"Hannah Davies",hannahdavies6@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-40,09/05/2026,13:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-41,09/05/2026,14:15,"Emily Robinson",emilyrobinson14@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-42,09/05/2026,15:00,"Zara King",zaraking31@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Half Head Highlights",125.00,Completed,Card
+SYN-TW-43,09/05/2026,15:00,"Victoria Baker",victoriabaker37@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-44,09/05/2026,15:30,"Charlotte Evans",charlotteevans7@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-45,10/05/2026,13:00,"Gloria Delgado",gloriadelgado56@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-46,10/05/2026,15:30,"Zara King",zaraking31@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-47,11/05/2026,13:00,"Haley Dunphy",haleydunphy57@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Completed,Card
+SYN-TW-48,12/05/2026,13:00,"Alex Dunphy",alexdunphy58@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-49,13/05/2026,09:00,"Grace Holloway",graceholloway1@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Blow Dry & Style",38.00,No Show,
+SYN-TW-50,13/05/2026,13:00,"Donna Paulsen",donnapaulsen59@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Completed,Card
+SYN-TW-51,14/05/2026,13:00,"Rachel Zane",rachelzane60@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-52,15/05/2026,13:00,"Jessica Pearson",jessicapearson61@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-53,16/05/2026,11:30,"Jessica Roberts",jessicaroberts11@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-54,16/05/2026,13:00,"Fiona Gallagher",fionagallagher62@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-55,16/05/2026,14:15,"Hannah Davies",hannahdavies6@example.co.uk,"Marlowe & Rose Test","Priya Anand","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-56,17/05/2026,13:00,"Veronica Fisher",veronicafisher63@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Completed,Card
+SYN-TW-57,18/05/2026,13:00,"Debbie Gallagher",debbiegallagher64@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-58,19/05/2026,13:00,"Amy Santiago",amysantiago65@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Completed,Card
+SYN-TW-59,19/05/2026,16:45,"Katie White",katiewhite16@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Completed,Card
+SYN-TW-60,20/05/2026,13:00,"Rosa Diaz",rosadiaz66@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-61,21/05/2026,13:00,"Gina Linetti",ginalinetti67@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-62,22/05/2026,10:15,"Evelyn Hughes",evelynhughes26@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-63,22/05/2026,13:00,"Leslie Knope",leslieknope68@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-64,23/05/2026,13:00,"Ann Perkins",annperkins69@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Completed,Card
+SYN-TW-65,24/05/2026,13:00,"April Ludgate",aprilludgate70@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-66,25/05/2026,12:45,"Maya Davis",mayadavis36@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-67,31/05/2026,09:00,"Grace Holloway",graceholloway1@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-68,01/06/2026,11:30,"Lola Perez",lolaperez41@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-69,01/06/2026,13:00,"Victoria Baker",victoriabaker37@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Cancelled,
+SYN-TW-70,01/06/2026,14:15,"Poppy Wood",poppywood22@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-71,02/06/2026,10:15,"Emma Whitmore",emmawhitmore2@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-72,03/06/2026,10:00,"Evelyn Hughes",evelynhughes26@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Half Head Highlights",125.00,Completed,Card
+SYN-TW-73,03/06/2026,11:30,"Jessica Roberts",jessicaroberts11@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-74,03/06/2026,15:30,"Freya Lewis",freyalewis23@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-75,04/06/2026,10:00,"Ruby Phillips",rubyphillips32@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-76,04/06/2026,10:15,"Emma Whitmore",emmawhitmore2@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-77,04/06/2026,11:30,"Ben Turner",benturner3@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-78,04/06/2026,15:30,"Alice Thompson",alicethompson15@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-79,04/06/2026,15:30,"Charlotte Evans",charlotteevans7@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-80,05/06/2026,10:00,"Amber Nelson",ambernelson38@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Cut & Finish",55.00,Completed,Card
+SYN-TW-81,05/06/2026,11:00,"Sienna Cooper",siennacooper27@example.co.uk,"Marlowe & Rose Test","Priya Anand","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-82,05/06/2026,12:45,"Amelia Walker",ameliawalker12@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-83,05/06/2026,16:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-84,06/06/2026,11:00,"Rosie Campbell",rosiecampbell33@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-85,06/06/2026,12:45,"Aisha Patel",aishapatel4@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-86,06/06/2026,13:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-87,06/06/2026,16:45,"Katie White",katiewhite16@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-88,07/06/2026,09:00,"Lily Edwards",lilyedwards25@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-89,07/06/2026,11:00,"Martha Carter",marthacarter39@example.co.uk,"Marlowe & Rose Test","Priya Anand","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-90,07/06/2026,11:30,"Bethany Adams",bethanyadams44@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Completed,Cash
+SYN-TW-91,07/06/2026,12:00,"Florence Ward",florenceward28@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Cut & Finish",55.00,Completed,Card
+SYN-TW-92,07/06/2026,12:45,"Amelia Walker",ameliawalker12@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-93,07/06/2026,13:00,"Chloe Wright",chloewright13@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-94,07/06/2026,14:00,"Maya Davis",mayadavis36@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-95,07/06/2026,16:45,"Lucy Wilson",lucywilson8@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-96,08/06/2026,09:00,"Holly Hall",hollyhall17@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-97,08/06/2026,12:00,"Lydia Parker",lydiaparker34@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-98,08/06/2026,13:00,"Sophie Clarke",sophieclarke5@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-99,08/06/2026,15:00,"Zara King",zaraking31@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Half Head Highlights",125.00,Completed,Card
+SYN-TW-100,09/06/2026,09:00,"Ella Taylor",ellataylor9@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-101,09/06/2026,12:00,"Harriet Mitchell",harrietmitchell40@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-102,09/06/2026,13:00,"Phoebe Turner",phoebeturner29@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-103,09/06/2026,14:15,"Emily Robinson",emilyrobinson14@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-104,09/06/2026,15:00,"Victoria Baker",victoriabaker37@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-105,10/06/2026,10:15,"Megan Green",megangreen18@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-106,10/06/2026,13:00,"Imogen Miller",imogenmiller35@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-107,10/06/2026,14:15,"Hannah Davies",hannahdavies6@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-108,10/06/2026,14:15,"Poppy Wood",poppywood22@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-109,11/06/2026,10:15,"Mia Thomas",miathomas10@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-110,11/06/2026,14:00,"Harper Morris",harpermorris30@example.co.uk,"Marlowe & Rose Test","Priya Anand","Full Head Balayage",185.00,Completed,Card
+SYN-TW-111,12/06/2026,11:30,"Daisy Harris",daisyharris19@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-112,12/06/2026,15:30,"Charlotte Evans",charlotteevans7@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-113,13/06/2026,11:30,"Rebecca Clark",rebeccaclark47@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-114,13/06/2026,16:45,"Ruby Phillips",rubyphillips32@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Completed,Card
+SYN-TW-115,14/06/2026,12:45,"Abigail Martin",abigailmartin20@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-116,16/06/2026,10:15,"Emma Whitmore",emmawhitmore2@example.co.uk,"Marlowe & Rose Test","Priya Anand","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-117,19/06/2026,11:30,"Laura Murphy",lauramurphy50@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Cash
+SYN-TW-118,19/06/2026,12:45,"Amelia Walker",ameliawalker12@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Completed,Card
+SYN-TW-119,19/06/2026,15:30,"Charlotte Evans",charlotteevans7@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-120,22/06/2026,09:00,"Holly Hall",hollyhall17@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Blow Dry & Style",38.00,No Show,
+SYN-TW-121,25/06/2026,11:30,"Monica Geller",monicageller53@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-122,25/06/2026,11:30,"Sienna Cooper",siennacooper27@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-123,28/06/2026,09:00,"Grace Holloway",graceholloway1@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-124,30/06/2026,14:15,"Poppy Wood",poppywood22@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-125,01/07/2026,10:15,"Emma Whitmore",emmawhitmore2@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-126,01/07/2026,11:30,"Jessica Roberts",jessicaroberts11@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-127,01/07/2026,12:45,"Florence Ward",florenceward28@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Completed,Card
+SYN-TW-128,03/07/2026,10:00,"Evelyn Hughes",evelynhughes26@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Half Head Highlights",125.00,Completed,Cash
+SYN-TW-129,03/07/2026,11:30,"Millie Roberts",millieroberts42@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Cash
+SYN-TW-130,03/07/2026,15:30,"Freya Lewis",freyalewis23@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-131,04/07/2026,11:30,"Ben Turner",benturner3@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-132,04/07/2026,12:45,"Amelia Walker",ameliawalker12@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-133,04/07/2026,13:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-134,04/07/2026,14:15,"Amber Nelson",ambernelson38@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-135,05/07/2026,10:00,"Ruby Phillips",rubyphillips32@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Cash
+SYN-TW-136,05/07/2026,14:00,"Gloria Delgado",gloriadelgado56@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,No Show,
+SYN-TW-137,06/07/2026,14:00,"Haley Dunphy",haleydunphy57@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,No Show,
+SYN-TW-138,06/07/2026,15:30,"Alice Thompson",alicethompson15@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-139,06/07/2026,16:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-140,07/07/2026,10:00,"Amber Nelson",ambernelson38@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Cut & Finish",55.00,Completed,Cash
+SYN-TW-141,07/07/2026,11:30,"Ben Turner",benturner3@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-142,07/07/2026,12:45,"Aisha Patel",aishapatel4@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-143,07/07/2026,13:00,"Chloe Wright",chloewright13@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-144,07/07/2026,14:00,"Maya Davis",mayadavis36@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Cash
+SYN-TW-145,07/07/2026,14:00,"Alex Dunphy",alexdunphy58@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,No Show,
+SYN-TW-146,07/07/2026,16:45,"Lucy Wilson",lucywilson8@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-147,08/07/2026,14:00,"Donna Paulsen",donnapaulsen59@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,No Show,
+SYN-TW-148,09/07/2026,09:00,"Lily Edwards",lilyedwards25@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-149,09/07/2026,11:30,"Caitlin Baker",caitlinbaker45@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-150,09/07/2026,12:00,"Florence Ward",florenceward28@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Cut & Finish",55.00,Completed,Cash
+SYN-TW-151,09/07/2026,14:00,"Rachel Zane",rachelzane60@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,No Show,
+SYN-TW-152,09/07/2026,16:45,"Katie White",katiewhite16@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-153,10/07/2026,13:00,"Sophie Clarke",sophieclarke5@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-154,10/07/2026,13:00,"Chloe Wright",chloewright13@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Cancelled,
+SYN-TW-155,10/07/2026,14:00,"Jessica Pearson",jessicapearson61@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,No Show,
+SYN-TW-156,10/07/2026,14:15,"Emily Robinson",emilyrobinson14@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-157,11/07/2026,12:00,"Lydia Parker",lydiaparker34@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Cash
+SYN-TW-158,11/07/2026,14:00,"Fiona Gallagher",fionagallagher62@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,No Show,
+SYN-TW-159,12/07/2026,09:00,"Holly Hall",hollyhall17@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-160,12/07/2026,14:00,"Veronica Fisher",veronicafisher63@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,No Show,
+SYN-TW-161,12/07/2026,16:45,"Lucy Wilson",lucywilson8@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-162,13/07/2026,12:00,"Harriet Mitchell",harrietmitchell40@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Cash
+SYN-TW-163,13/07/2026,14:00,"Debbie Gallagher",debbiegallagher64@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,No Show,
+SYN-TW-164,13/07/2026,14:15,"Hannah Davies",hannahdavies6@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-165,13/07/2026,15:30,"Freya Lewis",freyalewis23@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-166,14/07/2026,14:00,"Amy Santiago",amysantiago65@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,No Show,
+SYN-TW-167,15/07/2026,09:00,"Ella Taylor",ellataylor9@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-168,15/07/2026,10:15,"Megan Green",megangreen18@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-169,15/07/2026,11:30,"Anna Morgan",annamorgan48@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Completed,Cash
+SYN-TW-170,15/07/2026,14:00,"Harper Morris",harpermorris30@example.co.uk,"Marlowe & Rose Test","Priya Anand","Full Head Balayage",185.00,Completed,Cash
+SYN-TW-171,15/07/2026,14:00,"Rosa Diaz",rosadiaz66@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,No Show,
+SYN-TW-172,16/07/2026,09:00,"Rosie Campbell",rosiecampbell33@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,No Show,
+SYN-TW-173,16/07/2026,14:00,"Gina Linetti",ginalinetti67@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,No Show,
+SYN-TW-174,16/07/2026,15:30,"Charlotte Evans",charlotteevans7@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-175,17/07/2026,14:00,"Leslie Knope",leslieknope68@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,No Show,
+SYN-TW-176,18/07/2026,10:15,"Mia Thomas",miathomas10@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-177,18/07/2026,11:30,"Daisy Harris",daisyharris19@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-178,18/07/2026,14:00,"Ann Perkins",annperkins69@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,No Show,
+SYN-TW-179,19/07/2026,11:30,"Ben Turner",benturner3@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-180,19/07/2026,14:00,"April Ludgate",aprilludgate70@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,No Show,
+SYN-TW-181,21/07/2026,11:30,"Sarah Jenkins",sarahjenkins51@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-182,21/07/2026,12:45,"Abigail Martin",abigailmartin20@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-183,22/07/2026,13:00,"Chloe Wright",chloewright13@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-184,22/07/2026,16:45,"Lucy Wilson",lucywilson8@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Completed,Card
+SYN-TW-185,25/07/2026,10:15,"Megan Green",megangreen18@example.co.uk,"Marlowe & Rose Test","Priya Anand","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-186,26/07/2026,09:00,"Grace Holloway",graceholloway1@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-187,27/07/2026,11:30,"Phoebe Buffay",phoebebuffay54@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Cash
+SYN-TW-188,29/07/2026,11:30,"Jessica Roberts",jessicaroberts11@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-189,29/07/2026,14:15,"Poppy Wood",poppywood22@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-190,30/07/2026,10:15,"Emma Whitmore",emmawhitmore2@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-191,01/08/2026,11:30,"Daisy Harris",daisyharris19@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-192,01/08/2026,13:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-193,02/08/2026,12:45,"Amelia Walker",ameliawalker12@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-194,02/08/2026,15:30,"Freya Lewis",freyalewis23@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-195,03/08/2026,11:30,"Ben Turner",benturner3@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-196,04/08/2026,13:00,"Phoebe Turner",phoebeturner29@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-197,05/08/2026,11:30,"Georgia Scott",georgiascott43@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-198,06/08/2026,13:00,"Chloe Wright",chloewright13@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-199,06/08/2026,16:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-200,07/08/2026,12:45,"Aisha Patel",aishapatel4@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-201,07/08/2026,15:30,"Alice Thompson",alicethompson15@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-202,07/08/2026,15:30,"Martha Carter",marthacarter39@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-203,10/08/2026,09:00,"Lily Edwards",lilyedwards25@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-204,10/08/2026,09:00,"Ella Taylor",ellataylor9@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,No Show,
+SYN-TW-205,10/08/2026,12:45,"Aisha Patel",aishapatel4@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Completed,Card
+SYN-TW-206,10/08/2026,14:15,"Emily Robinson",emilyrobinson14@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-207,11/08/2026,11:30,"Paige Kelly",paigekelly46@example.co.uk,"Marlowe & Rose Test","Priya Anand","Brow Tint & Shape",28.00,Completed,Cash
+SYN-TW-208,11/08/2026,13:00,"Sophie Clarke",sophieclarke5@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-209,11/08/2026,16:45,"Katie White",katiewhite16@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-210,12/08/2026,15:00,"Gloria Delgado",gloriadelgado56@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Cancelled,
+SYN-TW-211,13/08/2026,14:15,"Emily Robinson",emilyrobinson14@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-212,13/08/2026,15:00,"Haley Dunphy",haleydunphy57@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Cancelled,
+SYN-TW-213,14/08/2026,15:00,"Alex Dunphy",alexdunphy58@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Cancelled,
+SYN-TW-214,15/08/2026,09:00,"Holly Hall",hollyhall17@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-215,15/08/2026,14:15,"Hannah Davies",hannahdavies6@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-216,15/08/2026,15:00,"Donna Paulsen",donnapaulsen59@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Cancelled,
+SYN-TW-217,16/08/2026,15:00,"Rachel Zane",rachelzane60@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Cancelled,
+SYN-TW-218,16/08/2026,16:45,"Lucy Wilson",lucywilson8@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-219,16/08/2026,16:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-220,17/08/2026,11:30,"Faith Bell",faithbell49@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-221,17/08/2026,15:00,"Jessica Pearson",jessicapearson61@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Cancelled,
+SYN-TW-222,18/08/2026,15:00,"Fiona Gallagher",fionagallagher62@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Cancelled,
+SYN-TW-223,19/08/2026,10:15,"Megan Green",megangreen18@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-224,19/08/2026,10:15,"Lydia Parker",lydiaparker34@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-225,19/08/2026,15:00,"Veronica Fisher",veronicafisher63@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Cancelled,
+SYN-TW-226,19/08/2026,15:30,"Charlotte Evans",charlotteevans7@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-227,20/08/2026,09:00,"Ella Taylor",ellataylor9@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-228,20/08/2026,15:00,"Debbie Gallagher",debbiegallagher64@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Cancelled,
+SYN-TW-229,21/08/2026,15:00,"Amy Santiago",amysantiago65@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Cancelled,
+SYN-TW-230,22/08/2026,12:45,"Aisha Patel",aishapatel4@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Completed,Card
+SYN-TW-231,22/08/2026,15:00,"Rosa Diaz",rosadiaz66@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Cancelled,
+SYN-TW-232,23/08/2026,09:00,"Grace Holloway",graceholloway1@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-233,23/08/2026,11:30,"Daisy Harris",daisyharris19@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-234,23/08/2026,11:30,"Rachel Green",rachelgreen52@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Completed,Cash
+SYN-TW-235,23/08/2026,15:00,"Gina Linetti",ginalinetti67@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Cancelled,
+SYN-TW-236,24/08/2026,10:15,"Mia Thomas",miathomas10@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-237,24/08/2026,15:00,"Leslie Knope",leslieknope68@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Cancelled,
+SYN-TW-238,25/08/2026,09:00,"Ella Taylor",ellataylor9@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,No Show,
+SYN-TW-239,25/08/2026,14:15,"Emily Robinson",emilyrobinson14@example.co.uk,"Marlowe & Rose Test","Priya Anand","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-240,25/08/2026,15:00,"Ann Perkins",annperkins69@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Cancelled,
+SYN-TW-241,26/08/2026,11:30,"Jessica Roberts",jessicaroberts11@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-242,26/08/2026,15:00,"April Ludgate",aprilludgate70@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Cancelled,
+SYN-TW-243,27/08/2026,12:45,"Abigail Martin",abigailmartin20@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-244,27/08/2026,14:15,"Poppy Wood",poppywood22@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-245,28/08/2026,10:15,"Emma Whitmore",emmawhitmore2@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-246,29/08/2026,11:30,"Claire Dunphy",clairedunphy55@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-247,29/08/2026,13:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-248,31/08/2026,12:45,"Amelia Walker",ameliawalker12@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-249,01/09/2026,10:15,"Mia Thomas",miathomas10@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-250,01/09/2026,15:30,"Freya Lewis",freyalewis23@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-251,01/09/2026,15:30,"Alice Thompson",alicethompson15@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,Completed,Card
+SYN-TW-252,02/09/2026,11:30,"Ben Turner",benturner3@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-253,04/09/2026,12:45,"Abigail Martin",abigailmartin20@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Completed,Card
+SYN-TW-254,05/09/2026,13:00,"Chloe Wright",chloewright13@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-255,06/09/2026,16:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-256,07/09/2026,12:45,"Aisha Patel",aishapatel4@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-257,07/09/2026,14:15,"Harper Morris",harpermorris30@example.co.uk,"Marlowe & Rose Test","Priya Anand","Brow Tint & Shape",28.00,Completed,Card
+SYN-TW-258,08/09/2026,15:30,"Alice Thompson",alicethompson15@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-259,10/09/2026,14:15,"Emily Robinson",emilyrobinson14@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-260,10/09/2026,16:45,"Harriet Mitchell",harrietmitchell40@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Completed,Card
+SYN-TW-261,11/09/2026,09:00,"Lily Edwards",lilyedwards25@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-262,12/09/2026,13:00,"Sophie Clarke",sophieclarke5@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-263,13/09/2026,10:15,"Mia Thomas",miathomas10@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-264,13/09/2026,13:00,"Sophie Clarke",sophieclarke5@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-265,13/09/2026,16:45,"Katie White",katiewhite16@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-266,16/09/2026,15:30,"Alice Thompson",alicethompson15@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-267,17/09/2026,14:15,"Hannah Davies",hannahdavies6@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-268,18/09/2026,09:00,"Holly Hall",hollyhall17@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-269,19/09/2026,09:00,"Lily Edwards",lilyedwards25@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,No Show,
+SYN-TW-270,20/09/2026,09:00,"Grace Holloway",graceholloway1@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-271,20/09/2026,16:00,"Gloria Delgado",gloriadelgado56@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,No Show,
+SYN-TW-272,20/09/2026,16:00,"Debbie Gallagher",debbiegallagher64@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,No Show,
+SYN-TW-273,20/09/2026,16:45,"Lucy Wilson",lucywilson8@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-274,21/09/2026,16:00,"Haley Dunphy",haleydunphy57@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Cancelled,
+SYN-TW-275,21/09/2026,16:00,"Amy Santiago",amysantiago65@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Cancelled,
+SYN-TW-276,22/09/2026,11:30,"Imogen Miller",imogenmiller35@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,Completed,Card
+SYN-TW-277,22/09/2026,15:30,"Charlotte Evans",charlotteevans7@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-278,22/09/2026,16:00,"Alex Dunphy",alexdunphy58@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,No Show,
+SYN-TW-279,22/09/2026,16:00,"Rosa Diaz",rosadiaz66@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,No Show,
+SYN-TW-280,23/09/2026,10:15,"Megan Green",megangreen18@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-281,23/09/2026,11:30,"Jessica Roberts",jessicaroberts11@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-282,23/09/2026,16:00,"Donna Paulsen",donnapaulsen59@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Cut & Finish",55.00,Cancelled,
+SYN-TW-283,23/09/2026,16:00,"Gina Linetti",ginalinetti67@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Cancelled,
+SYN-TW-284,24/09/2026,16:00,"Rachel Zane",rachelzane60@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Blow Dry & Style",38.00,No Show,
+SYN-TW-285,24/09/2026,16:00,"Leslie Knope",leslieknope68@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,No Show,
+SYN-TW-286,25/09/2026,09:00,"Ella Taylor",ellataylor9@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-287,25/09/2026,13:00,"Sophie Clarke",sophieclarke5@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-288,25/09/2026,14:15,"Poppy Wood",poppywood22@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-289,25/09/2026,16:00,"Jessica Pearson",jessicapearson61@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Brow Tint & Shape",28.00,Cancelled,
+SYN-TW-290,25/09/2026,16:00,"Ann Perkins",annperkins69@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Cancelled,
+SYN-TW-291,26/09/2026,10:15,"Emma Whitmore",emmawhitmore2@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-292,26/09/2026,13:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-293,26/09/2026,16:00,"Fiona Gallagher",fionagallagher62@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","Full Head Balayage",185.00,No Show,
+SYN-TW-294,26/09/2026,16:00,"April Ludgate",aprilludgate70@example.co.uk,"Marlowe & Rose Test","Jack Sullivan","T-Zone Root Tint",65.00,No Show,
+SYN-TW-295,27/09/2026,16:00,"Veronica Fisher",veronicafisher63@example.co.uk,"Marlowe & Rose Test","Olivia Hart","Half Head Highlights",125.00,Cancelled,
+SYN-TW-296,28/09/2026,11:30,"Daisy Harris",daisyharris19@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-297,29/09/2026,12:45,"Amelia Walker",ameliawalker12@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-298,30/09/2026,10:15,"Mia Thomas",miathomas10@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card
+SYN-TW-299,01/10/2026,15:30,"Freya Lewis",freyalewis23@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-300,02/10/2026,11:30,"Ben Turner",benturner3@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-301,03/10/2026,12:45,"Abigail Martin",abigailmartin20@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-302,05/10/2026,13:00,"Chloe Wright",chloewright13@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","Full Head Balayage",185.00,Completed,Card
+SYN-TW-303,07/10/2026,16:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-304,08/10/2026,12:45,"Aisha Patel",aishapatel4@example.co.uk,"Marlowe & Rose Test","Priya Anand","Cut & Finish",55.00,Completed,Card
+SYN-TW-305,10/10/2026,15:30,"Alice Thompson",alicethompson15@example.co.uk,"Marlowe & Rose Test","Chloe Bennett","T-Zone Root Tint",65.00,Completed,Card
+SYN-TW-306,11/10/2026,14:15,"Emily Robinson",emilyrobinson14@example.co.uk,"Marlowe & Rose Test","Priya Anand","Half Head Highlights",125.00,Completed,Card

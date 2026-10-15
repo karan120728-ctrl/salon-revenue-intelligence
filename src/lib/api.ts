@@ -6,18 +6,72 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
 export async function fetchApi(endpoint: string, options: RequestInit = {}) {
+  let token = '';
+  if (typeof window !== 'undefined') {
+    token = localStorage.getItem('salon_token') || '';
+  }
+
+  const isDemoUser = token === 'demo-token';
+  const forceDemo = process.env.NEXT_PUBLIC_DEMO_MODE === 'true';
+
+  // If we have a real backend token and demo mode is not forced, hit the real backend first
+  if (token && !isDemoUser && !forceDemo) {
+    try {
+      const res = await fetch(`${API_BASE}${endpoint}`, {
+        ...options,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+          ...options.headers,
+        },
+      });
+
+      if (res.status === 401) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('salon_token');
+          window.location.href = '/login';
+        }
+      }
+
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn(`[API] Live backend call to ${endpoint} failed, checking demo fallback...`, err);
+    }
+  }
+
   // ==========================================
-  // 🚀 STANDALONE DEMO MODE INTERCEPT
-  // These routes return hardcoded static data so the Vercel frontend works 
-  // perfectly for prospects without needing the Render backend.
+  // 🚀 STANDALONE DEMO MODE INTERCEPT / FALLBACK
   // ==========================================
 
   if (endpoint === '/health') {
+    try {
+      const r = await fetch(`${API_BASE}/health`);
+      if (r.ok) return await r.json();
+    } catch (_) {}
     await delay(200);
     return { ok: true };
   }
 
   if (endpoint === '/auth/login') {
+    // Attempt real backend authentication first unless forced demo
+    if (!forceDemo) {
+      try {
+        const res = await fetch(`${API_BASE}/auth/login`, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+          },
+        });
+        if (res.ok) {
+          return await res.json();
+        }
+      } catch (err) {
+        console.warn('[API] Backend login failed, falling back to demo login:', err);
+      }
+    }
     await delay(1000); // Simulate sign-in delay
     return { token: 'demo-token', user: { name: 'Sarah', role: 'OWNER' } };
   }
@@ -136,11 +190,6 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   // ==========================================
   // REAL BACKEND CALL (Runs if it's not a mocked route)
   // ==========================================
-
-  let token = '';
-  if (typeof window !== 'undefined') {
-    token = localStorage.getItem('salon_token') || '';
-  }
 
   const res = await fetch(`${API_BASE}${endpoint}`, {
     ...options,
