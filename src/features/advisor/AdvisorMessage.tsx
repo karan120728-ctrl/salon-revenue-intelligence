@@ -236,14 +236,17 @@ export default function AdvisorMessage({ role, text }: AdvisorMessageProps) {
   // 2. Separate condensed table rows: '| |' -> '|\n|'
   cleanText = cleanText.replace(/\|\s+(\|)/g, '|\n$1');
 
-  // 3. Separate inline numbered lists only if preceded by sentence punctuation
+  // 3. Pre-process inline dash bullet lists: 'Revenue Snapshot (Current Month) - Total Revenue: £644 - Appointments Booked: 13'
+  cleanText = cleanText.replace(/([^\n])\s+-\s+([A-Z£\d])/g, '$1\n- $2');
+
+  // 4. Separate inline numbered lists only if preceded by sentence punctuation
   cleanText = cleanText
     .replace(/([.:;!?])\s+(\d+\.\s+\*\*)/g, '$1\n\n$2')
     .replace(/([.:;!?])\s+(\d+\.\s+[A-Z])/g, '$1\n\n$2');
 
   const rawParagraphs = cleanText.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
 
-  // 4. Detect Outreach / Message Draft
+  // 5. Detect Outreach / Message Draft
   const greetingIdx = rawParagraphs.findIndex(p => /^(Hi|Dear|Hey|Hello)\s+[A-Z]/i.test(p));
   let draftTitle = 'Personalised Client Outreach';
   let draftBody = '';
@@ -274,7 +277,27 @@ export default function AdvisorMessage({ role, text }: AdvisorMessageProps) {
 
   // Render a standard paragraph or block
   const renderParagraphBlock = (para: string, pIdx: number) => {
-    const lines = para.split('\n').map(l => l.trim()).filter(Boolean);
+    const trimmed = para.trim();
+
+    // 0a. Horizontal Rule: --- or ***
+    if (/^[-*_]{3,}$/.test(trimmed)) {
+      return <hr key={pIdx} className="border-t border-[var(--line)]/70 my-3" />;
+    }
+
+    // 0b. Markdown Headings: ### Why the dip?
+    if (/^#{1,4}\s+/.test(trimmed)) {
+      const headerText = trimmed.replace(/^#{1,4}\s+/, '').replace(/\*\*/g, '').trim();
+      return (
+        <div key={pIdx} className="pt-2 pb-1 border-b border-[var(--line)]/40">
+          <h3 className="text-xs sm:text-sm font-bold text-[var(--ink)] tracking-tight flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--rosewood)]" />
+            {headerText}
+          </h3>
+        </div>
+      );
+    }
+
+    const lines = trimmed.split('\n').map(l => l.trim()).filter(Boolean);
 
     // 1. Table Detection
     const tableLines = lines.filter(isTableRow);
@@ -326,9 +349,67 @@ export default function AdvisorMessage({ role, text }: AdvisorMessageProps) {
       );
     }
 
-    // 2. Numbered / Bulleted List Detection
+    // 2. Numbered / Bulleted List Detection (handles hierarchical numbered items with sub-bullets)
     const isList = lines.every(l => /^(\d+\.|\*|-|•)\s+/.test(l));
     if (isList && lines.length > 0) {
+      const hasNumberedAndBullets = lines.some(l => /^\d+\.\s+/.test(l)) && lines.some(l => /^[-*•]\s+/.test(l));
+
+      if (hasNumberedAndBullets) {
+        // Group numbered items with their sub-bullets
+        const groups: Array<{ number: string; title: string; items: string[] }> = [];
+        let currentGroup: { number: string; title: string; items: string[] } | null = null;
+
+        for (const line of lines) {
+          const numMatch = line.match(/^(\d+)\.\s+(.*)$/);
+          if (numMatch) {
+            currentGroup = { number: numMatch[1], title: numMatch[2], items: [] };
+            groups.push(currentGroup);
+          } else {
+            const itemMatch = line.match(/^[-*•]\s+(.*)$/);
+            const content = itemMatch ? itemMatch[1] : line;
+            if (currentGroup) {
+              currentGroup.items.push(content);
+            } else {
+              groups.push({ number: '', title: content, items: [] });
+            }
+          }
+        }
+
+        return (
+          <div key={pIdx} className="space-y-2.5 my-2.5">
+            {groups.map((group, gIdx) => (
+              <div
+                key={gIdx}
+                className="p-3 sm:p-3.5 rounded-xl bg-[var(--paper)]/60 border border-[var(--line)]/80 shadow-2xs hover:border-[var(--line)] transition-colors space-y-1.5"
+              >
+                <div className="flex items-center gap-2">
+                  {group.number && (
+                    <span className="w-5 h-5 rounded-full bg-[var(--ink)] text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0">
+                      {group.number}
+                    </span>
+                  )}
+                  <h4 className="text-xs sm:text-sm font-bold text-[var(--ink)]">
+                    {renderInlineFormatted(group.title)}
+                  </h4>
+                </div>
+
+                {group.items.length > 0 && (
+                  <div className="pl-7 space-y-1 pt-0.5">
+                    {group.items.map((sub, sIdx) => (
+                      <div key={sIdx} className="flex items-start gap-2 text-xs sm:text-[13px] text-[var(--ink-soft)] leading-relaxed">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--rosewood)]/70 flex-shrink-0 mt-1.5" />
+                        <span className="flex-1">{renderInlineFormatted(sub)}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      // Standard flat list
       return (
         <div key={pIdx} className="space-y-2 my-2">
           {lines.map((item, iIdx) => {
@@ -357,22 +438,39 @@ export default function AdvisorMessage({ role, text }: AdvisorMessageProps) {
     // 3. Highlighted Callout / Recommendation Box
     const isRecommendation = /^(focus on|recommended action|recommended|action|tip|key takeaway|strategy|next steps?):?/i.test(para);
     if (isRecommendation) {
-      const cleanRecContent = para
-        .replace(/^(focus on|recommended action|recommended|action|tip|key takeaway|strategy|next steps?):?\s*(-|\*)?\s*/i, '')
+      const rawContent = para
+        .replace(/^(focus on|recommended action|recommended|action|tip|key takeaway|strategy|next steps?):?\s*/i, '')
         .trim();
+
+      const actionItems = rawContent
+        .split(/(?:^|\n|\s+)-\s+/)
+        .map(a => a.trim())
+        .filter(Boolean);
 
       return (
         <div
           key={pIdx}
-          className="p-3.5 rounded-xl bg-[var(--paper)]/70 border-l-4 border-l-[var(--rosewood)] border border-[var(--line)] shadow-2xs my-2.5"
+          className="p-3.5 sm:p-4 rounded-xl bg-[var(--paper)]/80 border-l-4 border-l-[var(--rosewood)] border border-[var(--line)] shadow-2xs my-3 space-y-2"
         >
-          <div className="flex items-center gap-1.5 mb-1 text-xs font-bold uppercase tracking-wider text-[var(--rosewood)]">
+          <div className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[var(--rosewood)]">
             <Icon name="sparkle" size={13} />
             <span>Recommended Executive Action</span>
           </div>
-          <div className="text-xs sm:text-sm leading-relaxed text-[var(--ink)] font-normal">
-            {renderInlineFormatted(cleanRecContent)}
-          </div>
+
+          {actionItems.length > 1 ? (
+            <div className="space-y-1.5 pt-0.5">
+              {actionItems.map((act, aIdx) => (
+                <div key={aIdx} className="flex items-start gap-2 text-xs sm:text-sm text-[var(--ink)] font-normal leading-relaxed">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[var(--rosewood)] flex-shrink-0 mt-1.5" />
+                  <span className="flex-1">{renderInlineFormatted(act)}</span>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-xs sm:text-sm leading-relaxed text-[var(--ink)] font-normal">
+              {renderInlineFormatted(rawContent.replace(/^-\s*/, ''))}
+            </div>
+          )}
         </div>
       );
     }
