@@ -58,33 +58,54 @@ function renderInlineFormatted(text: string) {
   });
 }
 
-// Check if a line is a table row: starts with | and ends with |
+// Check if a line is a table row: pipe-delimited or tab-delimited
 function isTableRow(line: string) {
   const trimmed = line.trim();
-  return trimmed.startsWith('|') && trimmed.endsWith('|') && trimmed.length > 2;
+  if (line.split('\t').length >= 3) return true;
+  if ((trimmed.match(/\|/g) || []).length >= 2) return true;
+  return false;
 }
 
 // Check if line is table divider: e.g. |---|---|
 function isTableDivider(line: string) {
-  return isTableRow(line) && /^\|[-:\s|]+\|$/.test(line.trim());
+  return /^\|?[-:\s|]+\|?$/.test(line.trim());
 }
 
-// Parse markdown table rows
+// Parse markdown or tab-separated table rows
 function parseTable(lines: string[]) {
   if (lines.length === 0) return null;
+
+  // 1. Tab-delimited table
+  if (lines[0].includes('\t')) {
+    const rawHeader = lines[0];
+    const headers = rawHeader
+      .split('\t')
+      .map(h => h.trim().replace(/^#+/, '#').replace(/\*\*/g, ''))
+      .filter(Boolean);
+
+    const rows = lines.slice(1).map(line => {
+      if (line.includes('\t')) {
+        return line.split('\t').map(c => c.trim());
+      }
+      return line.split('|').map(c => c.trim()).filter(Boolean);
+    });
+
+    return { headers, rows };
+  }
+
+  // 2. Standard pipe table
   const rawHeader = lines[0];
   const headers = rawHeader
     .split('|')
-    .slice(1, -1)
-    .map(h => h.trim());
+    .map(h => h.trim().replace(/\*\*/g, ''))
+    .filter(Boolean);
 
-  // skip divider if present
   const dataLines = lines.slice(1).filter(l => !isTableDivider(l));
   const rows = dataLines.map(line =>
     line
       .split('|')
-      .slice(1, -1)
       .map(c => c.trim())
+      .filter(Boolean)
   );
 
   return { headers, rows };

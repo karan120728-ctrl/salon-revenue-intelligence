@@ -258,7 +258,7 @@ ${contextStr}
 
     try {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 15000);
+      const timeout = setTimeout(() => controller.abort(), 30000);
 
       const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
         method: 'POST',
@@ -274,7 +274,7 @@ ${contextStr}
             { role: 'user', content: query }
           ],
           temperature: 0.3,
-          max_tokens: 400
+          max_tokens: 1500
         }),
         signal: controller.signal
       });
