@@ -130,7 +130,7 @@ Tips must be specific, actionable, and grounded in today's data only.`;
           'Authorization': `Bearer ${apiKey.trim()}`
         },
         body: JSON.stringify({
-          model: 'openai/gpt-oss-20b',
+          model: 'groq/compound-mini',
           messages: [
             { role: 'system', content: prompt },
             { role: 'user', content: 'Generate now.' }
@@ -261,7 +261,7 @@ ${contextStr}
           'Authorization': `Bearer ${apiKey.trim()}`
         },
         body: JSON.stringify({
-          model: 'openai/gpt-oss-20b',
+          model: 'groq/compound-mini',
           messages: [
             { role: 'system', content: systemPrompt },
             ...conversationMessages,

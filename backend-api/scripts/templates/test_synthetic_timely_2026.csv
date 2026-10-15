@@ -1,0 +1,307 @@
+ID,Start,End,Client,Client Email,Client Phone,Staff,Service,Price,Status,Payment,Payment Method
+SYN-TML-01,01/05/2026 09:00,01/05/2026 12:00,"Grace Holloway",graceholloway1@example.co.uk,+44770090000,"Chloe Bennett","Full Head Balayage",185.00,No Show,,
+SYN-TML-02,01/05/2026 14:15,01/05/2026 15:15,"Hannah Davies",hannahdavies6@example.co.uk,+44770090005,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-03,03/05/2026 09:00,03/05/2026 12:00,"Grace Holloway",graceholloway1@example.co.uk,+44770090000,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-04,03/05/2026 14:15,03/05/2026 16:15,"Poppy Wood",poppywood22@example.co.uk,+44770090021,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-05,03/05/2026 15:30,03/05/2026 16:30,"Alice Thompson",alicethompson15@example.co.uk,+44770090014,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-06,03/05/2026 16:45,03/05/2026 17:45,"Lucy Wilson",lucywilson8@example.co.uk,+44770090007,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-07,04/05/2026 09:00,04/05/2026 12:00,"Ella Taylor",ellataylor9@example.co.uk,+44770090008,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-08,04/05/2026 10:00,04/05/2026 12:00,"Evelyn Hughes",evelynhughes26@example.co.uk,+44770090025,"Chloe Bennett","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-09,04/05/2026 10:00,04/05/2026 11:00,"Ruby Phillips",rubyphillips32@example.co.uk,+44770090031,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-10,04/05/2026 10:00,04/05/2026 11:00,"Amber Nelson",ambernelson38@example.co.uk,+44770090037,"Chloe Bennett","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-11,04/05/2026 10:15,04/05/2026 12:15,"Emma Whitmore",emmawhitmore2@example.co.uk,+44770090001,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-12,04/05/2026 11:30,04/05/2026 12:15,"Jessica Roberts",jessicaroberts11@example.co.uk,+44770090010,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-13,04/05/2026 15:30,04/05/2026 16:30,"Freya Lewis",freyalewis23@example.co.uk,+44770090022,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-14,04/05/2026 16:45,04/05/2026 17:45,"Katie White",katiewhite16@example.co.uk,+44770090015,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-15,05/05/2026 09:00,05/05/2026 12:00,"Holly Hall",hollyhall17@example.co.uk,+44770090016,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-16,05/05/2026 10:15,05/05/2026 12:15,"Mia Thomas",miathomas10@example.co.uk,+44770090009,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-17,05/05/2026 11:00,05/05/2026 12:00,"Sienna Cooper",siennacooper27@example.co.uk,+44770090026,"Priya Anand","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-18,05/05/2026 11:00,05/05/2026 12:00,"Rosie Campbell",rosiecampbell33@example.co.uk,+44770090032,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-19,05/05/2026 11:00,05/05/2026 11:45,"Martha Carter",marthacarter39@example.co.uk,+44770090038,"Priya Anand","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-20,05/05/2026 11:30,05/05/2026 12:30,"Ben Turner",benturner3@example.co.uk,+44770090002,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-21,05/05/2026 16:45,05/05/2026 17:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,+44770090023,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-22,06/05/2026 09:00,06/05/2026 12:00,"Lily Edwards",lilyedwards25@example.co.uk,+44770090024,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-23,06/05/2026 10:15,06/05/2026 12:15,"Megan Green",megangreen18@example.co.uk,+44770090017,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-24,06/05/2026 11:30,06/05/2026 12:30,"Jessica Roberts",jessicaroberts11@example.co.uk,+44770090010,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-25,06/05/2026 12:00,06/05/2026 13:00,"Florence Ward",florenceward28@example.co.uk,+44770090027,"Jack Sullivan","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-26,06/05/2026 12:00,06/05/2026 12:45,"Lydia Parker",lydiaparker34@example.co.uk,+44770090033,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-27,06/05/2026 12:00,06/05/2026 15:00,"Harriet Mitchell",harrietmitchell40@example.co.uk,+44770090039,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-28,06/05/2026 12:45,06/05/2026 13:45,"Aisha Patel",aishapatel4@example.co.uk,+44770090003,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-29,07/05/2026 11:30,07/05/2026 12:30,"Daisy Harris",daisyharris19@example.co.uk,+44770090018,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-30,07/05/2026 12:45,07/05/2026 13:45,"Amelia Walker",ameliawalker12@example.co.uk,+44770090011,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-31,07/05/2026 13:00,07/05/2026 16:00,"Sophie Clarke",sophieclarke5@example.co.uk,+44770090004,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-32,07/05/2026 13:00,07/05/2026 13:45,"Phoebe Turner",phoebeturner29@example.co.uk,+44770090028,"Chloe Bennett","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-33,07/05/2026 13:00,07/05/2026 16:00,"Imogen Miller",imogenmiller35@example.co.uk,+44770090034,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-34,07/05/2026 13:00,07/05/2026 14:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,+44770090020,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-35,08/05/2026 12:45,08/05/2026 13:45,"Abigail Martin",abigailmartin20@example.co.uk,+44770090019,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-36,08/05/2026 13:00,08/05/2026 16:00,"Chloe Wright",chloewright13@example.co.uk,+44770090012,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-37,08/05/2026 14:00,08/05/2026 17:00,"Harper Morris",harpermorris30@example.co.uk,+44770090029,"Priya Anand","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-38,08/05/2026 14:00,08/05/2026 16:00,"Maya Davis",mayadavis36@example.co.uk,+44770090035,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-39,08/05/2026 14:15,08/05/2026 16:15,"Hannah Davies",hannahdavies6@example.co.uk,+44770090005,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-40,09/05/2026 13:00,09/05/2026 16:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,+44770090020,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-41,09/05/2026 14:15,09/05/2026 16:15,"Emily Robinson",emilyrobinson14@example.co.uk,+44770090013,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-42,09/05/2026 15:00,09/05/2026 17:00,"Zara King",zaraking31@example.co.uk,+44770090030,"Jack Sullivan","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-43,09/05/2026 15:00,09/05/2026 16:00,"Victoria Baker",victoriabaker37@example.co.uk,+44770090036,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-44,09/05/2026 15:30,09/05/2026 16:30,"Charlotte Evans",charlotteevans7@example.co.uk,+44770090006,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-45,10/05/2026 13:00,10/05/2026 16:00,"Gloria Delgado",gloriadelgado56@example.co.uk,+44770090055,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-46,10/05/2026 15:30,10/05/2026 18:30,"Zara King",zaraking31@example.co.uk,+44770090030,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-47,11/05/2026 13:00,11/05/2026 15:00,"Haley Dunphy",haleydunphy57@example.co.uk,+44770090056,"Olivia Hart","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-48,12/05/2026 13:00,12/05/2026 14:00,"Alex Dunphy",alexdunphy58@example.co.uk,+44770090057,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-49,13/05/2026 09:00,13/05/2026 09:45,"Grace Holloway",graceholloway1@example.co.uk,+44770090000,"Chloe Bennett","Blow Dry & Style",38.00,No Show,,
+SYN-TML-50,13/05/2026 13:00,13/05/2026 14:00,"Donna Paulsen",donnapaulsen59@example.co.uk,+44770090058,"Olivia Hart","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-51,14/05/2026 13:00,14/05/2026 13:45,"Rachel Zane",rachelzane60@example.co.uk,+44770090059,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-52,15/05/2026 13:00,15/05/2026 13:30,"Jessica Pearson",jessicapearson61@example.co.uk,+44770090060,"Olivia Hart","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-53,16/05/2026 11:30,16/05/2026 12:30,"Jessica Roberts",jessicaroberts11@example.co.uk,+44770090010,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-54,16/05/2026 13:00,16/05/2026 16:00,"Fiona Gallagher",fionagallagher62@example.co.uk,+44770090061,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-55,16/05/2026 14:15,16/05/2026 14:45,"Hannah Davies",hannahdavies6@example.co.uk,+44770090005,"Priya Anand","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-56,17/05/2026 13:00,17/05/2026 15:00,"Veronica Fisher",veronicafisher63@example.co.uk,+44770090062,"Olivia Hart","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-57,18/05/2026 13:00,18/05/2026 14:00,"Debbie Gallagher",debbiegallagher64@example.co.uk,+44770090063,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-58,19/05/2026 13:00,19/05/2026 14:00,"Amy Santiago",amysantiago65@example.co.uk,+44770090064,"Olivia Hart","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-59,19/05/2026 16:45,19/05/2026 17:45,"Katie White",katiewhite16@example.co.uk,+44770090015,"Olivia Hart","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-60,20/05/2026 13:00,20/05/2026 13:45,"Rosa Diaz",rosadiaz66@example.co.uk,+44770090065,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-61,21/05/2026 13:00,21/05/2026 13:30,"Gina Linetti",ginalinetti67@example.co.uk,+44770090066,"Olivia Hart","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-62,22/05/2026 10:15,22/05/2026 12:15,"Evelyn Hughes",evelynhughes26@example.co.uk,+44770090025,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-63,22/05/2026 13:00,22/05/2026 16:00,"Leslie Knope",leslieknope68@example.co.uk,+44770090067,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-64,23/05/2026 13:00,23/05/2026 15:00,"Ann Perkins",annperkins69@example.co.uk,+44770090068,"Olivia Hart","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-65,24/05/2026 13:00,24/05/2026 14:00,"April Ludgate",aprilludgate70@example.co.uk,+44770090069,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-66,25/05/2026 12:45,25/05/2026 13:15,"Maya Davis",mayadavis36@example.co.uk,+44770090035,"Olivia Hart","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-67,31/05/2026 09:00,31/05/2026 12:00,"Grace Holloway",graceholloway1@example.co.uk,+44770090000,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-68,01/06/2026 11:30,01/06/2026 14:30,"Lola Perez",lolaperez41@example.co.uk,+44770090040,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-69,01/06/2026 13:00,01/06/2026 16:00,"Victoria Baker",victoriabaker37@example.co.uk,+44770090036,"Chloe Bennett","Full Head Balayage",185.00,Cancelled,,
+SYN-TML-70,01/06/2026 14:15,01/06/2026 16:15,"Poppy Wood",poppywood22@example.co.uk,+44770090021,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-71,02/06/2026 10:15,02/06/2026 12:15,"Emma Whitmore",emmawhitmore2@example.co.uk,+44770090001,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-72,03/06/2026 10:00,03/06/2026 12:00,"Evelyn Hughes",evelynhughes26@example.co.uk,+44770090025,"Chloe Bennett","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-73,03/06/2026 11:30,03/06/2026 12:30,"Jessica Roberts",jessicaroberts11@example.co.uk,+44770090010,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-74,03/06/2026 15:30,03/06/2026 16:30,"Freya Lewis",freyalewis23@example.co.uk,+44770090022,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-75,04/06/2026 10:00,04/06/2026 11:00,"Ruby Phillips",rubyphillips32@example.co.uk,+44770090031,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-76,04/06/2026 10:15,04/06/2026 12:15,"Emma Whitmore",emmawhitmore2@example.co.uk,+44770090001,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-77,04/06/2026 11:30,04/06/2026 12:30,"Ben Turner",benturner3@example.co.uk,+44770090002,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-78,04/06/2026 15:30,04/06/2026 16:30,"Alice Thompson",alicethompson15@example.co.uk,+44770090014,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-79,04/06/2026 15:30,04/06/2026 16:15,"Charlotte Evans",charlotteevans7@example.co.uk,+44770090006,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-80,05/06/2026 10:00,05/06/2026 11:00,"Amber Nelson",ambernelson38@example.co.uk,+44770090037,"Chloe Bennett","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-81,05/06/2026 11:00,05/06/2026 12:00,"Sienna Cooper",siennacooper27@example.co.uk,+44770090026,"Priya Anand","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-82,05/06/2026 12:45,05/06/2026 13:45,"Amelia Walker",ameliawalker12@example.co.uk,+44770090011,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-83,05/06/2026 16:45,05/06/2026 17:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,+44770090023,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-84,06/06/2026 11:00,06/06/2026 12:00,"Rosie Campbell",rosiecampbell33@example.co.uk,+44770090032,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-85,06/06/2026 12:45,06/06/2026 13:45,"Aisha Patel",aishapatel4@example.co.uk,+44770090003,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-86,06/06/2026 13:00,06/06/2026 16:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,+44770090020,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-87,06/06/2026 16:45,06/06/2026 17:45,"Katie White",katiewhite16@example.co.uk,+44770090015,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-88,07/06/2026 09:00,07/06/2026 12:00,"Lily Edwards",lilyedwards25@example.co.uk,+44770090024,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-89,07/06/2026 11:00,07/06/2026 11:45,"Martha Carter",marthacarter39@example.co.uk,+44770090038,"Priya Anand","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-90,07/06/2026 11:30,07/06/2026 12:30,"Bethany Adams",bethanyadams44@example.co.uk,+44770090043,"Olivia Hart","Cut & Finish",55.00,Completed,55.00,Cash
+SYN-TML-91,07/06/2026 12:00,07/06/2026 13:00,"Florence Ward",florenceward28@example.co.uk,+44770090027,"Jack Sullivan","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-92,07/06/2026 12:45,07/06/2026 13:15,"Amelia Walker",ameliawalker12@example.co.uk,+44770090011,"Olivia Hart","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-93,07/06/2026 13:00,07/06/2026 16:00,"Chloe Wright",chloewright13@example.co.uk,+44770090012,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-94,07/06/2026 14:00,07/06/2026 16:00,"Maya Davis",mayadavis36@example.co.uk,+44770090035,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-95,07/06/2026 16:45,07/06/2026 17:45,"Lucy Wilson",lucywilson8@example.co.uk,+44770090007,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-96,08/06/2026 09:00,08/06/2026 12:00,"Holly Hall",hollyhall17@example.co.uk,+44770090016,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-97,08/06/2026 12:00,08/06/2026 12:45,"Lydia Parker",lydiaparker34@example.co.uk,+44770090033,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-98,08/06/2026 13:00,08/06/2026 16:00,"Sophie Clarke",sophieclarke5@example.co.uk,+44770090004,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-99,08/06/2026 15:00,08/06/2026 17:00,"Zara King",zaraking31@example.co.uk,+44770090030,"Jack Sullivan","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-100,09/06/2026 09:00,09/06/2026 12:00,"Ella Taylor",ellataylor9@example.co.uk,+44770090008,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-101,09/06/2026 12:00,09/06/2026 15:00,"Harriet Mitchell",harrietmitchell40@example.co.uk,+44770090039,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-102,09/06/2026 13:00,09/06/2026 13:45,"Phoebe Turner",phoebeturner29@example.co.uk,+44770090028,"Chloe Bennett","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-103,09/06/2026 14:15,09/06/2026 16:15,"Emily Robinson",emilyrobinson14@example.co.uk,+44770090013,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-104,09/06/2026 15:00,09/06/2026 16:00,"Victoria Baker",victoriabaker37@example.co.uk,+44770090036,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-105,10/06/2026 10:15,10/06/2026 12:15,"Megan Green",megangreen18@example.co.uk,+44770090017,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-106,10/06/2026 13:00,10/06/2026 16:00,"Imogen Miller",imogenmiller35@example.co.uk,+44770090034,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-107,10/06/2026 14:15,10/06/2026 16:15,"Hannah Davies",hannahdavies6@example.co.uk,+44770090005,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-108,10/06/2026 14:15,10/06/2026 15:15,"Poppy Wood",poppywood22@example.co.uk,+44770090021,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-109,11/06/2026 10:15,11/06/2026 12:15,"Mia Thomas",miathomas10@example.co.uk,+44770090009,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-110,11/06/2026 14:00,11/06/2026 17:00,"Harper Morris",harpermorris30@example.co.uk,+44770090029,"Priya Anand","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-111,12/06/2026 11:30,12/06/2026 12:30,"Daisy Harris",daisyharris19@example.co.uk,+44770090018,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-112,12/06/2026 15:30,12/06/2026 16:30,"Charlotte Evans",charlotteevans7@example.co.uk,+44770090006,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-113,13/06/2026 11:30,13/06/2026 14:30,"Rebecca Clark",rebeccaclark47@example.co.uk,+44770090046,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-114,13/06/2026 16:45,13/06/2026 18:45,"Ruby Phillips",rubyphillips32@example.co.uk,+44770090031,"Olivia Hart","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-115,14/06/2026 12:45,14/06/2026 13:45,"Abigail Martin",abigailmartin20@example.co.uk,+44770090019,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-116,16/06/2026 10:15,16/06/2026 10:45,"Emma Whitmore",emmawhitmore2@example.co.uk,+44770090001,"Priya Anand","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-117,19/06/2026 11:30,19/06/2026 12:30,"Laura Murphy",lauramurphy50@example.co.uk,+44770090049,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Cash
+SYN-TML-118,19/06/2026 12:45,19/06/2026 13:45,"Amelia Walker",ameliawalker12@example.co.uk,+44770090011,"Olivia Hart","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-119,19/06/2026 15:30,19/06/2026 18:30,"Charlotte Evans",charlotteevans7@example.co.uk,+44770090006,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-120,22/06/2026 09:00,22/06/2026 09:45,"Holly Hall",hollyhall17@example.co.uk,+44770090016,"Chloe Bennett","Blow Dry & Style",38.00,No Show,,
+SYN-TML-121,25/06/2026 11:30,25/06/2026 14:30,"Monica Geller",monicageller53@example.co.uk,+44770090052,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-122,25/06/2026 11:30,25/06/2026 12:30,"Sienna Cooper",siennacooper27@example.co.uk,+44770090026,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-123,28/06/2026 09:00,28/06/2026 12:00,"Grace Holloway",graceholloway1@example.co.uk,+44770090000,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-124,30/06/2026 14:15,30/06/2026 16:15,"Poppy Wood",poppywood22@example.co.uk,+44770090021,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-125,01/07/2026 10:15,01/07/2026 12:15,"Emma Whitmore",emmawhitmore2@example.co.uk,+44770090001,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-126,01/07/2026 11:30,01/07/2026 12:30,"Jessica Roberts",jessicaroberts11@example.co.uk,+44770090010,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-127,01/07/2026 12:45,01/07/2026 13:45,"Florence Ward",florenceward28@example.co.uk,+44770090027,"Olivia Hart","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-128,03/07/2026 10:00,03/07/2026 12:00,"Evelyn Hughes",evelynhughes26@example.co.uk,+44770090025,"Chloe Bennett","Half Head Highlights",125.00,Completed,125.00,Cash
+SYN-TML-129,03/07/2026 11:30,03/07/2026 13:30,"Millie Roberts",millieroberts42@example.co.uk,+44770090041,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Cash
+SYN-TML-130,03/07/2026 15:30,03/07/2026 16:30,"Freya Lewis",freyalewis23@example.co.uk,+44770090022,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-131,04/07/2026 11:30,04/07/2026 12:30,"Ben Turner",benturner3@example.co.uk,+44770090002,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-132,04/07/2026 12:45,04/07/2026 13:45,"Amelia Walker",ameliawalker12@example.co.uk,+44770090011,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-133,04/07/2026 13:00,04/07/2026 16:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,+44770090020,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-134,04/07/2026 14:15,04/07/2026 16:15,"Amber Nelson",ambernelson38@example.co.uk,+44770090037,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-135,05/07/2026 10:00,05/07/2026 11:00,"Ruby Phillips",rubyphillips32@example.co.uk,+44770090031,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Cash
+SYN-TML-136,05/07/2026 14:00,05/07/2026 17:00,"Gloria Delgado",gloriadelgado56@example.co.uk,+44770090055,"Jack Sullivan","Full Head Balayage",185.00,No Show,,
+SYN-TML-137,06/07/2026 14:00,06/07/2026 16:00,"Haley Dunphy",haleydunphy57@example.co.uk,+44770090056,"Olivia Hart","Half Head Highlights",125.00,No Show,,
+SYN-TML-138,06/07/2026 15:30,06/07/2026 16:30,"Alice Thompson",alicethompson15@example.co.uk,+44770090014,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-139,06/07/2026 16:45,06/07/2026 17:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,+44770090023,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-140,07/07/2026 10:00,07/07/2026 11:00,"Amber Nelson",ambernelson38@example.co.uk,+44770090037,"Chloe Bennett","Cut & Finish",55.00,Completed,55.00,Cash
+SYN-TML-141,07/07/2026 11:30,07/07/2026 12:30,"Ben Turner",benturner3@example.co.uk,+44770090002,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-142,07/07/2026 12:45,07/07/2026 13:45,"Aisha Patel",aishapatel4@example.co.uk,+44770090003,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-143,07/07/2026 13:00,07/07/2026 16:00,"Chloe Wright",chloewright13@example.co.uk,+44770090012,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-144,07/07/2026 14:00,07/07/2026 16:00,"Maya Davis",mayadavis36@example.co.uk,+44770090035,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Cash
+SYN-TML-145,07/07/2026 14:00,07/07/2026 15:00,"Alex Dunphy",alexdunphy58@example.co.uk,+44770090057,"Jack Sullivan","T-Zone Root Tint",65.00,No Show,,
+SYN-TML-146,07/07/2026 16:45,07/07/2026 17:15,"Lucy Wilson",lucywilson8@example.co.uk,+44770090007,"Olivia Hart","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-147,08/07/2026 14:00,08/07/2026 15:00,"Donna Paulsen",donnapaulsen59@example.co.uk,+44770090058,"Olivia Hart","Cut & Finish",55.00,No Show,,
+SYN-TML-148,09/07/2026 09:00,09/07/2026 12:00,"Lily Edwards",lilyedwards25@example.co.uk,+44770090024,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-149,09/07/2026 11:30,09/07/2026 12:15,"Caitlin Baker",caitlinbaker45@example.co.uk,+44770090044,"Chloe Bennett","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-150,09/07/2026 12:00,09/07/2026 13:00,"Florence Ward",florenceward28@example.co.uk,+44770090027,"Jack Sullivan","Cut & Finish",55.00,Completed,55.00,Cash
+SYN-TML-151,09/07/2026 14:00,09/07/2026 14:45,"Rachel Zane",rachelzane60@example.co.uk,+44770090059,"Jack Sullivan","Blow Dry & Style",38.00,No Show,,
+SYN-TML-152,09/07/2026 16:45,09/07/2026 17:45,"Katie White",katiewhite16@example.co.uk,+44770090015,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-153,10/07/2026 13:00,10/07/2026 16:00,"Sophie Clarke",sophieclarke5@example.co.uk,+44770090004,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-154,10/07/2026 13:00,10/07/2026 16:00,"Chloe Wright",chloewright13@example.co.uk,+44770090012,"Chloe Bennett","Full Head Balayage",185.00,Cancelled,,
+SYN-TML-155,10/07/2026 14:00,10/07/2026 14:30,"Jessica Pearson",jessicapearson61@example.co.uk,+44770090060,"Olivia Hart","Brow Tint & Shape",28.00,No Show,,
+SYN-TML-156,10/07/2026 14:15,10/07/2026 16:15,"Emily Robinson",emilyrobinson14@example.co.uk,+44770090013,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-157,11/07/2026 12:00,11/07/2026 12:45,"Lydia Parker",lydiaparker34@example.co.uk,+44770090033,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Cash
+SYN-TML-158,11/07/2026 14:00,11/07/2026 17:00,"Fiona Gallagher",fionagallagher62@example.co.uk,+44770090061,"Jack Sullivan","Full Head Balayage",185.00,No Show,,
+SYN-TML-159,12/07/2026 09:00,12/07/2026 12:00,"Holly Hall",hollyhall17@example.co.uk,+44770090016,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-160,12/07/2026 14:00,12/07/2026 16:00,"Veronica Fisher",veronicafisher63@example.co.uk,+44770090062,"Olivia Hart","Half Head Highlights",125.00,No Show,,
+SYN-TML-161,12/07/2026 16:45,12/07/2026 17:45,"Lucy Wilson",lucywilson8@example.co.uk,+44770090007,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-162,13/07/2026 12:00,13/07/2026 15:00,"Harriet Mitchell",harrietmitchell40@example.co.uk,+44770090039,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Cash
+SYN-TML-163,13/07/2026 14:00,13/07/2026 15:00,"Debbie Gallagher",debbiegallagher64@example.co.uk,+44770090063,"Jack Sullivan","T-Zone Root Tint",65.00,No Show,,
+SYN-TML-164,13/07/2026 14:15,13/07/2026 16:15,"Hannah Davies",hannahdavies6@example.co.uk,+44770090005,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-165,13/07/2026 15:30,13/07/2026 16:15,"Freya Lewis",freyalewis23@example.co.uk,+44770090022,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-166,14/07/2026 14:00,14/07/2026 15:00,"Amy Santiago",amysantiago65@example.co.uk,+44770090064,"Olivia Hart","Cut & Finish",55.00,No Show,,
+SYN-TML-167,15/07/2026 09:00,15/07/2026 12:00,"Ella Taylor",ellataylor9@example.co.uk,+44770090008,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-168,15/07/2026 10:15,15/07/2026 12:15,"Megan Green",megangreen18@example.co.uk,+44770090017,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-169,15/07/2026 11:30,15/07/2026 13:30,"Anna Morgan",annamorgan48@example.co.uk,+44770090047,"Olivia Hart","Half Head Highlights",125.00,Completed,125.00,Cash
+SYN-TML-170,15/07/2026 14:00,15/07/2026 17:00,"Harper Morris",harpermorris30@example.co.uk,+44770090029,"Priya Anand","Full Head Balayage",185.00,Completed,185.00,Cash
+SYN-TML-171,15/07/2026 14:00,15/07/2026 14:45,"Rosa Diaz",rosadiaz66@example.co.uk,+44770090065,"Jack Sullivan","Blow Dry & Style",38.00,No Show,,
+SYN-TML-172,16/07/2026 09:00,16/07/2026 10:00,"Rosie Campbell",rosiecampbell33@example.co.uk,+44770090032,"Chloe Bennett","T-Zone Root Tint",65.00,No Show,,
+SYN-TML-173,16/07/2026 14:00,16/07/2026 14:30,"Gina Linetti",ginalinetti67@example.co.uk,+44770090066,"Olivia Hart","Brow Tint & Shape",28.00,No Show,,
+SYN-TML-174,16/07/2026 15:30,16/07/2026 16:30,"Charlotte Evans",charlotteevans7@example.co.uk,+44770090006,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-175,17/07/2026 14:00,17/07/2026 17:00,"Leslie Knope",leslieknope68@example.co.uk,+44770090067,"Jack Sullivan","Full Head Balayage",185.00,No Show,,
+SYN-TML-176,18/07/2026 10:15,18/07/2026 12:15,"Mia Thomas",miathomas10@example.co.uk,+44770090009,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-177,18/07/2026 11:30,18/07/2026 12:30,"Daisy Harris",daisyharris19@example.co.uk,+44770090018,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-178,18/07/2026 14:00,18/07/2026 16:00,"Ann Perkins",annperkins69@example.co.uk,+44770090068,"Olivia Hart","Half Head Highlights",125.00,No Show,,
+SYN-TML-179,19/07/2026 11:30,19/07/2026 14:30,"Ben Turner",benturner3@example.co.uk,+44770090002,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-180,19/07/2026 14:00,19/07/2026 15:00,"April Ludgate",aprilludgate70@example.co.uk,+44770090069,"Jack Sullivan","T-Zone Root Tint",65.00,No Show,,
+SYN-TML-181,21/07/2026 11:30,21/07/2026 12:15,"Sarah Jenkins",sarahjenkins51@example.co.uk,+44770090050,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-182,21/07/2026 12:45,21/07/2026 13:45,"Abigail Martin",abigailmartin20@example.co.uk,+44770090019,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-183,22/07/2026 13:00,22/07/2026 13:45,"Chloe Wright",chloewright13@example.co.uk,+44770090012,"Chloe Bennett","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-184,22/07/2026 16:45,22/07/2026 18:45,"Lucy Wilson",lucywilson8@example.co.uk,+44770090007,"Olivia Hart","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-185,25/07/2026 10:15,25/07/2026 10:45,"Megan Green",megangreen18@example.co.uk,+44770090017,"Priya Anand","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-186,26/07/2026 09:00,26/07/2026 12:00,"Grace Holloway",graceholloway1@example.co.uk,+44770090000,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-187,27/07/2026 11:30,27/07/2026 13:30,"Phoebe Buffay",phoebebuffay54@example.co.uk,+44770090053,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Cash
+SYN-TML-188,29/07/2026 11:30,29/07/2026 12:30,"Jessica Roberts",jessicaroberts11@example.co.uk,+44770090010,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-189,29/07/2026 14:15,29/07/2026 16:15,"Poppy Wood",poppywood22@example.co.uk,+44770090021,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-190,30/07/2026 10:15,30/07/2026 12:15,"Emma Whitmore",emmawhitmore2@example.co.uk,+44770090001,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-191,01/08/2026 11:30,01/08/2026 14:30,"Daisy Harris",daisyharris19@example.co.uk,+44770090018,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-192,01/08/2026 13:00,01/08/2026 16:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,+44770090020,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-193,02/08/2026 12:45,02/08/2026 13:45,"Amelia Walker",ameliawalker12@example.co.uk,+44770090011,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-194,02/08/2026 15:30,02/08/2026 16:30,"Freya Lewis",freyalewis23@example.co.uk,+44770090022,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-195,03/08/2026 11:30,03/08/2026 12:30,"Ben Turner",benturner3@example.co.uk,+44770090002,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-196,04/08/2026 13:00,04/08/2026 13:45,"Phoebe Turner",phoebeturner29@example.co.uk,+44770090028,"Chloe Bennett","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-197,05/08/2026 11:30,05/08/2026 12:30,"Georgia Scott",georgiascott43@example.co.uk,+44770090042,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-198,06/08/2026 13:00,06/08/2026 16:00,"Chloe Wright",chloewright13@example.co.uk,+44770090012,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-199,06/08/2026 16:45,06/08/2026 17:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,+44770090023,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-200,07/08/2026 12:45,07/08/2026 13:45,"Aisha Patel",aishapatel4@example.co.uk,+44770090003,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-201,07/08/2026 15:30,07/08/2026 16:30,"Alice Thompson",alicethompson15@example.co.uk,+44770090014,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-202,07/08/2026 15:30,07/08/2026 16:30,"Martha Carter",marthacarter39@example.co.uk,+44770090038,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-203,10/08/2026 09:00,10/08/2026 12:00,"Lily Edwards",lilyedwards25@example.co.uk,+44770090024,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-204,10/08/2026 09:00,10/08/2026 12:00,"Ella Taylor",ellataylor9@example.co.uk,+44770090008,"Chloe Bennett","Full Head Balayage",185.00,No Show,,
+SYN-TML-205,10/08/2026 12:45,10/08/2026 13:45,"Aisha Patel",aishapatel4@example.co.uk,+44770090003,"Olivia Hart","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-206,10/08/2026 14:15,10/08/2026 16:15,"Emily Robinson",emilyrobinson14@example.co.uk,+44770090013,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-207,11/08/2026 11:30,11/08/2026 12:00,"Paige Kelly",paigekelly46@example.co.uk,+44770090045,"Priya Anand","Brow Tint & Shape",28.00,Completed,28.00,Cash
+SYN-TML-208,11/08/2026 13:00,11/08/2026 16:00,"Sophie Clarke",sophieclarke5@example.co.uk,+44770090004,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-209,11/08/2026 16:45,11/08/2026 17:45,"Katie White",katiewhite16@example.co.uk,+44770090015,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-210,12/08/2026 15:00,12/08/2026 18:00,"Gloria Delgado",gloriadelgado56@example.co.uk,+44770090055,"Jack Sullivan","Full Head Balayage",185.00,Cancelled,,
+SYN-TML-211,13/08/2026 14:15,13/08/2026 16:15,"Emily Robinson",emilyrobinson14@example.co.uk,+44770090013,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-212,13/08/2026 15:00,13/08/2026 17:00,"Haley Dunphy",haleydunphy57@example.co.uk,+44770090056,"Olivia Hart","Half Head Highlights",125.00,Cancelled,,
+SYN-TML-213,14/08/2026 15:00,14/08/2026 16:00,"Alex Dunphy",alexdunphy58@example.co.uk,+44770090057,"Jack Sullivan","T-Zone Root Tint",65.00,Cancelled,,
+SYN-TML-214,15/08/2026 09:00,15/08/2026 12:00,"Holly Hall",hollyhall17@example.co.uk,+44770090016,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-215,15/08/2026 14:15,15/08/2026 16:15,"Hannah Davies",hannahdavies6@example.co.uk,+44770090005,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-216,15/08/2026 15:00,15/08/2026 16:00,"Donna Paulsen",donnapaulsen59@example.co.uk,+44770090058,"Olivia Hart","Cut & Finish",55.00,Cancelled,,
+SYN-TML-217,16/08/2026 15:00,16/08/2026 15:45,"Rachel Zane",rachelzane60@example.co.uk,+44770090059,"Jack Sullivan","Blow Dry & Style",38.00,Cancelled,,
+SYN-TML-218,16/08/2026 16:45,16/08/2026 17:45,"Lucy Wilson",lucywilson8@example.co.uk,+44770090007,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-219,16/08/2026 16:45,16/08/2026 17:15,"Isabelle Clarke",isabelleclarke24@example.co.uk,+44770090023,"Olivia Hart","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-220,17/08/2026 11:30,17/08/2026 12:30,"Faith Bell",faithbell49@example.co.uk,+44770090048,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-221,17/08/2026 15:00,17/08/2026 15:30,"Jessica Pearson",jessicapearson61@example.co.uk,+44770090060,"Olivia Hart","Brow Tint & Shape",28.00,Cancelled,,
+SYN-TML-222,18/08/2026 15:00,18/08/2026 18:00,"Fiona Gallagher",fionagallagher62@example.co.uk,+44770090061,"Jack Sullivan","Full Head Balayage",185.00,Cancelled,,
+SYN-TML-223,19/08/2026 10:15,19/08/2026 12:15,"Megan Green",megangreen18@example.co.uk,+44770090017,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-224,19/08/2026 10:15,19/08/2026 11:15,"Lydia Parker",lydiaparker34@example.co.uk,+44770090033,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-225,19/08/2026 15:00,19/08/2026 17:00,"Veronica Fisher",veronicafisher63@example.co.uk,+44770090062,"Olivia Hart","Half Head Highlights",125.00,Cancelled,,
+SYN-TML-226,19/08/2026 15:30,19/08/2026 16:30,"Charlotte Evans",charlotteevans7@example.co.uk,+44770090006,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-227,20/08/2026 09:00,20/08/2026 12:00,"Ella Taylor",ellataylor9@example.co.uk,+44770090008,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-228,20/08/2026 15:00,20/08/2026 16:00,"Debbie Gallagher",debbiegallagher64@example.co.uk,+44770090063,"Jack Sullivan","T-Zone Root Tint",65.00,Cancelled,,
+SYN-TML-229,21/08/2026 15:00,21/08/2026 16:00,"Amy Santiago",amysantiago65@example.co.uk,+44770090064,"Olivia Hart","Cut & Finish",55.00,Cancelled,,
+SYN-TML-230,22/08/2026 12:45,22/08/2026 14:45,"Aisha Patel",aishapatel4@example.co.uk,+44770090003,"Olivia Hart","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-231,22/08/2026 15:00,22/08/2026 15:45,"Rosa Diaz",rosadiaz66@example.co.uk,+44770090065,"Jack Sullivan","Blow Dry & Style",38.00,Cancelled,,
+SYN-TML-232,23/08/2026 09:00,23/08/2026 12:00,"Grace Holloway",graceholloway1@example.co.uk,+44770090000,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-233,23/08/2026 11:30,23/08/2026 12:30,"Daisy Harris",daisyharris19@example.co.uk,+44770090018,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-234,23/08/2026 11:30,23/08/2026 12:00,"Rachel Green",rachelgreen52@example.co.uk,+44770090051,"Olivia Hart","Brow Tint & Shape",28.00,Completed,28.00,Cash
+SYN-TML-235,23/08/2026 15:00,23/08/2026 15:30,"Gina Linetti",ginalinetti67@example.co.uk,+44770090066,"Olivia Hart","Brow Tint & Shape",28.00,Cancelled,,
+SYN-TML-236,24/08/2026 10:15,24/08/2026 12:15,"Mia Thomas",miathomas10@example.co.uk,+44770090009,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-237,24/08/2026 15:00,24/08/2026 18:00,"Leslie Knope",leslieknope68@example.co.uk,+44770090067,"Jack Sullivan","Full Head Balayage",185.00,Cancelled,,
+SYN-TML-238,25/08/2026 09:00,25/08/2026 10:00,"Ella Taylor",ellataylor9@example.co.uk,+44770090008,"Chloe Bennett","T-Zone Root Tint",65.00,No Show,,
+SYN-TML-239,25/08/2026 14:15,25/08/2026 14:45,"Emily Robinson",emilyrobinson14@example.co.uk,+44770090013,"Priya Anand","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-240,25/08/2026 15:00,25/08/2026 17:00,"Ann Perkins",annperkins69@example.co.uk,+44770090068,"Olivia Hart","Half Head Highlights",125.00,Cancelled,,
+SYN-TML-241,26/08/2026 11:30,26/08/2026 12:30,"Jessica Roberts",jessicaroberts11@example.co.uk,+44770090010,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-242,26/08/2026 15:00,26/08/2026 16:00,"April Ludgate",aprilludgate70@example.co.uk,+44770090069,"Jack Sullivan","T-Zone Root Tint",65.00,Cancelled,,
+SYN-TML-243,27/08/2026 12:45,27/08/2026 13:45,"Abigail Martin",abigailmartin20@example.co.uk,+44770090019,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-244,27/08/2026 14:15,27/08/2026 16:15,"Poppy Wood",poppywood22@example.co.uk,+44770090021,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-245,28/08/2026 10:15,28/08/2026 12:15,"Emma Whitmore",emmawhitmore2@example.co.uk,+44770090001,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-246,29/08/2026 11:30,29/08/2026 12:30,"Claire Dunphy",clairedunphy55@example.co.uk,+44770090054,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-247,29/08/2026 13:00,29/08/2026 16:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,+44770090020,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-248,31/08/2026 12:45,31/08/2026 13:45,"Amelia Walker",ameliawalker12@example.co.uk,+44770090011,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-249,01/09/2026 10:15,01/09/2026 11:15,"Mia Thomas",miathomas10@example.co.uk,+44770090009,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-250,01/09/2026 15:30,01/09/2026 16:30,"Freya Lewis",freyalewis23@example.co.uk,+44770090022,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-251,01/09/2026 15:30,01/09/2026 18:30,"Alice Thompson",alicethompson15@example.co.uk,+44770090014,"Jack Sullivan","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-252,02/09/2026 11:30,02/09/2026 12:30,"Ben Turner",benturner3@example.co.uk,+44770090002,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-253,04/09/2026 12:45,04/09/2026 14:45,"Abigail Martin",abigailmartin20@example.co.uk,+44770090019,"Olivia Hart","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-254,05/09/2026 13:00,05/09/2026 16:00,"Chloe Wright",chloewright13@example.co.uk,+44770090012,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-255,06/09/2026 16:45,06/09/2026 17:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,+44770090023,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-256,07/09/2026 12:45,07/09/2026 13:45,"Aisha Patel",aishapatel4@example.co.uk,+44770090003,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-257,07/09/2026 14:15,07/09/2026 14:45,"Harper Morris",harpermorris30@example.co.uk,+44770090029,"Priya Anand","Brow Tint & Shape",28.00,Completed,28.00,Credit Card
+SYN-TML-258,08/09/2026 15:30,08/09/2026 16:30,"Alice Thompson",alicethompson15@example.co.uk,+44770090014,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-259,10/09/2026 14:15,10/09/2026 16:15,"Emily Robinson",emilyrobinson14@example.co.uk,+44770090013,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-260,10/09/2026 16:45,10/09/2026 17:45,"Harriet Mitchell",harrietmitchell40@example.co.uk,+44770090039,"Olivia Hart","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-261,11/09/2026 09:00,11/09/2026 12:00,"Lily Edwards",lilyedwards25@example.co.uk,+44770090024,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-262,12/09/2026 13:00,12/09/2026 16:00,"Sophie Clarke",sophieclarke5@example.co.uk,+44770090004,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-263,13/09/2026 10:15,13/09/2026 12:15,"Mia Thomas",miathomas10@example.co.uk,+44770090009,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-264,13/09/2026 13:00,13/09/2026 13:45,"Sophie Clarke",sophieclarke5@example.co.uk,+44770090004,"Chloe Bennett","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-265,13/09/2026 16:45,13/09/2026 17:45,"Katie White",katiewhite16@example.co.uk,+44770090015,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-266,16/09/2026 15:30,16/09/2026 16:30,"Alice Thompson",alicethompson15@example.co.uk,+44770090014,"Jack Sullivan","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-267,17/09/2026 14:15,17/09/2026 16:15,"Hannah Davies",hannahdavies6@example.co.uk,+44770090005,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-268,18/09/2026 09:00,18/09/2026 12:00,"Holly Hall",hollyhall17@example.co.uk,+44770090016,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-269,19/09/2026 09:00,19/09/2026 12:00,"Lily Edwards",lilyedwards25@example.co.uk,+44770090024,"Chloe Bennett","Full Head Balayage",185.00,No Show,,
+SYN-TML-270,20/09/2026 09:00,20/09/2026 12:00,"Grace Holloway",graceholloway1@example.co.uk,+44770090000,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-271,20/09/2026 16:00,20/09/2026 19:00,"Gloria Delgado",gloriadelgado56@example.co.uk,+44770090055,"Jack Sullivan","Full Head Balayage",185.00,No Show,,
+SYN-TML-272,20/09/2026 16:00,20/09/2026 17:00,"Debbie Gallagher",debbiegallagher64@example.co.uk,+44770090063,"Jack Sullivan","T-Zone Root Tint",65.00,No Show,,
+SYN-TML-273,20/09/2026 16:45,20/09/2026 17:45,"Lucy Wilson",lucywilson8@example.co.uk,+44770090007,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-274,21/09/2026 16:00,21/09/2026 18:00,"Haley Dunphy",haleydunphy57@example.co.uk,+44770090056,"Olivia Hart","Half Head Highlights",125.00,Cancelled,,
+SYN-TML-275,21/09/2026 16:00,21/09/2026 17:00,"Amy Santiago",amysantiago65@example.co.uk,+44770090064,"Olivia Hart","Cut & Finish",55.00,Cancelled,,
+SYN-TML-276,22/09/2026 11:30,22/09/2026 12:15,"Imogen Miller",imogenmiller35@example.co.uk,+44770090034,"Jack Sullivan","Blow Dry & Style",38.00,Completed,38.00,Credit Card
+SYN-TML-277,22/09/2026 15:30,22/09/2026 16:30,"Charlotte Evans",charlotteevans7@example.co.uk,+44770090006,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-278,22/09/2026 16:00,22/09/2026 17:00,"Alex Dunphy",alexdunphy58@example.co.uk,+44770090057,"Jack Sullivan","T-Zone Root Tint",65.00,No Show,,
+SYN-TML-279,22/09/2026 16:00,22/09/2026 16:45,"Rosa Diaz",rosadiaz66@example.co.uk,+44770090065,"Jack Sullivan","Blow Dry & Style",38.00,No Show,,
+SYN-TML-280,23/09/2026 10:15,23/09/2026 12:15,"Megan Green",megangreen18@example.co.uk,+44770090017,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-281,23/09/2026 11:30,23/09/2026 12:30,"Jessica Roberts",jessicaroberts11@example.co.uk,+44770090010,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-282,23/09/2026 16:00,23/09/2026 17:00,"Donna Paulsen",donnapaulsen59@example.co.uk,+44770090058,"Olivia Hart","Cut & Finish",55.00,Cancelled,,
+SYN-TML-283,23/09/2026 16:00,23/09/2026 16:30,"Gina Linetti",ginalinetti67@example.co.uk,+44770090066,"Olivia Hart","Brow Tint & Shape",28.00,Cancelled,,
+SYN-TML-284,24/09/2026 16:00,24/09/2026 16:45,"Rachel Zane",rachelzane60@example.co.uk,+44770090059,"Jack Sullivan","Blow Dry & Style",38.00,No Show,,
+SYN-TML-285,24/09/2026 16:00,24/09/2026 19:00,"Leslie Knope",leslieknope68@example.co.uk,+44770090067,"Jack Sullivan","Full Head Balayage",185.00,No Show,,
+SYN-TML-286,25/09/2026 09:00,25/09/2026 12:00,"Ella Taylor",ellataylor9@example.co.uk,+44770090008,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-287,25/09/2026 13:00,25/09/2026 14:00,"Sophie Clarke",sophieclarke5@example.co.uk,+44770090004,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-288,25/09/2026 14:15,25/09/2026 16:15,"Poppy Wood",poppywood22@example.co.uk,+44770090021,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-289,25/09/2026 16:00,25/09/2026 16:30,"Jessica Pearson",jessicapearson61@example.co.uk,+44770090060,"Olivia Hart","Brow Tint & Shape",28.00,Cancelled,,
+SYN-TML-290,25/09/2026 16:00,25/09/2026 18:00,"Ann Perkins",annperkins69@example.co.uk,+44770090068,"Olivia Hart","Half Head Highlights",125.00,Cancelled,,
+SYN-TML-291,26/09/2026 10:15,26/09/2026 12:15,"Emma Whitmore",emmawhitmore2@example.co.uk,+44770090001,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-292,26/09/2026 13:00,26/09/2026 16:00,"Eleanor Jackson",eleanorjackson21@example.co.uk,+44770090020,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-293,26/09/2026 16:00,26/09/2026 19:00,"Fiona Gallagher",fionagallagher62@example.co.uk,+44770090061,"Jack Sullivan","Full Head Balayage",185.00,No Show,,
+SYN-TML-294,26/09/2026 16:00,26/09/2026 17:00,"April Ludgate",aprilludgate70@example.co.uk,+44770090069,"Jack Sullivan","T-Zone Root Tint",65.00,No Show,,
+SYN-TML-295,27/09/2026 16:00,27/09/2026 18:00,"Veronica Fisher",veronicafisher63@example.co.uk,+44770090062,"Olivia Hart","Half Head Highlights",125.00,Cancelled,,
+SYN-TML-296,28/09/2026 11:30,28/09/2026 12:30,"Daisy Harris",daisyharris19@example.co.uk,+44770090018,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-297,29/09/2026 12:45,29/09/2026 13:45,"Amelia Walker",ameliawalker12@example.co.uk,+44770090011,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-298,30/09/2026 10:15,30/09/2026 12:15,"Mia Thomas",miathomas10@example.co.uk,+44770090009,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card
+SYN-TML-299,01/10/2026 15:30,01/10/2026 16:30,"Freya Lewis",freyalewis23@example.co.uk,+44770090022,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-300,02/10/2026 11:30,02/10/2026 12:30,"Ben Turner",benturner3@example.co.uk,+44770090002,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-301,03/10/2026 12:45,03/10/2026 13:45,"Abigail Martin",abigailmartin20@example.co.uk,+44770090019,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-302,05/10/2026 13:00,05/10/2026 16:00,"Chloe Wright",chloewright13@example.co.uk,+44770090012,"Chloe Bennett","Full Head Balayage",185.00,Completed,185.00,Credit Card
+SYN-TML-303,07/10/2026 16:45,07/10/2026 17:45,"Isabelle Clarke",isabelleclarke24@example.co.uk,+44770090023,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-304,08/10/2026 12:45,08/10/2026 13:45,"Aisha Patel",aishapatel4@example.co.uk,+44770090003,"Priya Anand","Cut & Finish",55.00,Completed,55.00,Credit Card
+SYN-TML-305,10/10/2026 15:30,10/10/2026 16:30,"Alice Thompson",alicethompson15@example.co.uk,+44770090014,"Chloe Bennett","T-Zone Root Tint",65.00,Completed,65.00,Credit Card
+SYN-TML-306,11/10/2026 14:15,11/10/2026 16:15,"Emily Robinson",emilyrobinson14@example.co.uk,+44770090013,"Priya Anand","Half Head Highlights",125.00,Completed,125.00,Credit Card

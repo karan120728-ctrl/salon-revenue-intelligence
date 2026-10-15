@@ -21,6 +21,7 @@ model Salon {
   payments     Payment[]
   inventory    Inventory[]
   products     Product[]
+  importLogs   ImportLog[]
 }
 
 model User {
@@ -40,14 +41,16 @@ model User {
 }
 
 model Customer {
-  id           String        @id @default(uuid())
-  name         String
-  email        String?
-  phone        String?
-  ltv          Float         @default(0) // Lifetime value
-  risk         Int           @default(0) // Churn risk %
-  lastVisit    DateTime?
+  id            String        @id @default(uuid())
+  name          String
+  email         String?
+  phone         String?
+  ltv           Float         @default(0) // Lifetime value
+  risk          Int           @default(0) // Churn risk %
+  lastVisit     DateTime?
   expectedVisit DateTime?
+  sourceSystem  String?       // "fresha" | "timely" | "treatwell" | "generic"
+  externalId    String?       // ID from the source booking system
   
   salonId      String
   salon        Salon         @relation(fields: [salonId], references: [id], onDelete: Cascade)
@@ -60,6 +63,7 @@ model Customer {
 
   @@index([salonId])
   @@index([salonId, lastVisit])
+  @@unique([salonId, sourceSystem, externalId])
 }
 
 model Staff {
@@ -68,6 +72,8 @@ model Staff {
   role         String
   rating       Float         @default(5.0)
   rebookRate   Int           @default(0) // %
+  sourceSystem String?       // "fresha" | "timely" | "treatwell" | "generic"
+  externalId   String?       // ID from the source booking system
   
   salonId      String
   salon        Salon         @relation(fields: [salonId], references: [id], onDelete: Cascade)
@@ -78,6 +84,7 @@ model Staff {
   updatedAt    DateTime      @updatedAt
 
   @@index([salonId])
+  @@unique([salonId, sourceSystem, externalId])
 }
 
 model Service {
@@ -101,15 +108,17 @@ model Service {
 model Appointment {
   id           String   @id @default(uuid())
   date         DateTime
-  status       String   @default("SCHEDULED") // SCHEDULED, COMPLETED, NO_SHOW, CANCELLED
+  status       String   @default("SCHEDULED") // SCHEDULED, COMPLETED, NO_SHOW, CANCELLED, RESCHEDULED, PENDING
   risk         Int      @default(0) // No-show risk %
   riskReason   String?
+  sourceSystem String?  // "fresha" | "timely" | "treatwell" | "generic"
+  externalId   String?  // ID from the source booking system
   
   customerId   String
   customer     Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
   
-  staffId      String
-  staff        Staff    @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  staffId      String?
+  staff        Staff?   @relation(fields: [staffId], references: [id], onDelete: SetNull)
   
   salonId      String
   salon        Salon    @relation(fields: [salonId], references: [id], onDelete: Cascade)
@@ -124,6 +133,7 @@ model Appointment {
   @@index([salonId, status])
   @@index([customerId])
   @@index([staffId])
+  @@unique([salonId, sourceSystem, externalId])
 }
 
 model AppointmentService {
@@ -146,9 +156,11 @@ model AppointmentService {
 model Payment {
   id            String   @id @default(uuid())
   amount        Float
-  status        String   @default("COMPLETED") // COMPLETED, PENDING, REFUNDED
+  status        String   @default("COMPLETED") // COMPLETED, PENDING, REFUNDED, REVERSED, FAILED
   paymentDate   DateTime @default(now())
   method        String   @default("CARD") // CARD, CASH, ONLINE
+  sourceSystem  String?  // "fresha" | "timely" | "treatwell" | "generic"
+  externalId    String?  // ID from the source booking system
   
   appointmentId String?
   appointment   Appointment? @relation(fields: [appointmentId], references: [id], onDelete: SetNull)
@@ -166,6 +178,7 @@ model Payment {
   @@index([salonId, status])
   @@index([appointmentId])
   @@index([customerId])
+  @@unique([salonId, sourceSystem, externalId])
 }
 
 model Product {
@@ -201,5 +214,28 @@ model Inventory {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   
+  @@index([salonId])
+}
+
+model ImportLog {
+  id           String   @id @default(uuid())
+  salonId      String
+  salon        Salon    @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  sourceSystem String
+  fileName     String
+  status       String   // COMPLETED, FAILED, DRY_RUN
+  staffCount   Int      @default(0)
+  serviceCount Int      @default(0)
+  customerCount Int     @default(0)
+  appointmentCount Int  @default(0)
+  paymentCount Int      @default(0)
+  skippedCount Int      @default(0)
+  warnings     String?  @db.Text
+  revenueTotal Float    @default(0)
+  dateRangeStart DateTime?
+  dateRangeEnd   DateTime?
+  importedBy   String?  // operator email
+  createdAt    DateTime @default(now())
+
   @@index([salonId])
 }

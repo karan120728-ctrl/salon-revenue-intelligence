@@ -1,0 +1,4 @@
+Booking Reference,Date,Time,Customer,Customer Email,Venue,Employee,Treatment,Price,Status,Payment Method
+TW-001,15/01/2025,10:00,Grace Holloway,grace@email.com,Salon by FKZ,Chloe Bennett,Full Head Balayage,185.00,Completed,Card
+TW-002,16/01/2025,14:00,Emma Whitmore,emma@email.com,Salon by FKZ,Priya Anand,Cut & Finish,55.00,Completed,Cash
+TW-003,17/01/2025,11:30,Ben Turner,ben@email.com,Salon by FKZ,Jack Sullivan,Blow Dry & Style,38.00,No Show,
