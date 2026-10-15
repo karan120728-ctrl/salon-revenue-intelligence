@@ -11,26 +11,26 @@
   - Added the required column `productId` to the `Inventory` table without a default value. This is not possible if the table is not empty.
 
 */
--- DropForeignKey
-ALTER TABLE `appointment` DROP FOREIGN KEY `Appointment_customerId_fkey`;
+-- DropForeignKey (safe: IF EXISTS prevents failure if already dropped)
+ALTER TABLE `appointment` DROP FOREIGN KEY IF EXISTS `Appointment_customerId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `appointment` DROP FOREIGN KEY `Appointment_salonId_fkey`;
+ALTER TABLE `appointment` DROP FOREIGN KEY IF EXISTS `Appointment_salonId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `appointment` DROP FOREIGN KEY `Appointment_staffId_fkey`;
+ALTER TABLE `appointment` DROP FOREIGN KEY IF EXISTS `Appointment_staffId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `customer` DROP FOREIGN KEY `Customer_salonId_fkey`;
+ALTER TABLE `customer` DROP FOREIGN KEY IF EXISTS `Customer_salonId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `inventory` DROP FOREIGN KEY `Inventory_salonId_fkey`;
+ALTER TABLE `inventory` DROP FOREIGN KEY IF EXISTS `Inventory_salonId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `staff` DROP FOREIGN KEY `Staff_salonId_fkey`;
+ALTER TABLE `staff` DROP FOREIGN KEY IF EXISTS `Staff_salonId_fkey`;
 
 -- DropForeignKey
-ALTER TABLE `user` DROP FOREIGN KEY `User_salonId_fkey`;
+ALTER TABLE `user` DROP FOREIGN KEY IF EXISTS `User_salonId_fkey`;
 
 -- AlterTable (safe: IF EXISTS guards prevent failure if columns already removed)
 ALTER TABLE `appointment`
@@ -40,17 +40,17 @@ ALTER TABLE `appointment`
 ALTER TABLE `appointment` DROP COLUMN IF EXISTS `duration`;
 ALTER TABLE `appointment` DROP COLUMN IF EXISTS `revenue`;
 
--- AlterTable
-ALTER TABLE `customer` ADD COLUMN `externalId` VARCHAR(191) NULL,
-    ADD COLUMN `sourceSystem` VARCHAR(191) NULL;
+-- AlterTable (safe: IF NOT EXISTS guards prevent duplicate column errors)
+ALTER TABLE `customer` ADD COLUMN IF NOT EXISTS `externalId` VARCHAR(191) NULL,
+    ADD COLUMN IF NOT EXISTS `sourceSystem` VARCHAR(191) NULL;
 
 -- AlterTable (safe: IF EXISTS guards prevent failure if column already removed)
 ALTER TABLE `inventory` ADD COLUMN IF NOT EXISTS `productId` VARCHAR(191) NOT NULL DEFAULT '';
 ALTER TABLE `inventory` DROP COLUMN IF EXISTS `name`;
 
--- AlterTable
-ALTER TABLE `staff` ADD COLUMN `externalId` VARCHAR(191) NULL,
-    ADD COLUMN `sourceSystem` VARCHAR(191) NULL;
+-- AlterTable (safe: IF NOT EXISTS guards prevent duplicate column errors)
+ALTER TABLE `staff` ADD COLUMN IF NOT EXISTS `externalId` VARCHAR(191) NULL,
+    ADD COLUMN IF NOT EXISTS `sourceSystem` VARCHAR(191) NULL;
 
 -- CreateTable
 CREATE TABLE `Service` (
