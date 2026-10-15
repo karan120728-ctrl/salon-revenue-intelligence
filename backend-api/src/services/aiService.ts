@@ -137,7 +137,7 @@ Tips must be specific, actionable, and grounded in today's data only.`;
           ],
           response_format: { type: 'json_object' },
           temperature: 0.4,
-          max_tokens: 200
+          max_tokens: 1000
         })
       });
 
