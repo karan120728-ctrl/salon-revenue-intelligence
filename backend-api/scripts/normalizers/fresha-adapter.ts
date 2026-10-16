@@ -27,7 +27,7 @@ export class FreshaAdapter implements BaseAdapter {
 
     detect(headers: string[]): boolean {
         const lc = headers.map(h => h.toLowerCase().trim());
-        return ['appointment id', 'appointment ref', 'booking id'].some(s => lc.includes(s));
+        return ['appointment reference', 'appointment id', 'appointment ref', 'booking id', 'booking reference'].some(s => lc.includes(s));
     }
 
     normalize(
@@ -44,7 +44,7 @@ export class FreshaAdapter implements BaseAdapter {
 
         for (const row of rows) {
             try {
-                const apptId        = pick(row, 'appointment id', 'appointment ref', 'booking id', 'id');
+                const apptId        = pick(row, 'appointment reference', 'appointment ref', 'appointment id', 'booking reference', 'booking id', 'id');
                 const dateRaw       = pick(row, 'date', 'appointment date', 'booking date');
                 const timeRaw       = pick(row, 'time', 'start time', 'appointment time');
                 const apptStatus    = pick(row, 'appointment status', 'status', 'booking status');
@@ -108,10 +108,13 @@ export class FreshaAdapter implements BaseAdapter {
                     });
                 }
 
-                if (paymentId && paymentAmt !== null) {
+                const effectivePayId = paymentId || (apptId && servicePrice !== null && servicePrice > 0 && normalizeAppointmentStatus(apptStatus || 'completed') === 'COMPLETED' ? `PAY-${apptId}` : '');
+                const effectivePayAmt = paymentAmt !== null ? paymentAmt : (servicePrice ?? 0);
+
+                if (effectivePayId && effectivePayAmt > 0) {
                     payments.push({
-                        externalId: paymentId,
-                        amount: paymentAmt,
+                        externalId: effectivePayId,
+                        amount: effectivePayAmt,
                         status: normalizePaymentStatus(paymentStatus || 'completed'),
                         method: normalizePaymentMethod(paymentMethod || 'card'),
                         paymentDate: payDate || date,

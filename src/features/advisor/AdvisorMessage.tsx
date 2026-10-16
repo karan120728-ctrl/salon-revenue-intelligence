@@ -221,8 +221,12 @@ export default function AdvisorMessage({ role, text }: AdvisorMessageProps) {
     );
   }
 
-  // 1. Clean up blockquote markers and condensed lines
+  // 1. Clean up blockquote markers, raw HTML tags, and condensed lines
   let cleanText = text
+    // Convert raw <br>, <br/>, <br /> HTML line-breaks to newlines
+    .replace(/<br\s*\/?>/gi, '\n')
+    // Strip other common inline HTML tags the model may emit (e.g. <b>, <strong>, <em>)
+    .replace(/<\/?(?:b|strong|em|i|u|s|del|ins|mark|small|span[^>]*)>/gi, '')
     // Replace markdown blockquote paragraph breaks like '> >' or '> \n >'
     .replace(/\s*>\s*>\s*/g, '\n\n')
     // Strip leading '>' on any line

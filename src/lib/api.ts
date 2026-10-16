@@ -68,7 +68,14 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
         if (res.ok) {
           return await res.json();
         }
-      } catch (err) {
+        if (res.status === 400 || res.status === 401) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.message || 'Invalid email or password');
+        }
+      } catch (err: any) {
+        if (err.message && err.message !== 'Failed to fetch') {
+          throw err;
+        }
         console.warn('[API] Backend login failed, falling back to demo login:', err);
       }
     }
@@ -82,9 +89,34 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
       data: {
         revenue: 2840,
         noShowRate: 8,
-        appointments: { total: 46, completed: 33, noShows: 4 },
+        utilisationRate: 72,
+        revenueDeltaPct: 12,
+        appointments: { total: 46, completed: 33, noShows: 4, cancelled: 3 },
       }
     };
+  }
+
+  if (endpoint === '/api/analytics/monthly') {
+    await delay(400);
+    return {
+      data: {
+        bookingsThisMonth: 46,
+        noShowRate: 8.7,
+        noShowRateDelta: -1.1,
+        newCustomers: 6,
+        newCustomersDelta: null,
+        retailSales: null,
+        monthlyRevenueChart: {
+          labels: ['May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+          values: [0, 0, 0, 0, 0, 2840],
+        },
+      }
+    };
+  }
+
+  if (endpoint === '/api/analytics/noshow-prediction') {
+    await delay(300);
+    return { data: { appointments: [], highRiskCount: 0, avgRisk: 0, revenueAtRisk: 0 } };
   }
 
   if (endpoint === '/api/analytics/briefing') {
@@ -172,7 +204,7 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
   }
 
   if (endpoint === '/api/ai/advisor') {
-    // Route to the Next.js server-side API route (calls Groq with demo context)
+    // Route to the Next.js server-side API route (calls Groq with live context)
     // This does NOT hit the Render backend — it stays entirely on Vercel.
     try {
       const res = await fetch('/api/ai/advisor', {
@@ -180,11 +212,13 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
         headers: { 'Content-Type': 'application/json' },
         body: options.body,
       });
-      if (res.ok) return res.json();
-    } catch (_) {
-      // Groq unavailable — fall back gracefully
+      // Always parse — route.ts returns {answer:...} with status 200 even on errors
+      const data = await res.json();
+      if (data?.answer) return data;
+    } catch (err) {
+      console.error('[AI Advisor] fetch failed:', err);
     }
-    return { answer: "The AI advisor is warming up. Please try again in a moment." };
+    return { answer: "I'm having trouble reaching the AI service right now. Please try again in a moment." };
   }
 
   // ==========================================

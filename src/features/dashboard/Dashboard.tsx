@@ -22,21 +22,39 @@ export default function Dashboard() {
       fetchApi('/api/inventory').catch(() => ({ data: { lowStockCount: 0 } })),
     ]).then(([overviewRes, inventoryRes]) => {
       const overview = overviewRes.data;
+
+      // Build a human-readable period label from the API anchor date
+      // e.g. "Oct 2026" — works for any CSV date range, past or future
+      const periodLabel = overview.anchorDate
+        ? new Date(overview.anchorDate).toLocaleString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' })
+        : 'This month';
+
+      const revDelta = overview.revenueDeltaPct != null
+        ? `${overview.revenueDeltaPct >= 0 ? '+' : ''}${overview.revenueDeltaPct}% vs last month`
+        : null;
+
       setData({
         todayRevenue: overview.revenue,
+        periodLabel,
+        revDelta,
+        revDeltaGood: (overview.revenueDeltaPct ?? 0) >= 0,
         appointmentCount: overview.appointments.total,
+        completedCount: overview.appointments.completed,
         highRiskCount: overview.appointments.noShows,
         lowStockCount: inventoryRes.data?.lowStockCount || 0,
-        utilisation: overview.appointments.total > 0
-          ? Math.round((overview.appointments.completed / overview.appointments.total) * 100)
-          : 0,
-        returnRate: Math.round(100 - overview.noShowRate),
+        utilisation: overview.utilisationRate ?? (
+          overview.appointments.total > 0
+            ? Math.round((overview.appointments.completed / overview.appointments.total) * 100)
+            : 0
+        ),
+        noShowRate: overview.noShowRate,
+        returnRate: Math.max(0, 100 - overview.noShowRate),
         weeklyRevenue: [
           { d: 'Mon', actual: Math.round(overview.revenue * 0.14), expected: Math.round(overview.revenue * 0.155) },
           { d: 'Tue', actual: Math.round(overview.revenue * 0.12), expected: Math.round(overview.revenue * 0.14) },
           { d: 'Wed', actual: Math.round(overview.revenue * 0.15), expected: Math.round(overview.revenue * 0.16) },
           { d: 'Thu', actual: Math.round(overview.revenue * 0.17), expected: Math.round(overview.revenue * 0.17) },
-          { d: 'Fri', actual: Math.round(overview.revenue * 0.2), expected: Math.round(overview.revenue * 0.195) },
+          { d: 'Fri', actual: Math.round(overview.revenue * 0.2),  expected: Math.round(overview.revenue * 0.195) },
           { d: 'Sat', actual: Math.round(overview.revenue * 0.22), expected: Math.round(overview.revenue * 0.225) },
         ],
       });
@@ -105,13 +123,13 @@ export default function Dashboard() {
     <div className="p-5 lg:p-8 space-y-6">
       {/* KPI row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <KpiCard i={0} label="Today's revenue" value={data.todayRevenue} prefix="£" delta="12% vs last Tue" deltaGood icon="chart" />
+        <KpiCard i={0} label={`Revenue — ${data.periodLabel}`} value={data.todayRevenue} prefix="£" delta={data.revDelta} deltaGood={data.revDeltaGood} icon="chart" />
         <KpiCard i={1} label="Expected revenue" value={Math.round(data.todayRevenue * 1.15)} prefix="£" icon="trendup" />
         <KpiCard i={2} label="Low stock alerts" value={data.lowStockCount} delta="Needs attention" icon="box" />
-        <KpiCard i={3} label="Appointments today" value={data.appointmentCount} icon="calendar" />
-        <KpiCard i={4} label="Staff utilisation" value={data.utilisation} suffix="%" delta="3% vs last week" deltaGood icon="users" />
-        <KpiCard i={5} label="Customer return rate" value={data.returnRate} suffix="%" delta="2% vs last month" icon="trenddown" />
-        <KpiCard i={6} label="No-show risk today" value={data.highRiskCount} suffix=" high" icon="alert" />
+        <KpiCard i={3} label={`Appointments — ${data.periodLabel}`} value={data.appointmentCount} icon="calendar" />
+        <KpiCard i={4} label="Staff utilisation" value={data.utilisation} suffix="%" icon="users" />
+        <KpiCard i={5} label="Customer return rate" value={data.returnRate} suffix="%" icon="trenddown" />
+        <KpiCard i={6} label="No-shows this period" value={data.highRiskCount} suffix=" no-shows" icon="alert" />
         <KpiCard i={7} label="Inventory health" value={95} suffix="%" icon="box" />
       </div>
 

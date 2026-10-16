@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/Icon';
 
 interface TopbarProps {
@@ -10,6 +11,22 @@ interface TopbarProps {
 }
 
 export default function Topbar({ title, setMobileOpen, notifOpen, setNotifOpen }: TopbarProps) {
+  const [initials, setInitials] = useState('MR');
+
+  useEffect(() => {
+    try {
+      const userStr = localStorage.getItem('salon_user');
+      if (userStr) {
+        const user = JSON.parse(userStr);
+        if (user.name) {
+          const parts = user.name.split(' ').filter(Boolean);
+          const inits = parts.map((p: string) => p[0]).join('').slice(0, 2).toUpperCase();
+          if (inits) setInitials(inits);
+        }
+      }
+    } catch {}
+  }, []);
+
   return (
     <div className="sticky top-0 z-30 bg-[var(--porcelain)]/85 backdrop-blur-md border-b border-[var(--line)] px-5 lg:px-8 py-4 flex items-center justify-between">
       <div className="flex items-center gap-3">
@@ -40,7 +57,7 @@ export default function Topbar({ title, setMobileOpen, notifOpen, setNotifOpen }
 
         {/* Avatar */}
         <div className="w-9 h-9 rounded-full bg-[var(--gold)] flex items-center justify-center text-white text-xs font-bold font-mono">
-          SW
+          {initials}
         </div>
       </div>
     </div>

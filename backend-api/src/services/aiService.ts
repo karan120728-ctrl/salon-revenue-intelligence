@@ -116,7 +116,7 @@ export const AIService = {
       };
     }
 
-    // 4. Call Groq — use 8B Instant for fast briefings (~0.5s vs 3s for 70B)
+    // 4. Call Groq — use fast qwen model for briefings (~0.5s)
     try {
       const prompt = `You are a sharp salon business advisor giving a morning briefing to ${ownerName}.
 Today: Revenue £${contextFacts.revenue} | Appointments: ${contextFacts.appointmentsToday} | High-risk no-shows: ${contextFacts.highRiskCancellations} | Low stock: ${contextFacts.lowStockItemNames || 'none'}.
@@ -130,7 +130,7 @@ Tips must be specific, actionable, and grounded in today's data only.`;
           'Authorization': `Bearer ${apiKey.trim()}`
         },
         body: JSON.stringify({
-          model: 'openai/gpt-oss-20b',
+          model: 'qwen/qwen3.8-27b',
           messages: [
             { role: 'system', content: prompt },
             { role: 'user', content: 'Generate now.' }
@@ -181,8 +181,8 @@ Tips must be specific, actionable, and grounded in today's data only.`;
       return 'The AI advisor is currently offline — GROQ_API_KEY is not configured. Please contact your administrator.';
     }
 
-    // Fetch complete live salon data to guarantee zero missing context (Customer Churn, Revenue, Staff, Inventory)
-    const [overview, staffPerf, churnRisk, inventoryData] = await Promise.all([
+    // Fetch complete live salon data to guarantee zero missing context (Customer Churn, Revenue, Staff, Inventory, No-Shows)
+    const [overview, staffPerf, churnRisk, inventoryData, noShowData, recentNoShows] = await Promise.all([
       AnalyticsService.getOverview(salonId),
       AnalyticsService.getStaffPerformance(salonId),
       AnalyticsService.getChurnRisk(salonId),
@@ -190,104 +190,151 @@ Tips must be specific, actionable, and grounded in today's data only.`;
         where: { salonId },
         include: { product: true },
         orderBy: { daysLeft: 'asc' }
-      })
+      }),
+      AnalyticsService.getNoShowPrediction(salonId),
+      prisma.appointment.findMany({
+        where: { salonId, status: 'NO_SHOW' },
+        include: {
+          customer: { select: { name: true, phone: true, email: true, ltv: true } },
+          staff: { select: { name: true } },
+          services: { select: { priceAtBooking: true, service: { select: { name: true } } } },
+        },
+        orderBy: { date: 'desc' },
+        take: 15,
+      }),
     ]);
 
+    const anchor = overview.anchorDate ? new Date(overview.anchorDate) : new Date();
+    const activeReportingPeriod = anchor.toLocaleString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+    const todayFormatted = new Date().toLocaleDateString('en-GB', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+
     const contextParts = {
+      salonOverview: {
+        salonOwner: ownerName,
+        currentDate: todayFormatted,
+        activeReportingPeriod: activeReportingPeriod,
+      },
       financials: {
+        reportingPeriod: activeReportingPeriod,
         currentMonthRevenue: `£${overview.revenue}`,
         noShowRate: `${overview.noShowRate}%`,
         appointmentsBooked: overview.appointments.total,
         appointmentsCompleted: overview.appointments.completed,
-        appointmentsNoShows: overview.appointments.noShows
+        appointmentsNoShows: overview.appointments.noShows,
+        utilisationRate: `${overview.utilisationRate}%`
       },
-      atRiskCustomers: churnRisk.map(c => ({
+      recentNoShowClients: recentNoShows.slice(0, 5).map(n => ({
+        name: n.customer?.name || 'Unknown',
+        date: new Date(n.date).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }),
+        stylist: n.staff?.name || 'Unassigned',
+        service: n.services[0]?.service?.name || 'Service',
+        lostValue: `£${n.services.reduce((sum, s) => sum + s.priceAtBooking, 0)}`,
+        phone: n.customer?.phone || 'N/A',
+      })),
+      atRiskCustomers: churnRisk.slice(0, 5).map(c => ({
         name: c.name,
-        email: c.email || 'N/A',
-        phone: c.phone || 'N/A',
         lifetimeValue: `£${c.ltv}`,
         daysOverdue: c.daysOverdue,
         riskScore: `${c.risk}%`,
-        lastVisit: c.lastVisit ? new Date(c.lastVisit).toLocaleDateString('en-GB') : 'Unknown'
       })),
       staffPerformance: staffPerf.map(s => ({
         name: s.name,
         role: s.role,
         rating: s.rating,
         rebookRate: `${s.rebookRate}%`,
-        allTimeRevenueGenerated: `£${s.generatedRevenue}`
+        revenue: `£${s.generatedRevenue}`
       })),
-      lowStockInventory: inventoryData.map(i => ({
+      lowStockInventory: inventoryData.filter(i => i.stock <= 5).map(i => ({
         product: i.product.name,
-        currentStock: i.stock,
-        estimatedDaysLeft: i.daysLeft,
-        alertStatus: i.reorderAlert || 'Healthy'
+        stock: i.stock,
       }))
     };
 
     const contextStr = JSON.stringify(contextParts, null, 2);
 
-    const systemPrompt = `You are a top-tier executive Salon Business Consultant and Advisor for ${ownerName}'s independent hair & beauty salon.
-
-CORE OBJECTIVE:
-Provide direct, highly strategic, revenue-maximizing advice like a seasoned salon owner/operations director.
+    const systemPrompt = `You are an executive Salon Business Advisor for ${ownerName}'s salon.
 
 RULES:
-1. Ground ALL facts directly in the supplied live database context below. Never invent metrics.
-2. If asked about a client (e.g. Ben, Sarah), check the atRiskCustomers list. State their exact overdue status, risk score, LTV, and immediately give a concrete, high-converting action (e.g. "Send SMS with a 15% discount on their usual treatment").
-3. Always suggest practical, revenue-saving steps (re-engagement scripts, cancellation deposit policies, staff commission incentives, inventory reorder reminders).
-4. Maintain context across follow-up questions (e.g., if the user says "what should we do for him?", recognize they are referring to the client discussed previously).
-5. Speak concisely, professionally, and decisively like a top salon business partner.
-6. FORMATTING & VISUAL PRESENTATION (CRITICAL):
-   - Always structure your answer into clean, digestible sections with double line breaks between paragraphs.
-   - Bold key numbers, client names, and metrics (e.g., **Ryan Chen**, **£3,240**, **95% risk**).
-   - When listing clients, overdue accounts, or steps, format each as a clean numbered list item on its own line (e.g. 1. **Client Name** — details).
-   - When comparing multiple clients or metrics, format as a clean Markdown table with headers and data rows.
-   - When generating personalized client messages, SMS, or outreach templates:
-     * Provide a clear title (e.g. **Personalised Outreach for Ben Turner**).
-     * Provide the exact, ready-to-send draft directly without markdown blockquote ('>') characters.
-     * Keep the tone warm, welcoming, and salon-appropriate with a clear booking incentive.
-   - Always conclude with a distinct takeaway starting with "Focus on:" containing 1-2 concrete, high-converting revenue-saving actions.
-7. MATHEMATICAL & FACTUAL INTEGRITY:
-   - NEVER divide a staff member's all-time revenue by current month revenue (they are across completely different timeframes).
-   - NEVER state that staff generated more than 100% of revenue.
-   - NEVER fabricate or assume baseline numbers (e.g. do NOT say "vs. typical 18-20 bookings" unless explicitly given in the data). Only analyze the actual figures provided.
-8. CRITICAL GUARDRAIL: Never admit that you are an AI, an LLM, or a software program. If asked to write code, Python scripts, or build software, firmly refuse and state that your only role is analyzing salon business metrics and providing executive consulting.
+1. Ground ALL facts directly in the live database context below.
+   - The current real-world date is ${todayFormatted}.
+   - The salon's active reporting period in the database is ${activeReportingPeriod}.
+   - If asked about the current date, day, or time, answer naturally and directly: "Today is ${todayFormatted}, and we are analyzing your ${activeReportingPeriod} salon performance." NEVER state that you don't know the date.
+2. If asked about a client (e.g. Ben, Sarah), check atRiskCustomers. Give their overdue days, risk score, LTV, and a practical re-engagement step.
+   If asked about no-shows or who missed appointments, check recentNoShowClients. Give their exact names (e.g. Benjamin Richardson, Elsie Campbell), dates, stylists, and lost value.
+3. Suggest practical, revenue-saving steps (confirmation calls, card deposits for repeat offenders).
+4. Maintain context across follow-up questions.
+5. FORMATTING & PRESENTATION:
+   - When comparing multiple clients, appointments, or staff metrics, format as a clean Markdown table with headers and pipe (|) rows.
+   - When generating SMS or outreach messages, provide the ready-to-send draft directly with client name, service, and clear booking incentive.
+   - Bold key numbers, client names, and metrics.
+6. EXECUTIVE BREVITY & STRUCTURE:
+   - Provide strategic, high-impact recommendations without unnecessary padding.
+   - Do NOT duplicate content: if you detailed recommendations and SMS drafts in earlier sections, conclude with a crisp, punchy 2-3 step priority action list, rather than re-explaining everything.
+7. MATHEMATICAL INTEGRITY:
+   - Staff revenue is cumulative all-time; never divide all-time staff revenue by the current month revenue.
+   - Only cite figures provided in the context; do not fabricate past weeks if not present.
+8. ABSOLUTE COMPLETION:
+   - Always finish every sentence, calculation, and section completely. Never stop mid-sentence, mid-list, or mid-table. Conclude cleanly.
 
 --- LIVE SALON DATABASE CONTEXT ---
 ${contextStr}
 --- END CONTEXT ---`;
 
-    // Map chat history into OpenAI/Groq messages format
-    const conversationMessages = history.slice(-6).map(h => ({
+    // Keep history compact (last 3 user queries, truncated) so prompt stays small and never causes token overflow
+    const conversationMessages = history.slice(-3).map(h => ({
       role: h.role === 'user' ? ('user' as const) : ('assistant' as const),
-      content: h.text
+      content: h.text.length > 300 ? h.text.slice(0, 300) + '...' : h.text
     }));
 
-    try {
+    const callGroq = async (model: string, maxTokens: number = 3500) => {
       const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 30000);
+      const timeout = setTimeout(() => controller.abort(), 45000);
+      try {
+        const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey.trim()}`
+          },
+          body: JSON.stringify({
+            model,
+            messages: [
+              { role: 'system', content: systemPrompt },
+              ...conversationMessages,
+              { role: 'user', content: query }
+            ],
+            temperature: 0.3,
+            max_tokens: maxTokens
+          }),
+          signal: controller.signal
+        });
+        clearTimeout(timeout);
+        return res;
+      } catch (e) {
+        clearTimeout(timeout);
+        throw e;
+      }
+    };
 
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey.trim()}`
-        },
-        body: JSON.stringify({
-          model: 'openai/gpt-oss-20b',
-          messages: [
-            { role: 'system', content: systemPrompt },
-            ...conversationMessages,
-            { role: 'user', content: query }
-          ],
-          temperature: 0.3,
-          max_tokens: 1500
-        }),
-        signal: controller.signal
-      });
+    try {
+      // 1. Primary: qwen/qwen3.8-27b (Fast, zero hidden reasoning tokens, crisp tables, no cutoffs, high token ceiling)
+      let response = await callGroq('qwen/qwen3.8-27b', 3500);
 
-      clearTimeout(timeout);
+      // 2. If rate-limited (429) or busy, failover to secondary models
+      if (response.status === 429) {
+        console.warn('[AI Advisor] Rate limited on qwen/qwen3.8-27b (429). Switching to backup model openai/gpt-oss-120b...');
+        response = await callGroq('openai/gpt-oss-120b', 3500);
+      }
+
+      if (response.status === 429) {
+        console.warn('[AI Advisor] Rate limited on openai/gpt-oss-120b (429). Switching to backup model openai/gpt-oss-20b...');
+        response = await callGroq('openai/gpt-oss-20b', 2500);
+      }
 
       if (!response.ok) {
         const errText = await response.text();
@@ -295,18 +342,32 @@ ${contextStr}
         return "I'm having trouble reaching the AI service right now. Please try again in a moment.";
       }
 
-      const result = await response.json() as { choices: Array<{ message: { content: string } }> };
-      const answer = result.choices?.[0]?.message?.content?.trim();
+      const result = await response.json() as { choices: Array<{ message: { content: string }; finish_reason?: string }> };
+      let answer = result.choices?.[0]?.message?.content?.trim();
 
       if (!answer) {
         return 'I received an empty response from the AI service. Please try rephrasing your question.';
+      }
+
+      // Safeguard: If output ever hits token length limits, gracefully trim dangling incomplete sentences or items
+      if (result.choices?.[0]?.finish_reason === 'length') {
+        console.warn('[AI Advisor] Response reached token length limit, applying graceful completion safeguard.');
+        // Strip trailing incomplete numbered list item like "4\nImplement £20" or "4. Implement £20"
+        answer = answer.replace(/\n+\d+\.?\s*[^.\n]*$/, '');
+        // If not ending in punctuation, trim to the last valid punctuation mark
+        if (!/[.!?]\s*$/.test(answer)) {
+          const lastSentenceEnd = Math.max(answer.lastIndexOf('.'), answer.lastIndexOf('!'), answer.lastIndexOf('?'));
+          if (lastSentenceEnd > answer.length * 0.7) {
+            answer = answer.slice(0, lastSentenceEnd + 1);
+          }
+        }
       }
 
       return answer;
 
     } catch (err: unknown) {
       if ((err as Error)?.name === 'AbortError') {
-        return 'The AI advisor timed out processing your request. Please try a shorter or more specific question.';
+        return 'The AI advisor timed out processing your request. Please try a shorter question.';
       }
       console.error('[AI Advisor] Unexpected error:', (err as Error)?.message ?? String(err));
       return 'Something went wrong with the AI advisor. Please try again shortly.';

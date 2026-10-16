@@ -1,62 +1,86 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Chart, registerables } from 'chart.js';
 import KpiCard from '@/features/dashboard/KpiCard';
-import { weeklyRevenue } from '@/data/mock';
+import { fetchApi } from '@/lib/api';
 
 Chart.register(...registerables);
 
 export default function Analytics() {
-  const revRef = useRef<HTMLCanvasElement>(null);
+  const revRef  = useRef<HTMLCanvasElement>(null);
   const custRef = useRef<HTMLCanvasElement>(null);
-  const retRef = useRef<HTMLCanvasElement>(null);
-  const catRef = useRef<HTMLCanvasElement>(null);
+  const retRef  = useRef<HTMLCanvasElement>(null);
+  const catRef  = useRef<HTMLCanvasElement>(null);
+
+  const [data, setData]       = useState<any>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetchApi('/api/analytics/monthly')
+      .then((res: any) => setData(res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (!data || !revRef.current) return;
     const charts: Chart[] = [];
 
+    // ── Monthly Revenue chart — from real data ──
     if (revRef.current) {
       charts.push(
         new Chart(revRef.current, {
           type: 'bar',
           data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-            datasets: [{ data: [11200, 11800, 12100, 13400, 12900, 14200, 13100], backgroundColor: '#12141F', borderRadius: 6 }],
+            labels: data.monthlyRevenueChart?.labels ?? [],
+            datasets: [{ data: data.monthlyRevenueChart?.values ?? [], backgroundColor: '#12141F', borderRadius: 6 }],
           },
           options: {
             responsive: true, maintainAspectRatio: false,
             plugins: { legend: { display: false } },
-            scales: { y: { grid: { color: '#EDEAE2' } }, x: { grid: { display: false } } },
+            scales: {
+              y: { grid: { color: '#EDEAE2' }, ticks: { callback: (v) => '£' + v } },
+              x: { grid: { display: false } },
+            },
           },
         })
       );
     }
 
+    // ── Customer growth — placeholder until customer DB snapshots exist ──
     if (custRef.current) {
       charts.push(
         new Chart(custRef.current, {
           type: 'line',
           data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-            datasets: [{ data: [420, 438, 451, 469, 478, 492, 510], borderColor: '#4F8871', backgroundColor: 'rgba(79,136,113,.1)', fill: true, tension: 0.4, pointRadius: 0 }],
+            labels: data.monthlyRevenueChart?.labels ?? [],
+            datasets: [{
+              data: data.monthlyRevenueChart?.labels?.map(() => null) ?? [],
+              borderColor: '#4F8871', backgroundColor: 'rgba(79,136,113,.1)',
+              fill: true, tension: 0.4, pointRadius: 0,
+            }],
           },
           options: {
             responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: false } },
+            plugins: {
+              legend: { display: false },
+              tooltip: { callbacks: { label: () => 'Historical growth data not yet available' } },
+            },
             scales: { y: { grid: { color: '#EDEAE2' } }, x: { grid: { display: false } } },
           },
         })
       );
     }
 
+    // ── Weekly retention — placeholder until session-level data exists ──
     if (retRef.current) {
       charts.push(
         new Chart(retRef.current, {
           type: 'bar',
           data: {
-            labels: weeklyRevenue.map((d) => d.d),
-            datasets: [{ data: [68, 64, 61, 66, 70, 73, 59], backgroundColor: '#C99A45', borderRadius: 6 }],
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{ data: [null, null, null, null] as any[], backgroundColor: '#C99A45', borderRadius: 6 }],
           },
           options: {
             responsive: true, maintainAspectRatio: false,
@@ -67,13 +91,14 @@ export default function Analytics() {
       );
     }
 
+    // ── Revenue by category — placeholder until service-category mapping exists ──
     if (catRef.current) {
       charts.push(
         new Chart(catRef.current, {
           type: 'doughnut',
           data: {
-            labels: ['Colour', 'Cut & style', 'Retail', 'Treatments'],
-            datasets: [{ data: [42, 28, 18, 12], backgroundColor: ['#12141F', '#C4485A', '#C99A45', '#4F8871'], borderWidth: 0 }],
+            labels: ['Data not yet available'],
+            datasets: [{ data: [1], backgroundColor: ['#EDEAE2'], borderWidth: 0 }],
           },
           options: {
             responsive: true, maintainAspectRatio: false, cutout: '65%',
@@ -84,32 +109,53 @@ export default function Analytics() {
     }
 
     return () => charts.forEach((c) => c.destroy());
-  }, []);
+  }, [data]);
+
+  if (loading) return <div className="p-8 text-sm text-[var(--slate)]">Loading analytics...</div>;
+  if (!data)   return <div className="p-8 text-sm text-red-500">Failed to load analytics</div>;
+
+  const noShowDeltaLabel = data.noShowRateDelta != null
+    ? `${data.noShowRateDelta >= 0 ? '+' : ''}${data.noShowRateDelta}% vs last month`
+    : undefined;
+  const noShowDeltaGood = (data.noShowRateDelta ?? 0) <= 0; // lower no-show = good
+
+  const newCustDeltaLabel = data.newCustomersDelta != null
+    ? `${data.newCustomersDelta >= 0 ? '+' : ''}${data.newCustomersDelta}% vs last month`
+    : undefined;
 
   return (
     <div className="p-5 lg:p-8 space-y-6">
       <div className="grid sm:grid-cols-4 gap-4">
-        <KpiCard i={0} label="Bookings this month" value={612} icon="calendar" />
-        <KpiCard i={1} label="No-show rate" value={7.4} suffix="%" delta="1.1% vs last month" icon="alert" />
-        <KpiCard i={2} label="New customers" value={38} delta="18% vs last month" deltaGood icon="users" />
-        <KpiCard i={3} label="Retail sales" value={4210} prefix="£" delta="18% down" icon="box" />
+        <KpiCard i={0} label="Bookings this month" value={data.bookingsThisMonth} icon="calendar" />
+        <KpiCard i={1} label="No-show rate" value={data.noShowRate} suffix="%" delta={noShowDeltaLabel} deltaGood={noShowDeltaGood} icon="alert" />
+        <KpiCard i={2} label="New customers" value={data.newCustomers} delta={newCustDeltaLabel} deltaGood={(data.newCustomersDelta ?? 0) >= 0} icon="users" />
+        {data.retailSales != null
+          ? <KpiCard i={3} label="Retail sales" value={data.retailSales} prefix="£" icon="box" />
+          : <KpiCard i={3} label="Retail sales" value="—" icon="box" />
+        }
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
         <div className="card p-6">
-          <h3 className="font-display text-xl mb-5">Monthly revenue</h3>
+          <h3 className="font-display text-xl mb-1">Monthly revenue</h3>
+          <p className="text-xs text-[var(--slate)] mb-4">
+            Last 6 months — from your imported data
+          </p>
           <div className="h-56"><canvas ref={revRef} /></div>
         </div>
         <div className="card p-6">
-          <h3 className="font-display text-xl mb-5">Customer growth</h3>
+          <h3 className="font-display text-xl mb-1">Customer growth</h3>
+          <p className="text-xs text-[var(--slate)] mb-4">Historical snapshot data not yet available</p>
           <div className="h-56"><canvas ref={custRef} /></div>
         </div>
         <div className="card p-6">
-          <h3 className="font-display text-xl mb-5">Weekly retention rate</h3>
+          <h3 className="font-display text-xl mb-1">Weekly retention rate</h3>
+          <p className="text-xs text-[var(--slate)] mb-4">Session-level data not yet available</p>
           <div className="h-56"><canvas ref={retRef} /></div>
         </div>
         <div className="card p-6">
-          <h3 className="font-display text-xl mb-5">Revenue by category</h3>
+          <h3 className="font-display text-xl mb-1">Revenue by category</h3>
+          <p className="text-xs text-[var(--slate)] mb-4">Service category mapping not yet available</p>
           <div className="h-56"><canvas ref={catRef} /></div>
         </div>
       </div>

@@ -50,7 +50,7 @@ export class GenericAdapter implements BaseAdapter {
 
         for (const row of rows) {
             try {
-                const apptId        = pick(row, 'appointment_id', 'appointment id', 'booking_ref', 'booking ref', 'booking_reference', 'id', 'booking_id', 'booking id', 'reference', 'ref');
+                const apptId        = pick(row, 'appointment reference', 'appointment_reference', 'booking reference', 'booking_reference', 'appointment_id', 'appointment id', 'booking_ref', 'booking ref', 'id', 'booking_id', 'booking id', 'reference', 'ref');
                 const dateRaw       = pick(row, 'date', 'appointment_date', 'appointment date', 'booking_date');
                 const timeRaw       = pick(row, 'time', 'start_time', 'start time', 'appointment_time');
                 const status        = pick(row, 'status', 'booking_state', 'booking state', 'appointment_status', 'appointment status', 'state');

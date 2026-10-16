@@ -1,92 +1,147 @@
 import { prisma } from '../prisma';
 
-export const AnalyticsService = {
-  // 1. Get Core Overview Metrics (Optimized with Database Aggregations & Concurrent Execution)
-  async getOverview(salonId: string, startDate?: Date, endDate?: Date) {
-    const now = new Date();
-    const start = startDate || new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000); // Default: last 90 days
-    const end = endDate || now;
+// ─────────────────────────────────────────────────────────────────────────────
+// DATE HELPERS — single source of truth for all window calculations
+// These ensure every metric uses the same boundaries, regardless of CSV date range.
+// ─────────────────────────────────────────────────────────────────────────────
 
-    // Run revenue aggregation, refunds, booked values, and appointment counts in parallel
+/**
+ * Returns the most recent date found in the appointments table for a salon.
+ * For historical CSVs (e.g. May–Oct 2026) this will be the last appointment date,
+ * NOT today's server clock. All "current period" windows are anchored to this date
+ * so the dashboard always shows meaningful data regardless of when the CSV was imported.
+ */
+async function getDataAnchorDate(salonId: string): Promise<Date> {
+  const latest = await prisma.appointment.findFirst({
+    where: { salonId },
+    orderBy: { date: 'desc' },
+    select: { date: true },
+  });
+  // Fall back to now if no appointments exist yet
+  return latest?.date ?? new Date();
+}
+
+/** Start of the calendar month containing `anchor` at 00:00:00 UTC */
+function startOfMonth(anchor: Date): Date {
+  return new Date(Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth(), 1, 0, 0, 0, 0));
+}
+
+/** End of the calendar month containing `anchor` at 23:59:59.999 UTC */
+function endOfMonth(anchor: Date): Date {
+  return new Date(Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth() + 1, 0, 23, 59, 59, 999));
+}
+
+/** Start of the previous calendar month */
+function startOfPrevMonth(anchor: Date): Date {
+  return new Date(Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth() - 1, 1, 0, 0, 0, 0));
+}
+
+/** End of the previous calendar month */
+function endOfPrevMonth(anchor: Date): Date {
+  return new Date(Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth(), 0, 23, 59, 59, 999));
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const AnalyticsService = {
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 1. EXECUTIVE DASHBOARD — "This Month" overview anchored to actual data
+  //    Replaces the broken 90-day default window.
+  // ───────────────────────────────────────────────────────────────────────────
+  async getOverview(salonId: string, startDate?: Date, endDate?: Date) {
+    // Anchor to the latest appointment date so historical CSVs work correctly
+    const anchor = await getDataAnchorDate(salonId);
+    const start = startDate ?? startOfMonth(anchor);
+    const end   = endDate   ?? endOfMonth(anchor);
+
+    // Previous month window — used for delta % calculations
+    const prevStart = startOfPrevMonth(anchor);
+    const prevEnd   = endOfPrevMonth(anchor);
+
     const [
       completedPayments,
       refundPayments,
       totalApps,
       noShows,
       completedApps,
+      cancelledApps,
       bookedAggregate,
-      recentImports
+      prevCompletedPayments,
+      prevTotalApps,
+      prevNoShows,
+      recentImports,
     ] = await Promise.all([
-      // Gross completed payments
+      // Current month — gross completed payments
       prisma.payment.findMany({
-        where: {
-          salonId,
-          status: 'COMPLETED',
-          paymentDate: { gte: start, lte: end }
-        },
-        select: { amount: true }
+        where: { salonId, status: 'COMPLETED', paymentDate: { gte: start, lte: end } },
+        select: { amount: true },
       }),
-      // Explicit refunds and reversals
+      // Current month — refunds/reversals
       prisma.payment.findMany({
-        where: {
-          salonId,
-          status: { in: ['REFUNDED', 'REVERSED'] },
-          paymentDate: { gte: start, lte: end }
-        },
-        select: { amount: true, status: true }
+        where: { salonId, status: { in: ['REFUNDED', 'REVERSED'] }, paymentDate: { gte: start, lte: end } },
+        select: { amount: true, status: true },
       }),
-      prisma.appointment.count({
-        where: { salonId, date: { gte: start, lte: end } }
-      }),
-      prisma.appointment.count({
-        where: { salonId, status: 'NO_SHOW', date: { gte: start, lte: end } }
-      }),
-      prisma.appointment.count({
-        where: { salonId, status: 'COMPLETED', date: { gte: start, lte: end } }
-      }),
-      // Booked appointment value from services
+      // Current month — total appointments booked
+      prisma.appointment.count({ where: { salonId, date: { gte: start, lte: end } } }),
+      // Current month — no-shows
+      prisma.appointment.count({ where: { salonId, status: 'NO_SHOW', date: { gte: start, lte: end } } }),
+      // Current month — completed
+      prisma.appointment.count({ where: { salonId, status: 'COMPLETED', date: { gte: start, lte: end } } }),
+      // Current month — cancelled
+      prisma.appointment.count({ where: { salonId, status: 'CANCELLED', date: { gte: start, lte: end } } }),
+      // Current month — booked service value (for expected revenue)
       prisma.appointmentService.aggregate({
         _sum: { priceAtBooking: true },
         where: {
           appointment: {
             salonId,
             status: { in: ['COMPLETED', 'SCHEDULED'] },
-            date: { gte: start, lte: end }
-          }
-        }
+            date: { gte: start, lte: end },
+          },
+        },
       }),
-      // Source systems recorded for this salon
+      // Previous month — revenue for delta
+      prisma.payment.findMany({
+        where: { salonId, status: 'COMPLETED', paymentDate: { gte: prevStart, lte: prevEnd } },
+        select: { amount: true },
+      }),
+      // Previous month — total appointments for delta
+      prisma.appointment.count({ where: { salonId, date: { gte: prevStart, lte: prevEnd } } }),
+      // Previous month — no-shows for delta
+      prisma.appointment.count({ where: { salonId, status: 'NO_SHOW', date: { gte: prevStart, lte: prevEnd } } }),
+      // Source systems (for revenue classification)
       prisma.importLog.findMany({
         where: { salonId },
         orderBy: { createdAt: 'desc' },
         take: 3,
-        select: { sourceSystem: true, paymentCount: true }
-      })
+        select: { sourceSystem: true, paymentCount: true },
+      }),
     ]);
 
-    // Handle amounts carefully to prevent double subtraction:
-    // If a refund is stored as +92.50, we subtract 92.50.
-    // If a refund is stored as -92.50, Math.abs(-92.50) is 92.50, preventing double negative addition.
-    // If a completed payment was logged with negative amount, it is counted as a reduction, not double-added.
-    const positiveCompleted = completedPayments
-      .filter(p => p.amount > 0)
-      .reduce((sum, p) => sum + p.amount, 0);
+    // ── Revenue calculation (handles positive/negative amounts safely) ──
+    const positiveCompleted = completedPayments.filter(p => p.amount > 0).reduce((s, p) => s + p.amount, 0);
+    const negativeDeduction = completedPayments.filter(p => p.amount < 0).reduce((s, p) => s + Math.abs(p.amount), 0);
+    const refundDeduction   = refundPayments.reduce((s, p) => s + Math.abs(p.amount), 0);
+    const verifiedNetRevenue = Math.max(0, positiveCompleted - negativeDeduction - refundDeduction);
 
-    const negativeCompletedDeduction = completedPayments
-      .filter(p => p.amount < 0)
-      .reduce((sum, p) => sum + Math.abs(p.amount), 0);
+    // ── Previous month revenue ──
+    const prevRevenue = prevCompletedPayments.filter(p => p.amount > 0).reduce((s, p) => s + p.amount, 0);
 
-    const explicitRefundDeduction = refundPayments
-      .reduce((sum, p) => sum + Math.abs(p.amount), 0);
+    // ── Revenue delta % vs previous month ──
+    const revenueDeltaPct = prevRevenue > 0
+      ? Math.round(((verifiedNetRevenue - prevRevenue) / prevRevenue) * 100)
+      : null;
 
-    const totalRefundDeduction = explicitRefundDeduction + negativeCompletedDeduction;
-    const verifiedNetRevenue = Math.max(0, positiveCompleted - totalRefundDeduction);
-    const bookedValue = bookedAggregate._sum.priceAtBooking || 0;
+    const bookedValue  = bookedAggregate._sum.priceAtBooking ?? 0;
+    const noShowRate   = totalApps > 0 ? parseFloat(((noShows / totalApps) * 100).toFixed(1)) : 0;
+    const prevNoShowRate = prevTotalApps > 0 ? parseFloat(((prevNoShows / prevTotalApps) * 100).toFixed(1)) : 0;
 
-    const hasPaymentData = (completedPayments.length + refundPayments.length) > 0;
+    // ── Source system classification ──
     const sourceSystems = recentImports.map(i => i.sourceSystem.toLowerCase());
+    const hasPaymentData = (completedPayments.length + refundPayments.length) > 0;
     const isTreatwell = sourceSystems.includes('treatwell');
-    const isTimely = sourceSystems.includes('timely');
+    const isTimely    = sourceSystems.includes('timely');
 
     let revenueClassification: 'VERIFIED_NET' | 'GROSS_COMPLETED_ONLY' | 'BOOKED_VALUE_ONLY' | 'INCOMPLETE_DATA';
     if (!hasPaymentData) {
@@ -97,65 +152,251 @@ export const AnalyticsService = {
       revenueClassification = 'VERIFIED_NET';
     }
 
-    const noShowRate = totalApps > 0 ? (noShows / totalApps) * 100 : 0;
-
     return {
-      revenue: verifiedNetRevenue, // Backward-compatible primary revenue metric
+      // Revenue
+      revenue: verifiedNetRevenue,
       verifiedNetRevenue,
       grossCompletedRevenue: positiveCompleted,
-      refundTotal: totalRefundDeduction,
+      refundTotal: negativeDeduction + refundDeduction,
       bookedValue,
+      revenueDeltaPct,
+      // Appointments
+      appointments: { total: totalApps, completed: completedApps, noShows, cancelled: cancelledApps },
+      // Rates
+      noShowRate,
+      noShowRateDelta: parseFloat((noShowRate - prevNoShowRate).toFixed(1)),
+      // Staff utilisation: completed / (completed + noShows + cancelled) — excludes scheduled
+      utilisationRate: (completedApps + noShows + cancelledApps) > 0
+        ? Math.round((completedApps / (completedApps + noShows + cancelledApps)) * 100)
+        : 0,
+      // Classification metadata
       revenueClassification,
       hasPaymentData,
       hasRefundData: hasPaymentData && !isTreatwell,
-      appointments: {
-        total: totalApps,
-        completed: completedApps,
-        noShows
-      },
-      noShowRate: parseFloat(noShowRate.toFixed(1))
+      // Window metadata — so the UI can show "Oct 2026" not "Today"
+      periodStart: start.toISOString(),
+      periodEnd: end.toISOString(),
+      anchorDate: anchor.toISOString(),
     };
   },
 
-  // 2. Churn Risk & Retention Calculation (Supports optional fixed asOf date for audits)
-  async getChurnRisk(salonId: string, asOfDate?: Date) {
-    const now = asOfDate || new Date();
-    
-    // Find customers whose expected return date has passed
-    const highRiskCustomers = await prisma.customer.findMany({
+  // ───────────────────────────────────────────────────────────────────────────
+  // 2. ANALYTICS PAGE — Month-by-month breakdown from real data
+  //    Previously this was showing hardcoded numbers (612, 38, £4,210).
+  // ───────────────────────────────────────────────────────────────────────────
+  async getMonthlyAnalytics(salonId: string) {
+    const anchor = await getDataAnchorDate(salonId);
+    const thisStart = startOfMonth(anchor);
+    const thisEnd   = endOfMonth(anchor);
+    const prevStart = startOfPrevMonth(anchor);
+    const prevEnd   = endOfPrevMonth(anchor);
+
+    // Map customerId -> earliest appointment date to determine new customers
+    const customerFirstVisits = new Map<string, Date>();
+    const appts = await prisma.appointment.findMany({
+      where: { salonId },
+      select: { customerId: true, date: true },
+      orderBy: { date: 'asc' },
+    });
+    for (const a of appts) {
+      if (!customerFirstVisits.has(a.customerId)) {
+        customerFirstVisits.set(a.customerId, a.date);
+      }
+    }
+    let newCustomersThisMonth = 0;
+    let newCustomersPrevMonth = 0;
+    for (const firstDate of customerFirstVisits.values()) {
+      if (firstDate >= thisStart && firstDate <= thisEnd) newCustomersThisMonth++;
+      else if (firstDate >= prevStart && firstDate <= prevEnd) newCustomersPrevMonth++;
+    }
+    const newCustomersDelta = newCustomersPrevMonth > 0
+      ? Math.round(((newCustomersThisMonth - newCustomersPrevMonth) / newCustomersPrevMonth) * 100)
+      : null;
+
+    const [
+      thisMonthApps,
+      thisMonthNoShows,
+      prevMonthApps,
+      prevMonthNoShows,
+      // Monthly revenue breakdown for chart (last 6 months)
+      monthlyPayments,
+    ] = await Promise.all([
+      prisma.appointment.count({ where: { salonId, date: { gte: thisStart, lte: thisEnd } } }),
+      prisma.appointment.count({ where: { salonId, status: 'NO_SHOW', date: { gte: thisStart, lte: thisEnd } } }),
+      prisma.appointment.count({ where: { salonId, date: { gte: prevStart, lte: prevEnd } } }),
+      prisma.appointment.count({ where: { salonId, status: 'NO_SHOW', date: { gte: prevStart, lte: prevEnd } } }),
+      // Last 6 months of payments for chart
+      prisma.payment.findMany({
+        where: {
+          salonId,
+          status: 'COMPLETED',
+          paymentDate: {
+            gte: new Date(Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth() - 5, 1)),
+            lte: thisEnd,
+          },
+        },
+        select: { amount: true, paymentDate: true },
+      }),
+    ]);
+
+    const thisNoShowRate = thisMonthApps > 0 ? parseFloat(((thisMonthNoShows / thisMonthApps) * 100).toFixed(1)) : 0;
+    const prevNoShowRate = prevMonthApps > 0 ? parseFloat(((prevMonthNoShows / prevMonthApps) * 100).toFixed(1)) : 0;
+
+    // Build 6-month revenue chart data keyed by "YYYY-MM"
+    const revenueByMonth: Record<string, number> = {};
+    for (const p of monthlyPayments) {
+      if (!p.paymentDate || p.amount <= 0) continue;
+      const key = `${p.paymentDate.getUTCFullYear()}-${String(p.paymentDate.getUTCMonth() + 1).padStart(2, '0')}`;
+      revenueByMonth[key] = (revenueByMonth[key] ?? 0) + p.amount;
+    }
+
+    // Generate ordered 6-month labels
+    const monthLabels: { key: string; label: string }[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth() - i, 1));
+      const key = `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}`;
+      const label = d.toLocaleString('en-GB', { month: 'short', year: '2-digit', timeZone: 'UTC' });
+      monthLabels.push({ key, label });
+    }
+
+    return {
+      bookingsThisMonth: thisMonthApps,
+      noShowRate: thisNoShowRate,
+      noShowRateDelta: parseFloat((thisNoShowRate - prevNoShowRate).toFixed(1)),
+      newCustomers: newCustomersThisMonth,
+      newCustomersDelta,
+      // Retail sales not yet tracked in DB — return null so UI shows "No data" instead of fake number
+      retailSales: null,
+      // Chart data
+      monthlyRevenueChart: {
+        labels: monthLabels.map(m => m.label),
+        values: monthLabels.map(m => Math.round(revenueByMonth[m.key] ?? 0)),
+      },
+      periodStart: thisStart.toISOString(),
+      periodEnd: thisEnd.toISOString(),
+      anchorDate: anchor.toISOString(),
+    };
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 3. NO-SHOW PREDICTION — upcoming SCHEDULED appointments with risk scoring
+  //    Works on both live bookings and historical CSVs (shows last N days)
+  // ───────────────────────────────────────────────────────────────────────────
+  async getNoShowPrediction(salonId: string) {
+    const anchor = await getDataAnchorDate(salonId);
+
+    // For live salons: show appointments in next 7 days
+    // For historical CSVs: show the last 30 days of the dataset
+    const windowStart = new Date(anchor.getTime() - 30 * 24 * 60 * 60 * 1000);
+    const windowEnd   = new Date(anchor.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+    const appointments = await prisma.appointment.findMany({
       where: {
         salonId,
-        expectedVisit: { lt: now } // They are overdue
+        date: { gte: windowStart, lte: windowEnd },
+        status: { in: ['SCHEDULED', 'COMPLETED', 'NO_SHOW'] },
       },
-      orderBy: { ltv: 'desc' }, // Sort by highest lifetime value
-      take: 20
+      include: {
+        customer: {
+          select: {
+            name: true,
+            appointments: {
+              select: { status: true },
+            },
+          },
+        },
+        staff:    { select: { name: true } },
+        services: { select: { priceAtBooking: true } },
+      },
+      orderBy: { date: 'asc' },
+      take: 100,
+    });
+
+    const scored = appointments.map(a => {
+      // Risk score is a function of: customer no-show history, booking recency
+      const pastApps = a.customer?.appointments ?? [];
+      const visitCount = pastApps.length;
+      const noShowHistory = pastApps.filter(app => app.status === 'NO_SHOW').length;
+      const noShowRatio = visitCount > 0 ? noShowHistory / visitCount : 0;
+
+      // Weight: 70% historical no-show ratio, 30% if they have no visit history
+      let risk = Math.round(noShowRatio * 70);
+      if (visitCount <= 1) risk += 20; // first-time client bonus risk
+      if (noShowHistory >= 2) risk += 10; // serial no-shower bonus
+      risk = Math.min(risk, 99);
+
+      const reason = noShowHistory >= 2
+        ? `${noShowHistory} previous no-shows (${Math.round(noShowRatio * 100)}% rate)`
+        : visitCount <= 1
+          ? 'New client — no visit history'
+          : `${Math.round(noShowRatio * 100)}% historical no-show rate`;
+
+      const serviceRevenue = a.services.reduce((s, as) => s + as.priceAtBooking, 0);
+
+      return {
+        id: a.id,
+        status: a.status,
+        date: a.date.toISOString(),
+        risk,
+        riskReason: reason,
+        customer: { name: a.customer?.name ?? 'Unknown' },
+        staff:    { name: a.staff?.name ?? 'Unknown' },
+        services: a.services,
+        serviceRevenue,
+      };
+    });
+
+    const highRisk = scored.filter(a => a.risk >= 70);
+
+    return {
+      appointments: scored,
+      highRiskCount: highRisk.length,
+      avgRisk: scored.length > 0
+        ? Math.round(scored.reduce((s, a) => s + a.risk, 0) / scored.length)
+        : 0,
+      revenueAtRisk: highRisk.reduce((s, a) => s + a.serviceRevenue, 0),
+      anchorDate: anchor.toISOString(),
+      windowStart: windowStart.toISOString(),
+      windowEnd: windowEnd.toISOString(),
+    };
+  },
+
+  // ───────────────────────────────────────────────────────────────────────────
+  // 4. CHURN RISK & RETENTION (unchanged logic, just cleaning up return shape)
+  // ───────────────────────────────────────────────────────────────────────────
+  async getChurnRisk(salonId: string, asOfDate?: Date) {
+    const now = asOfDate || new Date();
+
+    const highRiskCustomers = await prisma.customer.findMany({
+      where: { salonId, expectedVisit: { lt: now } },
+      orderBy: { ltv: 'desc' },
+      take: 20,
     });
 
     return highRiskCustomers.map(c => ({
       ...c,
-      daysOverdue: Math.floor((now.getTime() - c.expectedVisit!.getTime()) / (1000 * 60 * 60 * 24))
+      daysOverdue: Math.floor((now.getTime() - c.expectedVisit!.getTime()) / (1000 * 60 * 60 * 24)),
     }));
   },
 
-  // 3. Staff Performance (Occupancy & Rebook Rate)
+  // ───────────────────────────────────────────────────────────────────────────
+  // 5. STAFF PERFORMANCE (unchanged — was already correct)
+  // ───────────────────────────────────────────────────────────────────────────
   async getStaffPerformance(salonId: string) {
-    // Currently fetching raw staff. 
-    // In a fully scaled system, we would calculate occupancy = (booked duration / available shift duration).
     const staff = await prisma.staff.findMany({
       where: { salonId },
       include: {
         appointments: {
-          include: { services: { include: { service: true } } }
-        }
-      }
+          include: { services: { include: { service: true } } },
+        },
+      },
     });
 
     return staff.map(s => {
-      // Basic revenue generation calculation per staff
       let staffRev = 0;
       s.appointments.forEach(app => {
         if (app.status === 'COMPLETED') {
-          app.services.forEach(as => staffRev += as.priceAtBooking);
+          app.services.forEach(as => (staffRev += as.priceAtBooking));
         }
       });
 
@@ -165,8 +406,8 @@ export const AnalyticsService = {
         role: s.role,
         rating: s.rating,
         rebookRate: s.rebookRate,
-        generatedRevenue: staffRev
+        generatedRevenue: staffRev,
       };
-    }).sort((a, b) => b.generatedRevenue - a.generatedRevenue); // Sort by highest revenue
-  }
+    }).sort((a, b) => b.generatedRevenue - a.generatedRevenue);
+  },
 };

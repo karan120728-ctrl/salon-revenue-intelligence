@@ -39,6 +39,7 @@ prisma/migrations/
 # Private business files
 salon_list.pdf
 *.pdf
+*.csv
 
 # Agent/AI tool config
 .agents/

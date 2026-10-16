@@ -9,8 +9,8 @@ export default function Login() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [email, setEmail] = useState('admin@marlowe.com');
-  const [password, setPassword] = useState('admin123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [warming, setWarming] = useState(true); // true while backend cold-start resolves
 
   // 🔥 Wake up the Render backend the moment the login page loads.

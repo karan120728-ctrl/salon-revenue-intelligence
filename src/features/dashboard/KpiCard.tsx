@@ -5,7 +5,7 @@ import Icon from '@/components/ui/Icon';
 
 interface KpiCardProps {
   label: string;
-  value: number;
+  value: number | string;
   prefix?: string;
   suffix?: string;
   delta?: string;
@@ -21,7 +21,11 @@ export default function KpiCard({ label, value, prefix = '', suffix = '', delta,
         <div>
           <p className="text-xs font-semibold tracking-wide uppercase text-[var(--slate)]">{label}</p>
           <p className="font-display text-3xl mt-2 tracking-tight">
-            <AnimatedNumber value={value} prefix={prefix} suffix={suffix} />
+            {typeof value === 'number' ? (
+              <AnimatedNumber value={value} prefix={prefix} suffix={suffix} />
+            ) : (
+              <span>{prefix}{value}{suffix}</span>
+            )}
           </p>
         </div>
         <div className="w-9 h-9 rounded-full bg-[var(--paper)] flex items-center justify-center text-[var(--ink)]">
