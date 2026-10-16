@@ -133,6 +133,26 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     };
   }
 
+  if (endpoint === '/api/analytics/leak') {
+    await delay(350);
+    return {
+      data: {
+        totalLostWeekly: 3500,
+        totalLostMonthly: 15155,
+        largestCausePercent: 32,
+        largestCauseLabel: 'No-shows',
+        recoverableMonthly: 2100,
+        breakdown: revenueLeakData,
+        recommendations: [
+          { t: 'Tighten no-show policy', d: 'Require card guarantees for first-time bookings — could recover ~£1,120/wk.', tag: 'No-shows' },
+          { t: 'Add checkout prompts for stylists', d: 'Jack and Marcus have the lowest retail attach — a simple prompt script could lift sales 15%.', tag: 'Retail' },
+          { t: 'Fill Wednesday afternoons', d: 'Consistently 40% empty — a loyalty flash offer could convert 6–8 extra bookings a week.', tag: 'Empty chairs' },
+          { t: 'Automate late-arrival buffers', d: 'Adding a 10-minute buffer to peak slots reduces knock-on delays without cutting capacity.', tag: 'Late arrivals' },
+        ],
+      }
+    };
+  }
+
   if (endpoint === '/api/analytics/staff') {
     await delay(300);
     // Transform mock stylists to match the schema Staff.tsx expects

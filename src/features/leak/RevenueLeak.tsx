@@ -1,38 +1,71 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Chart, registerables } from 'chart.js';
 import KpiCard from '@/features/dashboard/KpiCard';
 import Icon from '@/components/ui/Icon';
-import { revenueLeakData } from '@/data/mock';
+import { fetchApi } from '@/lib/api';
 import { money } from '@/lib/utils';
 
 Chart.register(...registerables);
 
-const recommendations = [
-  { t: 'Tighten no-show policy', d: 'Require card guarantees for first-time bookings — could recover ~£1,120/wk.', tag: 'No-shows' },
-  { t: 'Add checkout prompts for stylists', d: 'Jack and Marcus have the lowest retail attach — a simple prompt script could lift sales 15%.', tag: 'Retail' },
-  { t: 'Fill Wednesday afternoons', d: 'Consistently 40% empty — a loyalty flash offer could convert 6–8 extra bookings a week.', tag: 'Empty chairs' },
-  { t: 'Automate late-arrival buffers', d: 'Adding a 10-minute buffer to peak slots reduces knock-on delays without cutting capacity.', tag: 'Late arrivals' },
-];
+interface LeakItem {
+  label: string;
+  value: number;
+  amt: number;
+  color: string;
+}
+
+interface LeakRecommendation {
+  t: string;
+  d: string;
+  tag: string;
+}
+
+interface LeakResponse {
+  totalLostWeekly: number;
+  totalLostMonthly: number;
+  largestCausePercent: number;
+  largestCauseLabel: string;
+  recoverableMonthly: number;
+  breakdown: LeakItem[];
+  recommendations: LeakRecommendation[];
+}
 
 export default function RevenueLeak() {
   const ref = useRef<HTMLCanvasElement>(null);
-  const totalAmt = revenueLeakData.reduce((a, d) => a + d.amt, 0);
+  const chartInstance = useRef<Chart | null>(null);
+  const [data, setData] = useState<LeakResponse | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!ref.current) return;
+    fetchApi('/api/analytics/leak')
+      .then((res) => {
+        if (res?.data) {
+          setData(res.data);
+        }
+      })
+      .catch((err) => console.error('[RevenueLeak] fetch failed:', err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  useEffect(() => {
+    if (!ref.current || !data?.breakdown?.length) return;
     const ctx = ref.current.getContext('2d');
     if (!ctx) return;
 
-    const c = new Chart(ctx, {
+    if (chartInstance.current) {
+      chartInstance.current.destroy();
+    }
+
+    chartInstance.current = new Chart(ctx, {
       type: 'doughnut',
       data: {
-        labels: revenueLeakData.map((d) => d.label),
+        labels: data.breakdown.map((d) => d.label),
         datasets: [
           {
-            data: revenueLeakData.map((d) => d.value),
-            backgroundColor: revenueLeakData.map((d) => d.color),
+            data: data.breakdown.map((d) => d.value),
+            backgroundColor: data.breakdown.map((d) => d.color),
             borderWidth: 0,
           },
         ],
@@ -45,15 +78,27 @@ export default function RevenueLeak() {
       },
     });
 
-    return () => c.destroy();
-  }, []);
+    return () => {
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
+    };
+  }, [data]);
+
+  if (loading) {
+    return <div className="p-8 text-sm text-[var(--slate)]">Calculating revenue leak analysis...</div>;
+  }
+
+  if (!data) {
+    return <div className="p-8 text-sm text-red-500">Failed to load revenue leak analysis.</div>;
+  }
 
   return (
     <div className="p-5 lg:p-8 space-y-6">
       <div className="grid sm:grid-cols-3 gap-4">
-        <KpiCard i={0} label="Total revenue lost / wk" value={totalAmt} prefix="£" icon="droplet" />
-        <KpiCard i={1} label="Largest cause" value={32} suffix="%" icon="alert" />
-        <KpiCard i={2} label="Recoverable this month" value={2100} prefix="£" delta="AI estimate" deltaGood icon="trendup" />
+        <KpiCard i={0} label="Total revenue lost / wk" value={data.totalLostWeekly} prefix="£" icon="droplet" />
+        <KpiCard i={1} label={`Largest cause (${data.largestCauseLabel})`} value={data.largestCausePercent} suffix="%" icon="alert" />
+        <KpiCard i={2} label="Recoverable this month" value={data.recoverableMonthly} prefix="£" delta="AI estimate" deltaGood icon="trendup" />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
@@ -63,12 +108,12 @@ export default function RevenueLeak() {
           <div className="h-64 relative">
             <canvas ref={ref} />
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <p className="font-display text-2xl">{money(totalAmt)}</p>
+              <p className="font-display text-2xl">{money(data.totalLostWeekly)}</p>
               <p className="text-xs text-[var(--slate)]">lost per week</p>
             </div>
           </div>
           <div className="grid grid-cols-2 gap-3 mt-6">
-            {revenueLeakData.map((r, i) => (
+            {data.breakdown.map((r, i) => (
               <div key={i} className="flex items-center gap-2 text-xs">
                 <span className="w-2.5 h-2.5 rounded-full flex-shrink-0" style={{ background: r.color }} />
                 <span className="font-medium">{r.label}</span>
@@ -82,7 +127,7 @@ export default function RevenueLeak() {
         <div className="card p-6">
           <h3 className="font-display text-xl mb-5">AI recommendations</h3>
           <ul className="space-y-4">
-            {recommendations.map((r, i) => (
+            {data.recommendations.map((r, i) => (
               <li key={i} className="flex gap-3">
                 <div className="w-8 h-8 rounded-full bg-[var(--paper)] flex items-center justify-center flex-shrink-0 mt-0.5">
                   <Icon name="sparkle" size={14} />

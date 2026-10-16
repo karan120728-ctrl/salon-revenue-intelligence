@@ -47,6 +47,13 @@ const analyticsRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
     const briefing = await AIService.generateDailyBriefing(user.salonId, userName);
     return { success: true, data: briefing };
   });
+
+  // 7. Revenue Leak Analysis
+  server.get('/leak', async (request) => {
+    const user = request.user as { salonId: string };
+    const leak = await AnalyticsService.getRevenueLeak(user.salonId);
+    return { success: true, data: leak };
+  });
 };
 
 export default analyticsRoutes;
