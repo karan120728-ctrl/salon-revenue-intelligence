@@ -659,11 +659,10 @@ async function main() {
     const customerIdMap = new Map<string, string>();
     const apptIdMap     = new Map<string, string>();
 
-    // Atomic transaction: Salon/User creation AND entity data import are fully atomic
-    await prisma.$transaction(async (tx) => {
-        // 7a. Salon & Owner creation if new
-        if (!salonId) {
-            const hashedPassword = await bcrypt.hash(tempPassword!, 12);
+    // 7a. Salon & Owner creation if new (small atomic transaction — just 2 writes)
+    if (!salonId) {
+        const hashedPassword = await bcrypt.hash(tempPassword!, 12);
+        await prisma.$transaction(async (tx) => {
             salon = await tx.salon.create({ data: { name: salonName! } });
             await tx.user.create({
                 data: {
@@ -674,7 +673,25 @@ async function main() {
                     salonId: salon.id,
                 },
             });
-        }
+        });
+    }
+
+    // ── Pre-fetch lookups OUTSIDE transaction to avoid TiDB long-held read timeouts ──
+    console.log('  🔍  Pre-fetching existing records for dedup...');
+    const prefetchedCustomers = salonId ? await prisma.customer.findMany({ where: { salonId: salon.id } }) : [];
+    const prefetchedAppts = salonId ? await prisma.appointment.findMany({
+        where: { salonId: salon.id, sourceSystem: sourceName },
+        select: { id: true, externalId: true },
+    }) : [];
+    const prefetchedPayments = salonId ? await prisma.payment.findMany({
+        where: { salonId: salon.id, sourceSystem: sourceName },
+        select: { id: true, externalId: true },
+    }) : [];
+    console.log(`  ✅ Pre-fetched: ${prefetchedCustomers.length} customers, ${prefetchedAppts.length} appts, ${prefetchedPayments.length} payments`);
+
+    console.log('  📝  Importing records (no transaction wrapper — TiDB compatible)...');
+    {
+        const tx = prisma; // alias for minimal code change below
 
         // 7b. Staff (upsert)
         for (const s of data.staff) {
@@ -705,7 +722,8 @@ async function main() {
         }
 
         // 7d. Customers (Robust identity matching across exports)
-        const existingCustomers = await tx.customer.findMany({ where: { salonId: salon.id } });
+        // Use pre-fetched data (reads done outside transaction to avoid TiDB timeouts)
+        const existingCustomers = [...prefetchedCustomers];
 
         for (const c of data.customers) {
             const cEmail = c.email ? c.email.toLowerCase().trim() : null;
@@ -775,12 +793,9 @@ async function main() {
         }
 
         // 7e. Appointments (High-performance bulk import)
-        const existingAppts = await tx.appointment.findMany({
-            where: { salonId: salon.id, sourceSystem: sourceName },
-            select: { id: true, externalId: true },
-        });
+        // Use pre-fetched data (reads done outside transaction to avoid TiDB timeouts)
         const existingApptMap = new Map<string, string>();
-        for (const a of existingAppts) {
+        for (const a of prefetchedAppts) {
             if (a.externalId) existingApptMap.set(a.externalId, a.id);
         }
 
@@ -816,11 +831,21 @@ async function main() {
         if (newAppointments.length > 0) {
             await tx.appointment.createMany({ data: newAppointments, skipDuplicates: true });
         }
-        for (const u of updateAppointments) {
-            await tx.appointment.update({
-                where: { id: u.id },
-                data: { date: u.date, status: u.status, staffId: u.staffId ?? null },
-            });
+        const CHUNK_SIZE = 50;
+        for (let i = 0; i < updateAppointments.length; i += CHUNK_SIZE) {
+            const chunk = updateAppointments.slice(i, i + CHUNK_SIZE);
+            await Promise.all(
+                chunk.map(u =>
+                    tx.appointment.update({
+                        where: { id: u.id },
+                        data: {
+                            date: u.date,
+                            status: u.status,
+                            ...(u.staffId ? { staffId: u.staffId } : {}),
+                        },
+                    })
+                )
+            );
         }
 
         // 7e-2. Appointment Services (Bulk insert)
@@ -844,12 +869,9 @@ async function main() {
         }
 
         // 7f. Payments (High-performance bulk import)
-        const existingPayments = await tx.payment.findMany({
-            where: { salonId: salon.id, sourceSystem: sourceName },
-            select: { id: true, externalId: true },
-        });
+        // Use pre-fetched data (reads done outside transaction to avoid TiDB timeouts)
         const existingPayMap = new Map<string, string>();
-        for (const p of existingPayments) {
+        for (const p of prefetchedPayments) {
             if (p.externalId) existingPayMap.set(p.externalId, p.id);
         }
 
@@ -884,15 +906,20 @@ async function main() {
         if (newPayments.length > 0) {
             await tx.payment.createMany({ data: newPayments, skipDuplicates: true });
         }
-        for (const u of updatePayments) {
-            await tx.payment.update({
-                where: { id: u.id },
-                data: { amount: u.amount, status: u.status, method: u.method },
-            });
+        for (let i = 0; i < updatePayments.length; i += CHUNK_SIZE) {
+            const chunk = updatePayments.slice(i, i + CHUNK_SIZE);
+            await Promise.all(
+                chunk.map(u =>
+                    tx.payment.update({
+                        where: { id: u.id },
+                        data: { amount: u.amount, status: u.status, method: u.method },
+                    })
+                )
+            );
         }
-    }, { timeout: 120_000, maxWait: 30_000 });
+    }
 
-    console.log('  ✅ Atomic import transaction committed.');
+    console.log('  ✅ Import committed successfully.');
     if (!salonId && tempPassword) {
         console.log(`  ✅ Salon created: "${salonName}" (ID: ${salon.id})`);
         console.log(`\n  ┌─────────────────────────────────────────────┐`);

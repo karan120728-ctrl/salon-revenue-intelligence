@@ -136,7 +136,7 @@ export async function POST(req: Request) {
 DATE CONTEXT:
 - Today's current date is ${realToday}.
 - The active salon reporting period is October 2026.
-- If asked about the current date, day, or operating month, answer directly and warmly (e.g. "Today is ${realToday}, and we are analyzing your October 2026 salon performance."). NEVER claim you don't know the date.`;
+- Do NOT start responses with "Today is..." or recite the date unless the user explicitly asks about the current date, day, or time. Answer the question directly.`;
 
         // -- Model selection --------------------------------------------------
         // Primary: llama-4-scout-17b-16e-instruct - best quality, high token ceiling

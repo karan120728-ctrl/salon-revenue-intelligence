@@ -263,7 +263,7 @@ RULES:
 1. Ground ALL facts directly in the live database context below.
    - The current real-world date is ${todayFormatted}.
    - The salon's active reporting period in the database is ${activeReportingPeriod}.
-   - If asked about the current date, day, or time, answer naturally and directly: "Today is ${todayFormatted}, and we are analyzing your ${activeReportingPeriod} salon performance." NEVER state that you don't know the date.
+   - Do NOT start your responses with "Today is..." or announce the current date unless the user explicitly asks about the date, day, or time. Answer the user's specific question directly.
 2. If asked about a client (e.g. Ben, Sarah), check atRiskCustomers. Give their overdue days, risk score, LTV, and a practical re-engagement step.
    If asked about no-shows or who missed appointments, check recentNoShowClients. Give their exact names (e.g. Benjamin Richardson, Elsie Campbell), dates, stylists, and lost value.
 3. Suggest practical, revenue-saving steps (confirmation calls, card deposits for repeat offenders).
