@@ -31,7 +31,13 @@ export default function Inventory() {
       <div className="grid sm:grid-cols-3 gap-4">
         <KpiCard i={0} label="Products tracked" value={data.products.length} icon="box" />
         <KpiCard i={1} label="Low stock alerts" value={data.lowStockCount} icon="alert" />
-        <KpiCard i={2} label="Inventory health" value={82} suffix="%" icon="check" />
+        <KpiCard 
+          i={2} 
+          label="Inventory health" 
+          value={data.products.length === 0 ? 100 : Math.max(0, Math.round(((data.products.length - data.lowStockCount) / data.products.length) * 100))} 
+          suffix="%" 
+          icon="check" 
+        />
       </div>
 
       <div className="card p-6">
