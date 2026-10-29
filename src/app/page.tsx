@@ -279,52 +279,62 @@ export default function Landing() {
       {/* Pricing */}
       <section id="pricing" className="max-w-7xl mx-auto px-6 py-24">
         <p className="text-xs font-semibold uppercase tracking-wide text-[var(--rosewood-deep)] mb-3 text-center">Pricing</p>
-        <h2 className="font-display text-4xl mb-14 text-center">Priced per chair, not per headache.</h2>
-        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-          {[
-            {
-              n: 'Studio',
-              p: '£89',
-              d: 'Up to 4 chairs',
-              f: ['Daily AI briefing', 'Revenue leak analysis', 'No-show prediction'],
-              pop: false,
-            },
-            {
-              n: 'Salon',
-              p: '£179',
-              d: 'Up to 10 chairs',
-              f: ['Everything in Studio', 'Customer retention engine', 'Staff performance suite', 'AI business advisor'],
-              pop: true,
-            },
-            {
-              n: 'Group',
-              p: "Let's talk",
-              d: 'Multi-location',
-              f: ['Everything in Salon', 'Cross-site benchmarking', 'Dedicated success manager'],
-              pop: false,
-            },
-          ].map((t, i) => (
-            <div key={i} className={`rounded-2xl p-7 fade-up ${t.pop ? 'bg-[var(--ink)] text-white shadow-xl scale-[1.03]' : 'card'}`} style={{ animationDelay: `${i * 80}ms` }}>
-              {t.pop && <span className="text-[10px] font-bold uppercase tracking-wide bg-[var(--rosewood)] px-2.5 py-1 rounded-full">Most popular</span>}
-              <h3 className="font-display text-2xl mt-4">{t.n}</h3>
-              <p className={`text-xs mt-1 ${t.pop ? 'text-white/60' : 'text-[var(--slate)]'}`}>{t.d}</p>
-              <p className="font-display text-4xl mt-5">{t.p} <span className="text-base font-sans font-normal">{t.p !== "Let's talk" ? '/mo' : ''}</span></p>
-              <ul className="space-y-2.5 mt-6 mb-8 text-sm">
-                {t.f.map((f, j) => (
-                  <li key={j} className="flex items-center gap-2.5">
-                    <Icon name="check" size={14} className={t.pop ? 'text-[#D98094]' : 'text-[var(--sage)]'} />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button
-                onClick={() => router.push('/login')}
-                className={`w-full text-center rounded-full py-3 font-semibold text-sm ${t.pop ? 'bg-white text-[var(--ink)]' : 'btn-secondary block'}`}
-              >
-                Get started
-              </button>
+        <h2 className="font-display text-4xl mb-4 text-center">One simple price. Every feature included.</h2>
+        <p className="text-center text-[var(--slate)] text-sm max-w-md mx-auto mb-14">
+          Early-stage flat pricing for independent UK salons. Any number of chairs, zero tier restrictions.
+        </p>
+        <div className="max-w-lg mx-auto">
+          <div className="bg-[var(--ink)] text-white rounded-3xl p-8 sm:p-10 shadow-2xl relative overflow-hidden fade-up">
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-[11px] font-bold uppercase tracking-wider bg-[var(--rosewood)] text-white px-3 py-1 rounded-full">
+                Early Access Plan
+              </span>
+              <span className="text-xs text-white/60">Any number of chairs</span>
             </div>
-          ))}
+            
+            <h3 className="font-display text-3xl">Complete Salon Intelligence</h3>
+            <p className="text-sm text-white/70 mt-2">
+              For any size salon — from 1 chair to 10+ chairs. Everything you need to eliminate revenue leaks.
+            </p>
+            
+            <div className="my-8 pt-6 border-t border-white/10 flex items-baseline gap-2">
+              <span className="font-display text-5xl">£149</span>
+              <span className="text-white/60 text-base font-normal">/ month</span>
+              <span className="text-xs text-white/40 ml-auto font-medium">Billed monthly · Cancel anytime</span>
+            </div>
+
+            <p className="text-xs font-semibold uppercase tracking-wider text-[#D98094] mb-4">Everything included:</p>
+            <ul className="space-y-3 text-sm mb-8">
+              {[
+                'Unlimited chairs & stylist accounts',
+                'Daily AI morning operations briefing',
+                'Automated revenue leak detection & loss alerts',
+                'Predictive no-show scoring & card guarantee triggers',
+                'Customer retention engine & churn recovery alerts',
+                'Staff performance suite & rebooking benchmarks',
+                'AI business advisor with tailored profit recommendations',
+                'Direct booking system & CSV sync (Fresha, Timely, Phorest)',
+                'Dedicated onboarding & direct founder support',
+              ].map((f, j) => (
+                <li key={j} className="flex items-center gap-3">
+                  <span className="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center flex-shrink-0">
+                    <Icon name="check" size={13} className="text-[#D98094]" />
+                  </span>
+                  <span className="text-white/90">{f}</span>
+                </li>
+              ))}
+            </ul>
+
+            <button
+              onClick={() => router.push('/login')}
+              className="w-full text-center rounded-full py-3.5 font-semibold text-sm bg-white text-[var(--ink)] hover:bg-[#FBE7E9] transition-colors"
+            >
+              Get started
+            </button>
+            <p className="text-center text-xs text-white/50 mt-4">
+              No hidden setup fees · 14-day money-back guarantee
+            </p>
+          </div>
         </div>
       </section>
 
@@ -395,7 +405,7 @@ export default function Landing() {
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-6 mt-10 pt-6 border-t border-white/10 text-xs">
-          © 2026 Marlowe &amp; Rose Revenue Intelligence. Prototype for demonstration.
+          © 2026 Marlowe &amp; Rose Revenue Intelligence. All rights reserved.
         </div>
       </footer>
     </div>

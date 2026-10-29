@@ -83,6 +83,34 @@ export async function fetchApi(endpoint: string, options: RequestInit = {}) {
     return { token: 'demo-token', user: { name: 'Sarah', role: 'OWNER' } };
   }
 
+  if (endpoint === '/auth/reset-password') {
+    if (!forceDemo) {
+      try {
+        const res = await fetch(`${API_BASE}/auth/reset-password`, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+          },
+        });
+        if (res.ok) {
+          return await res.json();
+        }
+        if (res.status === 400 || res.status === 404) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.message || 'Unable to reset password');
+        }
+      } catch (err: any) {
+        if (err.message && err.message !== 'Failed to fetch') {
+          throw err;
+        }
+        console.warn('[API] Backend reset-password failed, falling back to simulated reset:', err);
+      }
+    }
+    await delay(800);
+    return { success: true, message: 'Password has been reset successfully' };
+  }
+
   if (endpoint === '/api/analytics/overview') {
     await delay(600);
     return {

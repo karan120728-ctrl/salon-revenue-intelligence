@@ -96,6 +96,37 @@ const authRoutes: FastifyPluginAsync = async (server: FastifyInstance) => {
     return reply.send({ success: true, token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
   });
 
+  // Reset Password
+  const resetPasswordSchema = {
+    schema: {
+      body: {
+        type: 'object',
+        required: ['email', 'newPassword'],
+        properties: {
+          email: { type: 'string', format: 'email' },
+          newPassword: { type: 'string', minLength: 6 }
+        }
+      }
+    }
+  };
+
+  server.post('/reset-password', resetPasswordSchema, async (request, reply) => {
+    const { email, newPassword } = request.body as { email: string; newPassword: string };
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return reply.code(404).send({ success: false, message: 'No registered user found with that email address' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await prisma.user.update({
+      where: { email },
+      data: { password: hashedPassword },
+    });
+
+    return reply.send({ success: true, message: 'Password has been reset successfully' });
+  });
+
   // Protected route for testing
   server.get('/me', { preValidation: [(server as unknown as { authenticate: (req: unknown, rep: unknown) => Promise<void> }).authenticate] }, async (request) => {
     const user = request.user as UserPayload;
